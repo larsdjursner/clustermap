@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 
-interface ILocation {
+export interface ILocation {
   lon: number;
   lat: number;
   name: string;

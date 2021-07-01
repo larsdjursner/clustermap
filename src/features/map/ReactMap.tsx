@@ -1,9 +1,9 @@
 import React, { FC, useState } from "react";
-import ReactMapGl, { Marker } from "react-map-gl";
+import ReactMapGl, { Marker, FlyToInterpolator } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { add, clear, selectClusterMap } from "./ReactMapSlice";
+import { add, clear, ILocation, selectClusterMap } from "./ReactMapSlice";
+import { easeCubic } from 'd3-ease';
 
-// mapboxgl.accessToken = (process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!);
 const ReactMap: FC = () => {
   let [viewport, setViewport] = useState({
     width: 800,
@@ -12,12 +12,24 @@ const ReactMap: FC = () => {
     longitude: 12.584787,
     zoom: 9,
     pitch: 0,
+    transitionDuration: 2000,
+    // transitionInterpolator: new FlyToInterpolator(),
+    transitionEasing: easeCubic
   });
 
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
   const [name, setName] = useState("");
+
+  const goToLocation = (loc: ILocation) => {
+    setViewport({
+      ...viewport,
+      latitude: loc.lat,
+      longitude: loc.lon,
+      zoom: 12,
+    });
+  };
 
   return (
     <>
@@ -55,7 +67,9 @@ const ReactMap: FC = () => {
       <button onClick={() => dispatch(clear())}>clear</button>
       <ul>
         {clusterMap.locations.map((loc) => (
-          <li>{`${loc.name}, (${loc.lat}, ${loc.lon})`}</li>
+          <li
+            onClick={() => goToLocation(loc)}
+          >{`${loc.name}, (${loc.lat}, ${loc.lon})`}</li>
         ))}
       </ul>
     </>
