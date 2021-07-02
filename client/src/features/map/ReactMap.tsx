@@ -85,12 +85,12 @@ const ReactMap: FC = () => {
   //     features: locjson
   // };
 // 
-//   const geojson : IGeoJson = {
-//     type: 'FeatureCollection',
-//     features: [
-//       {type: 'Feature', geometry: {type: 'Point', coordinates: [-122.4, 37.8]}},
-//     ]
-//   };
+  // const geojson = {
+  //   type: 'FeatureCollection',
+  //   features: [
+  //     {type: 'Feature', geometry: {type: 'Point', coordinates: [-122.4, 37.8]}},
+  //   ]
+  // };
 
 
 
@@ -114,7 +114,8 @@ const ReactMap: FC = () => {
         <Source
           id="locations"
           type="geojson"
-          data="https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson"
+          data="http://localhost:8000/locations"
+          // data="https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson"
           cluster={true}
           clusterMaxZoom={14}
           clusterRadius={50}
