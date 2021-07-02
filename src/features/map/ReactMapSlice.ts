@@ -1,10 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../../app/store";
 
-export interface ILocation {
+export interface Coordinate {
   lon: number;
   lat: number;
+}
+export interface ILocation extends Coordinate {
   name: string;
+  id: string;
 }
 
 export interface ClusterMapState {
@@ -12,44 +16,49 @@ export interface ClusterMapState {
   status: "idle" | "loading" | "failed";
 }
 
+
+
 const initialState: ClusterMapState = {
   locations: [
     {
-      lat: 55.5,
-      lon: 12.5,
+      lat: 55.68,
+      lon: 12.58,
       name: "one spot",
+      id: "test1",
     },
     {
-      lat: 55.6,
-      lon: 12.6,
+      lat: 55.69,
+      lon: 12.69,
       name: "another spot",
+      id: "test2",
     },
   ],
   status: "idle",
 };
 
-function getRandomArbitrary(min: number, max: number) {
-  return Math.random() * (max - min) + min;
-}
-
 export const clusterMapSlice = createSlice({
   name: "clusterMap",
   initialState,
   reducers: {
-    add: (state, action: PayloadAction<string>) => {
+    addLocation: (state, action: PayloadAction<ILocation>) => {
       state.locations.push({
-        lon: getRandomArbitrary(12.5, 12.6),
-        lat: getRandomArbitrary(55.5, 55.6),
-        name: action.payload,
+        lon: action.payload.lon,
+        lat: action.payload.lat,
+        name: action.payload.name,
+        id: uuidv4(),
       });
     },
     clear: (state) => {
       state.locations = [];
     },
+    deleteLocation: (state, action: PayloadAction<ILocation>) => {
+      const { id } = action.payload;
+      state.locations = state.locations.filter((l) => l.id !== id);
+    },
   },
 });
 
-export const { add, clear } = clusterMapSlice.actions;
+export const { addLocation, clear, deleteLocation } = clusterMapSlice.actions;
 export const selectClusterMap = (state: RootState) => state.clusterMap;
 
 export default clusterMapSlice.reducer;
