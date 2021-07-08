@@ -50,7 +50,7 @@ const ReactMap: FC = () => {
   const [name, setName] = useState("");
 
   const handleGoToLocation = (loc: IFeature) => {
-    if(loc.geometry.type != 'Point') return;
+    if(loc.geometry.type !== 'Point') return;
 
     setViewport({
       ...viewport,
