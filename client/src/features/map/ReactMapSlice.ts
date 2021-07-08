@@ -25,7 +25,7 @@ const initialState: ClusterMapState = {
         type: "Feature",
         id: uuidv4(),
         properties: { name: "first" },
-        geometry: { type: "Point", coordinates: [12.47, 55.66] },
+        geometry: { type: "Point", coordinates: [55.66, 12.47] },
       },
     ],
   },
@@ -43,7 +43,7 @@ export const clusterMapSlice = createSlice({
         properties: { name: action.payload.name },
         geometry: {
           type: "Point",
-          coordinates: [action.payload.lon, action.payload.lat],
+          coordinates: [action.payload.lat, action.payload.lon],
         },
       };
 
