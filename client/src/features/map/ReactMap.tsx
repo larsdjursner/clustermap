@@ -1,85 +1,67 @@
-import React, { FC, useState } from "react";
+import React, { useState } from "react";
 import ReactMapGl, {
-  FlyToInterpolator,
   MapEvent,
   Source,
   Layer,
+  FlyToInterpolator,
 } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   addLocation,
-  Coordinate,
-  ILocation,
   selectClusterMap,
   clear,
-  deleteLocation,
+  updateViewport,
 } from "./ReactMapSlice";
-import { easeCubic } from "d3-ease";
 import {
   clusterCountLayer,
   clusterLayer,
   unclusteredPointLayer,
 } from "./layers";
+import { LocationItem } from "./LocationItem";
+import { easeCubic } from "d3-ease";
+import { ViewportProps } from "react-map-gl";
 
-export interface IFeature extends GeoJSON.Feature {
-  properties: {
-    name: string;
-  };
-}
-
-export interface IFeatureCollection extends GeoJSON.FeatureCollection {
-  features: IFeature[];
-}
-
-const ReactMap: FC = () => {
-  let [viewport, setViewport] = useState({
-    width: 800,
-    height: 600,
-    latitude: 55.683839,
-    longitude: 12.584787,
-    zoom: 9,
-    pitch: 0,
-    transitionDuration: 2000,
-    transitionInterpolator: new FlyToInterpolator(),
-    transitionEasing: easeCubic,
-  });
-
+const ReactMap = () => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
   const [name, setName] = useState("");
+  // const [viewport, setViewport] = useState({
+  //   width: 1000,
+  //   height: 600,
+  //   longitude: 12.584787,
+  //   latitude: 55.683839,
+  //   zoom: 9,
+  //   pitch: 0,
+  // });
 
-  const handleGoToLocation = (loc: IFeature) => {
-    if(loc.geometry.type !== 'Point') return;
-
-    setViewport({
-      ...viewport,
-      latitude: loc.geometry.coordinates[0],
-      longitude: loc.geometry.coordinates[1],
-      zoom: 12,
-    });
-  };
-
-  function handleAddNewMarker(e: MapEvent): void {
+  const handleAddNewMarker = (e: MapEvent): void => {
     e.preventDefault();
     if (!e.rightButton) return;
 
     const [lon, lat] = e.lngLat;
-    dispatch(addLocation({ name: "test", id: "", lat, lon }));
-  }
+    dispatch(addLocation({ name: "test", coordinates: [lon, lat] }));
+  };
 
   return (
     <>
       <div className="sidebar">
-        Latitude: {viewport.latitude} |  Longitude: {viewport.longitude} | Zoom:{" "}
-        {viewport.zoom}
+        Longitude: {clusterMap.viewportState.longitude} | Latitude:{" "}
+        {clusterMap.viewportState.latitude} | Zoom:{" "}
+        {clusterMap.viewportState.zoom}
       </div>
 
       <ReactMapGl
+        // transitionDuration={2000}
+        // transitionInterpolator={new FlyToInterpolator()}
+        // transitionEasing={easeCubic}
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!}
-        {...viewport}
-        onViewportChange={(newViewport: any) => setViewport(newViewport)}
+        onViewportChange={(newViewport: ViewportProps) => {
+          const { longitude, latitude, zoom, pitch } = newViewport;
+          dispatch(updateViewport({ longitude, latitude, zoom, pitch }));
+        }}
         onClick={(e) => handleAddNewMarker(e)}
+        {...clusterMap.viewportState}
       >
         <Source
           id="locations"
@@ -104,10 +86,11 @@ const ReactMap: FC = () => {
         onClick={() =>
           dispatch(
             addLocation({
-              name,
-              id: "",
-              lat: viewport.latitude,
-              lon: viewport.longitude,
+              name: name,
+              coordinates: [
+                clusterMap.viewportState.longitude!,
+                clusterMap.viewportState.latitude!,
+              ],
             })
           )
         }
@@ -117,16 +100,7 @@ const ReactMap: FC = () => {
       <button onClick={() => dispatch(clear())}>clear</button>
       <ul>
         {clusterMap.locations.features.map((loc) => (
-          <li>
-            <p onClick={() => handleGoToLocation(loc)}>
-              {`${loc.properties.name}`}
-            </p>
-
-            <button onClick={() => dispatch(deleteLocation(loc))}>
-              {" "}
-              delete{" "}
-            </button>
-          </li>
+          <LocationItem loc={loc} />
         ))}
       </ul>
     </>

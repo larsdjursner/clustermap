@@ -10,12 +10,12 @@ export const clusterLayer: LayerProps = {
       "step",
       ["get", "point_count"],
       "#51bbd6",
-      100,
+      5,
       "#f1f075",
-      750,
+      15,
       "#f28cb1",
     ],
-    "circle-radius": ["step", ["get", "point_count"], 20, 100, 30, 750, 40],
+    "circle-radius": ["step", ["get", "point_count"], 20, 100, 40, 750, 50],
   },
 };
 
