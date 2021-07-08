@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import ReactMapGl, {
   FlyToInterpolator,
   MapEvent,
@@ -8,33 +8,28 @@ import ReactMapGl, {
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   addLocation,
-  clear,
   Coordinate,
-  deleteLocation,
   ILocation,
   selectClusterMap,
+  clear,
+  deleteLocation,
 } from "./ReactMapSlice";
 import { easeCubic } from "d3-ease";
-import { PinMarker } from "./PinMarker";
 import {
   clusterCountLayer,
   clusterLayer,
   unclusteredPointLayer,
 } from "./layers";
 
+export interface IFeature extends GeoJSON.Feature {
+  properties: {
+    name: string;
+  };
+}
 
-// export interface IGeometry {
-//   type: string;
-//   coordinates: number[];
-// }
-
-// export interface IGeoJson {
-//   type: string;
-//   geometry?: IGeometry;
-//   features?: IGeoJson[]
-//   bbox?: number[];
-//   properties?: any;
-// }
+export interface IFeatureCollection extends GeoJSON.FeatureCollection {
+  features: IFeature[];
+}
 
 const ReactMap: FC = () => {
   let [viewport, setViewport] = useState({
@@ -54,11 +49,13 @@ const ReactMap: FC = () => {
 
   const [name, setName] = useState("");
 
-  const handleGoToLocation = (loc: ILocation) => {
+  const handleGoToLocation = (loc: IFeature) => {
+    if(loc.geometry.type !== 'Point') return;
+
     setViewport({
       ...viewport,
-      latitude: loc.lat,
-      longitude: loc.lon,
+      latitude: loc.geometry.coordinates[0],
+      longitude: loc.geometry.coordinates[1],
       zoom: 12,
     });
   };
@@ -68,36 +65,13 @@ const ReactMap: FC = () => {
     if (!e.rightButton) return;
 
     const [lon, lat] = e.lngLat;
-    dispatch(addLocation({ name: "test", id: "", lon, lat }));
+    dispatch(addLocation({ name: "test", id: "", lat, lon }));
   }
-
-  
-
-  // const createLocJson = (loc: ILocation) => {
-  //   return {type: 'Feature', geometry: {type: 'Point', coordinates: [loc.lat, loc.lon]}}
-  // }
-  // const locjson = clusterMap.locations.map(loc =>
-  //     createLocJson(loc)
-  //   )
-  // 
-  // const geojson = {
-  //   type: 'FeatureCollection',
-  //     features: locjson
-  // };
-// 
-//   const geojson : IGeoJson = {
-//     type: 'FeatureCollection',
-//     features: [
-//       {type: 'Feature', geometry: {type: 'Point', coordinates: [-122.4, 37.8]}},
-//     ]
-//   };
-
-
 
   return (
     <>
       <div className="sidebar">
-        Longitude: {viewport.longitude} | Latitude: {viewport.latitude} | Zoom:{" "}
+        Latitude: {viewport.latitude} |  Longitude: {viewport.longitude} | Zoom:{" "}
         {viewport.zoom}
       </div>
 
@@ -107,14 +81,10 @@ const ReactMap: FC = () => {
         onViewportChange={(newViewport: any) => setViewport(newViewport)}
         onClick={(e) => handleAddNewMarker(e)}
       >
-        {clusterMap.locations.map((loc) => (
-          <PinMarker loc={loc} viewport={viewport} />
-        ))}
-
         <Source
           id="locations"
           type="geojson"
-          data="https://docs.mapbox.com/mapbox-gl-js/assets/earthquakes.geojson"
+          data={clusterMap.locations}
           cluster={true}
           clusterMaxZoom={14}
           clusterRadius={50}
@@ -142,15 +112,15 @@ const ReactMap: FC = () => {
           )
         }
       >
-        addLocation location
+        add location
       </button>
       <button onClick={() => dispatch(clear())}>clear</button>
       <ul>
-        {clusterMap.locations.map((loc) => (
+        {clusterMap.locations.features.map((loc) => (
           <li>
-            <p
-              onClick={() => handleGoToLocation(loc)}
-            >{`${loc.name}, (${loc.lat}, ${loc.lon})`}</p>
+            <p onClick={() => handleGoToLocation(loc)}>
+              {`${loc.properties.name}`}
+            </p>
 
             <button onClick={() => dispatch(deleteLocation(loc))}>
               {" "}
