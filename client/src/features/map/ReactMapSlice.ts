@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../../app/store";
+import { IFeature, IFeatureCollection } from "./ReactMap";
 
 export interface Coordinate {
   lon: number;
@@ -12,27 +13,22 @@ export interface ILocation extends Coordinate {
 }
 
 export interface ClusterMapState {
-  locations: ILocation[];
+  locations: IFeatureCollection;
   status: "idle" | "loading" | "failed";
 }
 
-
-
 const initialState: ClusterMapState = {
-  locations: [
-    {
-      lat: 55.68,
-      lon: 12.58,
-      name: "one spot",
-      id: "test1",
-    },
-    {
-      lat: 55.69,
-      lon: 12.69,
-      name: "another spot",
-      id: "test2",
-    },
-  ],
+  locations: {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        id: uuidv4(),
+        properties: { name: "first" },
+        geometry: { type: "Point", coordinates: [55.66, 12.47] },
+      },
+    ],
+  },
   status: "idle",
 };
 
@@ -41,19 +37,26 @@ export const clusterMapSlice = createSlice({
   initialState,
   reducers: {
     addLocation: (state, action: PayloadAction<ILocation>) => {
-      state.locations.push({
-        lon: action.payload.lon,
-        lat: action.payload.lat,
-        name: action.payload.name,
+      const dto: IFeature = {
+        type: "Feature",
         id: uuidv4(),
-      });
+        properties: { name: action.payload.name },
+        geometry: {
+          type: "Point",
+          coordinates: [action.payload.lat, action.payload.lon],
+        },
+      };
+
+      state.locations.features.push(dto);
     },
     clear: (state) => {
-      state.locations = [];
+      state.locations.features = [];
     },
-    deleteLocation: (state, action: PayloadAction<ILocation>) => {
+    deleteLocation: (state, action: PayloadAction<IFeature>) => {
       const { id } = action.payload;
-      state.locations = state.locations.filter((l) => l.id !== id);
+      state.locations.features = state.locations.features.filter(
+        (l) => l.id !== id
+      );
     },
   },
 });
