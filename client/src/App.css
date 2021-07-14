@@ -11,7 +11,6 @@
   height: 400px;
   /* justify-content: center; */
   width: 80%;
-
 }
 
 .mapboxgl-ctrl-bottom-right {
@@ -26,7 +25,7 @@
   z-index: 1;
   position: absolute;
   top: 0;
-  left: 0;
-  margin: 12px;
+  left: 40px;
+  margin: 10px;
   border-radius: 4px;
 }

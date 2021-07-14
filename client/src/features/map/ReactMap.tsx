@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import ReactMapGl, {
   MapEvent,
   Source,
   Layer,
-  FlyToInterpolator,
+  MapRef,
+  NavigationControl,
 } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -13,6 +14,7 @@ import {
   updateViewport,
   IFeature,
   IViewport,
+  IFeatureCollection,
 } from "./ReactMapSlice";
 import {
   clusterCountLayer,
@@ -20,7 +22,6 @@ import {
   unclusteredPointLayer,
 } from "./layers";
 import { LocationItem } from "./partials/LocationItem";
-import { easeCubic } from "d3-ease";
 import { ViewportProps } from "react-map-gl";
 import { LocationPopup } from "./partials/LocationPopup";
 
@@ -28,7 +29,11 @@ const ReactMap = () => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
+  const mapRef = useRef<MapRef>(null);
+
   const [name, setName] = useState("");
+  const [details, setDetails] = useState("");
+
   const [popupID, setPopupID] = useState<null | string>(null);
 
   const isInLocations = (e: MapEvent) => {
@@ -48,6 +53,13 @@ const ReactMap = () => {
 
     const [lon, lat] = e.lngLat;
     dispatch(addLocation({ name: "test", coordinates: [lon, lat] }));
+
+    // console.log((mapRef.current?.getMap()));
+    // var currents = mapRef.current?.queryRenderedFeatures([
+    //   [window.innerWidth/2, window.innerHeight/2],
+    //   [window.innerWidth/2, window.innerHeight/2],
+    // ], {layers: ["unclustered-point"]});
+    // console.log(currents);
   };
 
   return (
@@ -59,17 +71,39 @@ const ReactMap = () => {
       </div>
 
       <ReactMapGl
+        ref={mapRef}
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!}
+        width="100%"
+        height="40vw"
         onViewportChange={(newViewport: ViewportProps) => {
           const { longitude, latitude, zoom, pitch } = newViewport;
           dispatch(updateViewport({ longitude, latitude, zoom, pitch }));
-          console.log(clusterMap.viewportState.bbox);
         }}
-        width="95vw"
-        height="45vw"
-        onClick={(e) =>
-          isInLocations(e) ? handlePopup(e) : handleAddNewMarker(e)
-        }
+        onClick={(e) => {
+          // if (mapRef.current?.queryRenderedFeatures(e.point).length) {
+          //   handlePopup(e);
+          // } else {
+          handleAddNewMarker(e);
+          // }
+          // isInLocations(e) ? handlePopup(e) : handleAddNewMarker(e)
+        }}
+        onHover={(e) => {
+          const [x, y] = e.point;
+          console.log(e.point);
+          console.log(
+            mapRef.current?.queryRenderedFeatures(
+              [
+                [x - 50, y - 50],
+                [x + 50, y + 50],
+              ],
+              {
+                layers: ["unclustered-point"],
+              }
+            )
+          );
+        }}
+
+        //need to find the dom nodes x and y and then create and array of the maximal corners
         {...clusterMap.viewportState}
       >
         {popupID !== null ? (
@@ -88,15 +122,21 @@ const ReactMap = () => {
         >
           <Layer {...clusterLayer} />
           <Layer {...clusterCountLayer} />
-
           <Layer {...unclusteredPointLayer} />
         </Source>
+        <NavigationControl />
       </ReactMapGl>
 
       <input
         className="name"
         value={name}
         onChange={(e) => setName(e.target.value)}
+      />
+
+      <input
+        className="details"
+        value={details}
+        onChange={(e) => setDetails(e.target.value)}
       />
       <button
         onClick={() =>
@@ -107,6 +147,7 @@ const ReactMap = () => {
                 clusterMap.viewportState.longitude!,
                 clusterMap.viewportState.latitude!,
               ],
+              details: details,
             })
           )
         }
@@ -116,32 +157,23 @@ const ReactMap = () => {
       <button onClick={() => dispatch(clear())}>clear</button>
 
       {/* move UL into locationitem component */}
-      <ul>
-        {clusterMap.locations.features.map((loc: IFeature) =>
-          isWithinViewportBounds(loc, clusterMap.viewportState) ? (
-            <LocationItem loc={loc} />
-          ) : (
-            <></>
-          )
-        )}
-      </ul>
+      <div style={{ maxHeight: "20px", height: "20px" }}>
+        <ul style={{ overflowY: "scroll" }}>
+          {/* {clusterMap.locations.features.map((loc: IFeature) => (
+            <LocationItem loc={loc} key={loc.properties.id} />
+          ))} */}
+          {/* {
+            mapRef.current?.queryRenderedFeatures([
+              clusterMap.viewportState.longitude!,
+              clusterMap.viewportState.latitude!,
+            ])
+            .map((loc: IFeature) => (
+              <LocationItem loc={loc} key={loc.properties.id} />
+            ))} */}
+        </ul>
+      </div>
     </div>
   );
 };
 
-const isWithinViewportBounds = (loc: IFeature, viewportState: IViewport) => {
-  if (loc.geometry.type !== "Point") return false;
-  if (
-    loc.geometry.coordinates[0] > viewportState.bbox.maxlon ||
-    loc.geometry.coordinates[0] < viewportState.bbox.minlon
-  )
-    return false;
-  if (
-    loc.geometry.coordinates[1] > viewportState.bbox.maxlat ||
-    loc.geometry.coordinates[1] < viewportState.bbox.minlat
-  )
-    return false;
-
-  return true;
-};
 export default ReactMap;

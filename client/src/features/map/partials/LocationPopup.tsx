@@ -1,21 +1,20 @@
 import { Dispatch, FC, SetStateAction } from "react";
 import { Popup } from "react-map-gl";
+import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { selectClusterMap } from "../ReactMapSlice";
 interface IPopup {
   id: string;
-  toggle: Dispatch<SetStateAction<string | null>>
+  toggle: Dispatch<SetStateAction<string | null>>;
 }
 
-export const LocationPopup: FC<IPopup> = ({ id, toggle}) => {
+export const LocationPopup: FC<IPopup> = ({ id, toggle }) => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
   const loc = clusterMap.locations.features.find(
     (l) => l.properties.id === id
   )!;
-
-
 
   return (
     <Popup
@@ -30,7 +29,9 @@ export const LocationPopup: FC<IPopup> = ({ id, toggle}) => {
     >
       <p>{loc.properties.id}</p>
 
-      <p>{loc.properties.name}</p>
+      <Link to={`/locations/${loc.properties.id}`}>
+        <p>{loc.properties.name}</p>
+      </Link>
 
       <p>{loc.properties.details}</p>
     </Popup>

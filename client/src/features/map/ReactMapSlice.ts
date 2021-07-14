@@ -11,18 +11,18 @@ export interface IFeature extends GeoJSON.Feature {
 export interface IFeatureCollection extends GeoJSON.FeatureCollection {
   features: IFeature[];
 }
-
 export interface IViewport {
   longitude: number | undefined;
   latitude: number | undefined;
   zoom: number | undefined;
   pitch: number;
-  bbox: {
+  bbox?: {
     maxlat: number;
     maxlon: number;
     minlat: number;
     minlon: number;
   };
+  transitionDuration?: number;
 }
 export interface ClusterMapState {
   viewportState: IViewport;
@@ -30,6 +30,8 @@ export interface ClusterMapState {
   status: "idle" | "loading" | "failed";
 }
 const calculateDifference = (zoom: number) => {
+  //lack of library method for check whether coordinate set is within viewport
+  //4th order polynomial calculated by comparing the difference between center coordinate and minlon of 5 different zoomlevels
   return (
     0.0033 * Math.pow(zoom, 4) -
     0.1637 * Math.pow(zoom, 3) +
@@ -55,7 +57,7 @@ const initialState: ClusterMapState = {
     latitude: 55.64115,
     zoom: 9,
     pitch: 0,
-    bbox: calculateBBox(12.53887, 55.64115, 9),
+    // bbox: calculateBBox(12.53887, 55.64115, 9),
   },
   locations: {
     type: "FeatureCollection",
@@ -82,25 +84,34 @@ export const clusterMapSlice = createSlice({
         latitude: number | undefined;
         zoom: number | undefined;
         pitch?: number;
+        transitionDuration?: number;
       }>
     ) => {
       state.viewportState = {
         ...state.viewportState,
         ...action.payload,
-        bbox: calculateBBox(
-          action.payload.latitude!,
-          action.payload.longitude!,
-          action.payload.zoom!
-        ),
+        // bbox: calculateBBox(
+        //   action.payload.latitude!,
+        //   action.payload.longitude!,
+        //   action.payload.zoom!
+        // ),
       };
     },
     addLocation: (
       state,
-      action: PayloadAction<{ name: string; coordinates: [number, number] }>
+      action: PayloadAction<{
+        name: string;
+        coordinates: [number, number];
+        details?: string;
+      }>
     ) => {
       const dto: IFeature = {
         type: "Feature",
-        properties: { name: action.payload.name, id: uuidv4() },
+        properties: {
+          name: action.payload.name,
+          id: uuidv4(),
+          details: action.payload.details,
+        },
         geometry: {
           type: "Point",
           coordinates: action.payload.coordinates,

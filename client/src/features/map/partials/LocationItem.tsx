@@ -1,8 +1,4 @@
-import {
-  deleteLocation,
-  IFeature,
-  updateViewport,
-} from "../ReactMapSlice";
+import { deleteLocation, IFeature, updateViewport } from "../ReactMapSlice";
 import { useAppDispatch } from "../../../app/hooks";
 import React, { FC } from "react";
 
