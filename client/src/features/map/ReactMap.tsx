@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactMapGl, {
   MapEvent,
   Source,
@@ -11,32 +11,39 @@ import {
   selectClusterMap,
   clear,
   updateViewport,
+  IFeature,
+  IViewport,
 } from "./ReactMapSlice";
 import {
   clusterCountLayer,
   clusterLayer,
   unclusteredPointLayer,
 } from "./layers";
-import { LocationItem } from "./LocationItem";
+import { LocationItem } from "./partials/LocationItem";
 import { easeCubic } from "d3-ease";
 import { ViewportProps } from "react-map-gl";
+import { LocationPopup } from "./partials/LocationPopup";
 
 const ReactMap = () => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
   const [name, setName] = useState("");
-  // const [viewport, setViewport] = useState({
-  //   width: 1000,
-  //   height: 600,
-  //   longitude: 12.584787,
-  //   latitude: 55.683839,
-  //   zoom: 9,
-  //   pitch: 0,
-  // });
+  const [popupID, setPopupID] = useState<null | string>(null);
+
+  const isInLocations = (e: MapEvent) => {
+    return clusterMap.locations.features
+      .map((i) => i.properties.id)
+      .includes(e.features?.[0]?.properties.id);
+  };
+
+  const handlePopup = (e: MapEvent): void => {
+    setPopupID(e.features?.[0]?.properties.id);
+  };
 
   const handleAddNewMarker = (e: MapEvent): void => {
     e.preventDefault();
+    setPopupID(null);
     if (!e.rightButton) return;
 
     const [lon, lat] = e.lngLat;
@@ -44,7 +51,7 @@ const ReactMap = () => {
   };
 
   return (
-    <>
+    <div style={{ margin: "10px" }}>
       <div className="sidebar">
         Longitude: {clusterMap.viewportState.longitude} | Latitude:{" "}
         {clusterMap.viewportState.latitude} | Zoom:{" "}
@@ -52,17 +59,25 @@ const ReactMap = () => {
       </div>
 
       <ReactMapGl
-        // transitionDuration={2000}
-        // transitionInterpolator={new FlyToInterpolator()}
-        // transitionEasing={easeCubic}
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!}
         onViewportChange={(newViewport: ViewportProps) => {
           const { longitude, latitude, zoom, pitch } = newViewport;
           dispatch(updateViewport({ longitude, latitude, zoom, pitch }));
+          console.log(clusterMap.viewportState.bbox);
         }}
-        onClick={(e) => handleAddNewMarker(e)}
+        width="95vw"
+        height="45vw"
+        onClick={(e) =>
+          isInLocations(e) ? handlePopup(e) : handleAddNewMarker(e)
+        }
         {...clusterMap.viewportState}
       >
+        {popupID !== null ? (
+          <LocationPopup id={popupID} toggle={setPopupID} />
+        ) : (
+          <></>
+        )}
+
         <Source
           id="locations"
           type="geojson"
@@ -73,6 +88,7 @@ const ReactMap = () => {
         >
           <Layer {...clusterLayer} />
           <Layer {...clusterCountLayer} />
+
           <Layer {...unclusteredPointLayer} />
         </Source>
       </ReactMapGl>
@@ -98,13 +114,34 @@ const ReactMap = () => {
         add location
       </button>
       <button onClick={() => dispatch(clear())}>clear</button>
+
+      {/* move UL into locationitem component */}
       <ul>
-        {clusterMap.locations.features.map((loc) => (
-          <LocationItem loc={loc} />
-        ))}
+        {clusterMap.locations.features.map((loc: IFeature) =>
+          isWithinViewportBounds(loc, clusterMap.viewportState) ? (
+            <LocationItem loc={loc} />
+          ) : (
+            <></>
+          )
+        )}
       </ul>
-    </>
+    </div>
   );
 };
 
+const isWithinViewportBounds = (loc: IFeature, viewportState: IViewport) => {
+  if (loc.geometry.type !== "Point") return false;
+  if (
+    loc.geometry.coordinates[0] > viewportState.bbox.maxlon ||
+    loc.geometry.coordinates[0] < viewportState.bbox.minlon
+  )
+    return false;
+  if (
+    loc.geometry.coordinates[1] > viewportState.bbox.maxlat ||
+    loc.geometry.coordinates[1] < viewportState.bbox.minlat
+  )
+    return false;
+
+  return true;
+};
 export default ReactMap;

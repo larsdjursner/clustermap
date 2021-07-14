@@ -3,7 +3,9 @@ import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../../app/store";
 export interface IFeature extends GeoJSON.Feature {
   properties: {
+    id: string;
     name: string;
+    details?: string;
   };
 }
 export interface IFeatureCollection extends GeoJSON.FeatureCollection {
@@ -11,36 +13,58 @@ export interface IFeatureCollection extends GeoJSON.FeatureCollection {
 }
 
 export interface IViewport {
-  width: number;
-  height: number;
   longitude: number | undefined;
   latitude: number | undefined;
   zoom: number | undefined;
   pitch: number;
+  bbox: {
+    maxlat: number;
+    maxlon: number;
+    minlat: number;
+    minlon: number;
+  };
 }
 export interface ClusterMapState {
   viewportState: IViewport;
   locations: IFeatureCollection;
   status: "idle" | "loading" | "failed";
 }
+const calculateDifference = (zoom: number) => {
+  return (
+    0.0033 * Math.pow(zoom, 4) -
+    0.1637 * Math.pow(zoom, 3) +
+    3.0272 * Math.pow(zoom, 2) -
+    25.0705 * zoom +
+    78.7863
+  );
+};
+
+const calculateBBox = (lat: number, lon: number, zoom: number) => {
+  const dif = calculateDifference(zoom);
+  return {
+    maxlat: lat + dif,
+    maxlon: lon + dif,
+    minlat: lat - dif,
+    minlon: lon - dif,
+  };
+};
 
 const initialState: ClusterMapState = {
   viewportState: {
-    width: 1000,
-    height: 600,
-    longitude: 12.584787,
-    latitude: 55.683839,
+    longitude: 12.53887,
+    latitude: 55.64115,
     zoom: 9,
     pitch: 0,
+    bbox: calculateBBox(12.53887, 55.64115, 9),
   },
   locations: {
     type: "FeatureCollection",
     features: [
       {
         type: "Feature",
-        id: uuidv4(),
-        properties: { name: "first" },
-        geometry: { type: "Point", coordinates: [12.47, 55.66] },
+
+        properties: { name: "Test Location", id: uuidv4() },
+        geometry: { type: "Point", coordinates: [12.53887, 55.64115] },
       },
     ],
   },
@@ -60,11 +84,15 @@ export const clusterMapSlice = createSlice({
         pitch?: number;
       }>
     ) => {
-      const { longitude, latitude, zoom, pitch } = action.payload;
-      state.viewportState.longitude = longitude;
-      state.viewportState.latitude = latitude;
-      state.viewportState.zoom = zoom;
-      state.viewportState.pitch = pitch ? pitch : state.viewportState.pitch;
+      state.viewportState = {
+        ...state.viewportState,
+        ...action.payload,
+        bbox: calculateBBox(
+          action.payload.latitude!,
+          action.payload.longitude!,
+          action.payload.zoom!
+        ),
+      };
     },
     addLocation: (
       state,
@@ -72,8 +100,7 @@ export const clusterMapSlice = createSlice({
     ) => {
       const dto: IFeature = {
         type: "Feature",
-        id: uuidv4(),
-        properties: { name: action.payload.name },
+        properties: { name: action.payload.name, id: uuidv4() },
         geometry: {
           type: "Point",
           coordinates: action.payload.coordinates,
@@ -88,7 +115,7 @@ export const clusterMapSlice = createSlice({
     deleteLocation: (state, action: PayloadAction<IFeature>) => {
       const { id } = action.payload;
       state.locations.features = state.locations.features.filter(
-        (l) => l.id !== id
+        (l) => l.properties.id !== id
       );
     },
   },
