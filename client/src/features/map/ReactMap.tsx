@@ -5,6 +5,7 @@ import ReactMapGl, {
   Layer,
   MapRef,
   NavigationControl,
+  ViewportProps,
 } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -13,8 +14,6 @@ import {
   clear,
   updateViewport,
   IFeature,
-  IViewport,
-  IFeatureCollection,
 } from "./ReactMapSlice";
 import {
   clusterCountLayer,
@@ -22,8 +21,9 @@ import {
   unclusteredPointLayer,
 } from "./layers";
 import { LocationItem } from "./partials/LocationItem";
-import { ViewportProps } from "react-map-gl";
 import { LocationPopup } from "./partials/LocationPopup";
+import { GeoJSONSource } from "mapbox-gl";
+import { Feature, Geometry } from "geojson";
 
 const ReactMap = () => {
   const clusterMap = useAppSelector(selectClusterMap);
@@ -53,13 +53,6 @@ const ReactMap = () => {
 
     const [lon, lat] = e.lngLat;
     dispatch(addLocation({ name: "test", coordinates: [lon, lat] }));
-
-    // console.log((mapRef.current?.getMap()));
-    // var currents = mapRef.current?.queryRenderedFeatures([
-    //   [window.innerWidth/2, window.innerHeight/2],
-    //   [window.innerWidth/2, window.innerHeight/2],
-    // ], {layers: ["unclustered-point"]});
-    // console.log(currents);
   };
 
   return (
@@ -89,20 +82,59 @@ const ReactMap = () => {
         }}
         onHover={(e) => {
           const [x, y] = e.point;
-          console.log(e.point);
-          console.log(
-            mapRef.current?.queryRenderedFeatures(
-              [
-                [x - 50, y - 50],
-                [x + 50, y + 50],
-              ],
-              {
-                layers: ["unclustered-point"],
-              }
-            )
-          );
-        }}
 
+          const features = mapRef.current?.queryRenderedFeatures(
+            [
+              [x + 800 / 2, y + 800 / 2],
+              [x - 800 / 2, y - 800 / 2],
+            ],
+            {
+              layers: [
+                "unclustered-point",
+                //  "cluster-count",
+                "clusters",
+              ],
+            }
+          );
+          if (features === undefined) return;
+
+          const clusterSource: GeoJSONSource = mapRef.current
+            ?.getMap()
+            .getSource("locations");
+
+          const getLocationIDSFromCluster = (
+            clusterId: number,
+            pointCount: number
+          ): string[] => {
+            const idsToReturn: string[] = [];
+            clusterSource.getClusterLeaves(
+              clusterId,
+              pointCount,
+              0,
+              (_, feats) => {
+                feats.map((feat: Feature) =>
+                  idsToReturn.push(feat.properties!.id)
+                );
+              }
+            );
+
+            return idsToReturn;
+          };
+
+          const idArray = features.map((current) => {
+            if (current.layer.id === "unclustered-point") {
+              return [current.properties.id];
+            }
+            if (current.layer.id === "clusters") {
+              const clusterId = current.properties.cluster_id;
+              const pointCount = current.properties.point_count;
+
+              return getLocationIDSFromCluster(clusterId, pointCount);
+            }
+          });
+
+          console.log(idArray);
+        }}
         //need to find the dom nodes x and y and then create and array of the maximal corners
         {...clusterMap.viewportState}
       >
@@ -159,17 +191,32 @@ const ReactMap = () => {
       {/* move UL into locationitem component */}
       <div style={{ maxHeight: "20px", height: "20px" }}>
         <ul style={{ overflowY: "scroll" }}>
-          {/* {clusterMap.locations.features.map((loc: IFeature) => (
-            <LocationItem loc={loc} key={loc.properties.id} />
-          ))} */}
-          {/* {
-            mapRef.current?.queryRenderedFeatures([
-              clusterMap.viewportState.longitude!,
-              clusterMap.viewportState.latitude!,
-            ])
-            .map((loc: IFeature) => (
-              <LocationItem loc={loc} key={loc.properties.id} />
-            ))} */}
+          {
+            // clusterMap.locations.features
+            //   .filter((loc) =>
+            //     mapRef.current
+            //       ?.queryRenderedFeatures(
+            //         [
+            //           [665 - 665 / 2, 266 - 266 / 2],
+            //           [665 + 665 / 2, 266 + 266 / 2],
+            //         ],
+            //         {
+            //           layers: [
+            //             // "unclustered-point",
+            //             //  "clusters"
+            //           ],
+            //         }
+            //       )
+            //       .map((i) => i.properties.id)
+            //       ?.includes(loc)
+            //   )
+            //   .map((loc: IFeature) => (
+            //     <LocationItem loc={loc} key={loc.properties.id} />
+            //   ))
+            // clusterMap.locations.features.map((loc: IFeature) => (
+            //   <LocationItem loc={loc} key={loc.properties.id} />
+            // ))
+          }
         </ul>
       </div>
     </div>

@@ -29,27 +29,6 @@ export interface ClusterMapState {
   locations: IFeatureCollection;
   status: "idle" | "loading" | "failed";
 }
-const calculateDifference = (zoom: number) => {
-  //lack of library method for check whether coordinate set is within viewport
-  //4th order polynomial calculated by comparing the difference between center coordinate and minlon of 5 different zoomlevels
-  return (
-    0.0033 * Math.pow(zoom, 4) -
-    0.1637 * Math.pow(zoom, 3) +
-    3.0272 * Math.pow(zoom, 2) -
-    25.0705 * zoom +
-    78.7863
-  );
-};
-
-const calculateBBox = (lat: number, lon: number, zoom: number) => {
-  const dif = calculateDifference(zoom);
-  return {
-    maxlat: lat + dif,
-    maxlon: lon + dif,
-    minlat: lat - dif,
-    minlon: lon - dif,
-  };
-};
 
 const initialState: ClusterMapState = {
   viewportState: {
@@ -57,7 +36,6 @@ const initialState: ClusterMapState = {
     latitude: 55.64115,
     zoom: 9,
     pitch: 0,
-    // bbox: calculateBBox(12.53887, 55.64115, 9),
   },
   locations: {
     type: "FeatureCollection",
@@ -67,6 +45,12 @@ const initialState: ClusterMapState = {
 
         properties: { name: "Test Location", id: uuidv4() },
         geometry: { type: "Point", coordinates: [12.53887, 55.64115] },
+      },
+      {
+        type: "Feature",
+
+        properties: { name: "Test Location2", id: uuidv4() },
+        geometry: { type: "Point", coordinates: [12.52887, 55.62115] },
       },
     ],
   },
@@ -90,11 +74,6 @@ export const clusterMapSlice = createSlice({
       state.viewportState = {
         ...state.viewportState,
         ...action.payload,
-        // bbox: calculateBBox(
-        //   action.payload.latitude!,
-        //   action.payload.longitude!,
-        //   action.payload.zoom!
-        // ),
       };
     },
     addLocation: (
