@@ -1,13 +1,15 @@
-import { deleteLocation, IFeature, updateViewport } from "../ReactMapSlice";
-import { useAppDispatch } from "../../../app/hooks";
+import {  deleteLocation, IFeature, selectClusterMap, updateViewport } from "../ReactMapSlice";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import React, { FC } from "react";
 
 interface ILocationItem {
-  loc: IFeature;
+  locationID: string;
 }
 
-export const LocationItem: FC<ILocationItem> = ({ loc }) => {
+export const LocationItem: FC<ILocationItem> = ({ locationID }) => {
   const dispatch = useAppDispatch();
+  const clusterMap = useAppSelector(selectClusterMap);
+  const loc = clusterMap.locations.features.find(val => val.properties.id === locationID)!
 
   const handleGoToLocation = (loc: IFeature) => {
     if (loc.geometry.type !== "Point") return;

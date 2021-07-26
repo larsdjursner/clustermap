@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ReactMapGl, {
   MapEvent,
   Source,
@@ -14,6 +14,7 @@ import {
   clear,
   updateViewport,
   IFeature,
+  setClusteredIDS,
 } from "./ReactMapSlice";
 import {
   clusterCountLayer,
@@ -22,32 +23,17 @@ import {
 } from "./layers";
 import { LocationItem } from "./partials/LocationItem";
 import { LocationPopup } from "./partials/LocationPopup";
-import { GeoJSONSource } from "mapbox-gl";
-import { Feature, Geometry } from "geojson";
-
-const getLocationIDSFromCluster = (
-  clusterId: number,
-  pointCount: number,
-  clusterSource: GeoJSONSource
-): string[] => {
-  const idsToReturn: string[] = [];
-  clusterSource.getClusterLeaves(clusterId, pointCount, 0, (_, feats) => {
-    feats.map((feat: Feature) => idsToReturn.push(feat.properties!.id));
-  });
-  return idsToReturn;
-};
+import { GeoJSONSource, MapboxGeoJSONFeature } from "mapbox-gl";
 
 const ReactMap = () => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
   const mapRef = useRef<MapRef>(null);
+  const [ids, setIds] = useState<string[]>([]);
 
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
-
-  const [ids, setIds] = useState<string[]>([]);
-
   const [popupID, setPopupID] = useState<null | string>(null);
 
   const isInLocations = (e: MapEvent) => {
@@ -69,37 +55,67 @@ const ReactMap = () => {
     dispatch(addLocation({ name: "test", coordinates: [lon, lat] }));
   };
 
-  const getLocationsIDSWithinViewport = (x: number, y: number): string[] => {
+  const getLocationsIDSWithinViewport = (
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ) => {
     const features = mapRef.current?.queryRenderedFeatures(
       [
-        [x + 800 / 2, y + 800 / 2],
-        [x - 800 / 2, y - 800 / 2],
+        [x - width / 2, y - height / 2],
+        [x + width / 2, y + height / 2],
       ],
       {
         layers: ["unclustered-point", "clusters"],
       }
     );
-    if (features === undefined) return [];
+    if (features === undefined) {
+      return;
+    }
+
+    if (features.length === 0) {
+      dispatch(setClusteredIDS({ s: [], s2: [] }));
+      return;
+    }
 
     const clusterSource: GeoJSONSource = mapRef.current
       ?.getMap()
       .getSource("locations");
 
-    const idArray = features.map((current) => {
+    const unclusteredIDS: string[] = [];
+
+    features.forEach((current: MapboxGeoJSONFeature) => {
       if (current.layer.id === "unclustered-point") {
-        return [current.properties.id];
+        unclusteredIDS.push(current.properties?.id);
       }
       if (current.layer.id === "clusters") {
-        const clusterId = current.properties.cluster_id;
-        const pointCount = current.properties.point_count;
-        return getLocationIDSFromCluster(clusterId, pointCount, clusterSource);
+        const clusterId = current.properties?.cluster_id;
+        const pointCount = current.properties?.point_count;
+        getLocationIDSFromCluster(
+          clusterId,
+          pointCount,
+          clusterSource,
+          unclusteredIDS
+        );
       }
-    }) as string[][];
+    });
+    // console.log(clusterMap.clusteredids);
+    // return rendered;
+  };
 
-    setTimeout(() => {
-      console.log(idArray.flatMap((i) => i));
-    }, 1);
-    return idArray.flatMap((i) => i);
+  const getLocationIDSFromCluster = (
+    clusterId: number,
+    pointCount: number,
+    clusterSource: GeoJSONSource,
+    unclusteredIDS: string[]
+  ) => {
+    clusterSource.getClusterLeaves(clusterId, pointCount, 0, (_, feats) => {
+      const temp = feats.map((curr) => {
+        return curr.properties?.id;
+      });
+      dispatch(setClusteredIDS({ s: temp, s2: unclusteredIDS }));
+    });
   };
 
   return (
@@ -113,24 +129,26 @@ const ReactMap = () => {
       <ReactMapGl
         ref={mapRef}
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!}
+        // style="mapbox://styles/mapbox/streets-v11"
         width="100%"
         height="40vw"
         onViewportChange={(newViewport: ViewportProps) => {
-          const { longitude, latitude, zoom, pitch } = newViewport;
+          const { longitude, latitude, zoom, pitch, width, height } =
+            newViewport;
+
           dispatch(updateViewport({ longitude, latitude, zoom, pitch }));
-          setIds(getLocationsIDSWithinViewport(650, 250));
+          getLocationsIDSWithinViewport(
+            width! / 2,
+            height! / 2,
+            width!,
+            height!
+          );
+          console.log("");
+          clusterMap.clusteredids.forEach((i) => console.log(i));
         }}
         onClick={(e) => {
-          // if (mapRef.current?.queryRenderedFeatures(e.point).length) {
-          //   handlePopup(e);
-          // } else {
-          // handleAddNewMarker(e);
-          // }
           isInLocations(e) ? handlePopup(e) : handleAddNewMarker(e);
-          // }}
-          // onHover={(e) => {
         }}
-        //need to find the dom nodes x and y and then create and array of the maximal corners
         {...clusterMap.viewportState}
       >
         {popupID !== null ? (
@@ -183,16 +201,11 @@ const ReactMap = () => {
       </button>
       <button onClick={() => dispatch(clear())}>clear</button>
 
-      {/* move UL into locationitem component */}
       <div style={{ maxHeight: "20px", height: "20px" }}>
-        <ul style={{ overflowY: "scroll" }}>
-          {clusterMap.locations.features.map((loc: IFeature) =>
-            ids.includes(loc.properties.id) ? (
-              <LocationItem loc={loc} key={loc.properties.id} />
-            ) : (
-              <></>
-            )
-          )}
+        <ul>
+          {clusterMap.clusteredids.map((id) => {
+            <LocationItem locationID={id} />;
+          })}
         </ul>
       </div>
     </div>
