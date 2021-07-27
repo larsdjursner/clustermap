@@ -1,4 +1,9 @@
-import {  deleteLocation, IFeature, selectClusterMap, updateViewport } from "../ReactMapSlice";
+import {
+  deleteLocation,
+  IFeature,
+  selectClusterMap,
+  updateViewport,
+} from "../ReactMapSlice";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import React, { FC } from "react";
 
@@ -9,7 +14,9 @@ interface ILocationItem {
 export const LocationItem: FC<ILocationItem> = ({ locationID }) => {
   const dispatch = useAppDispatch();
   const clusterMap = useAppSelector(selectClusterMap);
-  const loc = clusterMap.locations.features.find(val => val.properties.id === locationID)!
+  const loc = clusterMap.locations.features.filter(
+    (i) => i.properties.id === locationID
+  )[0];
 
   const handleGoToLocation = (loc: IFeature) => {
     if (loc.geometry.type !== "Point") return;
@@ -24,14 +31,19 @@ export const LocationItem: FC<ILocationItem> = ({ locationID }) => {
   };
 
   return (
-    <li key={loc.id}>
-      <p onClick={() => handleGoToLocation(loc)}>
-        {`${loc.properties.name}, ${
-          loc.geometry.type === "Point" ? loc.geometry.coordinates : ""
-        }`}
-      </p>
+    <li key={locationID}>
+      <div>
+        <p onClick={() => handleGoToLocation(loc)}>
+          {`${loc.properties.name}, ${
+            loc.geometry.type === "Point" ? loc.geometry.coordinates : ""
+          }`}
+        </p>
 
-      <button onClick={() => dispatch(deleteLocation(loc))}> delete </button>
+        <button onClick={() => dispatch(deleteLocation({ id: locationID }))}>
+          {" "}
+          delete{" "}
+        </button>
+      </div>
     </li>
   );
 };

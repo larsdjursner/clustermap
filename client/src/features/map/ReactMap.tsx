@@ -25,12 +25,16 @@ import { LocationItem } from "./partials/LocationItem";
 import { LocationPopup } from "./partials/LocationPopup";
 import { GeoJSONSource, MapboxGeoJSONFeature } from "mapbox-gl";
 
+interface SetIDS {
+  currentIds: Set<string>;
+}
 const ReactMap = () => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
   const mapRef = useRef<MapRef>(null);
-  const [ids, setIds] = useState<string[]>([]);
+
+  const [ids, setIds] = useState<SetIDS>({ currentIds: new Set() });
 
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
@@ -55,16 +59,11 @@ const ReactMap = () => {
     dispatch(addLocation({ name: "test", coordinates: [lon, lat] }));
   };
 
-  const getLocationsIDSWithinViewport = (
-    x: number,
-    y: number,
-    width: number,
-    height: number
-  ) => {
+  const getLocationsIDSWithinViewport = (width: number, height: number) => {
     const features = mapRef.current?.queryRenderedFeatures(
       [
-        [x - width / 2, y - height / 2],
-        [x + width / 2, y + height / 2],
+        [width / 2 - width / 2, height / 2 - height / 2],
+        [width / 2 + width / 2, height / 2 + height / 2],
       ],
       {
         layers: ["unclustered-point", "clusters"],
@@ -74,47 +73,32 @@ const ReactMap = () => {
       return;
     }
 
-    if (features.length === 0) {
-      dispatch(setClusteredIDS({ s: [], s2: [] }));
-      return;
-    }
+    setIds({ currentIds: new Set() });
 
     const clusterSource: GeoJSONSource = mapRef.current
       ?.getMap()
       .getSource("locations");
 
-    const unclusteredIDS: string[] = [];
-
     features.forEach((current: MapboxGeoJSONFeature) => {
       if (current.layer.id === "unclustered-point") {
-        unclusteredIDS.push(current.properties?.id);
+        setIds({
+          ...ids,
+          currentIds: ids.currentIds.add(current.properties?.id),
+        });
       }
       if (current.layer.id === "clusters") {
         const clusterId = current.properties?.cluster_id;
         const pointCount = current.properties?.point_count;
-        getLocationIDSFromCluster(
-          clusterId,
-          pointCount,
-          clusterSource,
-          unclusteredIDS
-        );
-      }
-    });
-    // console.log(clusterMap.clusteredids);
-    // return rendered;
-  };
 
-  const getLocationIDSFromCluster = (
-    clusterId: number,
-    pointCount: number,
-    clusterSource: GeoJSONSource,
-    unclusteredIDS: string[]
-  ) => {
-    clusterSource.getClusterLeaves(clusterId, pointCount, 0, (_, feats) => {
-      const temp = feats.map((curr) => {
-        return curr.properties?.id;
-      });
-      dispatch(setClusteredIDS({ s: temp, s2: unclusteredIDS }));
+        clusterSource.getClusterLeaves(clusterId, pointCount, 0, (_, feats) => {
+          feats.forEach((curr) => {
+            setIds({
+              ...ids,
+              currentIds: ids.currentIds.add(curr.properties?.id),
+            });
+          });
+        });
+      }
     });
   };
 
@@ -137,14 +121,7 @@ const ReactMap = () => {
             newViewport;
 
           dispatch(updateViewport({ longitude, latitude, zoom, pitch }));
-          getLocationsIDSWithinViewport(
-            width! / 2,
-            height! / 2,
-            width!,
-            height!
-          );
-          console.log("");
-          clusterMap.clusteredids.forEach((i) => console.log(i));
+          getLocationsIDSWithinViewport(width!, height!);
         }}
         onClick={(e) => {
           isInLocations(e) ? handlePopup(e) : handleAddNewMarker(e);
@@ -201,12 +178,16 @@ const ReactMap = () => {
       </button>
       <button onClick={() => dispatch(clear())}>clear</button>
 
-      <div style={{ maxHeight: "20px", height: "20px" }}>
-        <ul>
-          {clusterMap.clusteredids.map((id) => {
-            <LocationItem locationID={id} />;
-          })}
-        </ul>
+      <div>
+        <p>{`Locations: ${ids.currentIds.size}`}</p>
+
+        <div style={{ height: "10em", width: "40em", overflowY: "scroll" }}>
+          <ul>
+            {Array.from(ids.currentIds).map((id: string) => {
+              return <LocationItem locationID={id} />;
+            })}
+          </ul>
+        </div>
       </div>
     </div>
   );

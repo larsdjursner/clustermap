@@ -27,7 +27,10 @@ export interface IViewport {
 export interface ClusterMapState {
   viewportState: IViewport;
   locations: IFeatureCollection;
-  clusteredids: string[];
+  idsWithinViewport: {
+    clusteredIds: string[];
+    unclusteredIds: string[];
+  };
   status: "idle" | "loading" | "failed";
 }
 
@@ -38,7 +41,10 @@ const initialState: ClusterMapState = {
     zoom: 9,
     pitch: 0,
   },
-  clusteredids: [],
+  idsWithinViewport: {
+    clusteredIds: [],
+    unclusteredIds: [],
+  },
   locations: {
     type: "FeatureCollection",
     features: [
@@ -66,8 +72,11 @@ export const clusterMapSlice = createSlice({
   name: "clusterMap",
   initialState,
   reducers: {
-    setClusteredIDS: (state, action: PayloadAction<{ s: string[], s2 : string[] }>) => {
-      state.clusteredids = [...action.payload.s, ...action.payload.s2]
+    setClusteredIDS: (
+      state,
+      action: PayloadAction<{ s: string[];}>
+    ) => {
+      // state.clusteredids = [...action.payload.s, ...action.payload.s2];
     },
     updateViewport: (
       state,
@@ -110,7 +119,7 @@ export const clusterMapSlice = createSlice({
     clear: (state) => {
       state.locations.features = [];
     },
-    deleteLocation: (state, action: PayloadAction<IFeature>) => {
+    deleteLocation: (state, action: PayloadAction<{id :string}>) => {
       const { id } = action.payload;
       state.locations.features = state.locations.features.filter(
         (l) => l.properties.id !== id
@@ -119,8 +128,13 @@ export const clusterMapSlice = createSlice({
   },
 });
 
-export const { addLocation, clear, deleteLocation, updateViewport, setClusteredIDS } =
-  clusterMapSlice.actions;
+export const {
+  addLocation,
+  clear,
+  deleteLocation,
+  updateViewport,
+  setClusteredIDS,
+} = clusterMapSlice.actions;
 export const selectClusterMap = (state: RootState) => state.clusterMap;
 
 export default clusterMapSlice.reducer;
