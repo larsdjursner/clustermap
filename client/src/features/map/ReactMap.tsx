@@ -13,8 +13,6 @@ import {
   selectClusterMap,
   clear,
   updateViewport,
-  IFeature,
-  setClusteredIDS,
 } from "./ReactMapSlice";
 import {
   clusterCountLayer,
@@ -31,6 +29,10 @@ interface SetIDS {
 const ReactMap = () => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
+  const [mapBounds, _] = useState<{ width: string; height: string }>({
+    width: "100%",
+    height: "40vw",
+  });
 
   const mapRef = useRef<MapRef>(null);
 
@@ -59,7 +61,10 @@ const ReactMap = () => {
     dispatch(addLocation({ name: "test", coordinates: [lon, lat] }));
   };
 
-  const getLocationsIDSWithinViewport = (width: number, height: number) => {
+  const getLocationsIDSWithinViewport = () => {
+    const width = mapRef.current?.getMap().getContainer().clientWidth;
+    const height = mapRef.current?.getMap().getContainer().clientHeight;
+
     const features = mapRef.current?.queryRenderedFeatures(
       [
         [width / 2 - width / 2, height / 2 - height / 2],
@@ -114,15 +119,15 @@ const ReactMap = () => {
         ref={mapRef}
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!}
         // style="mapbox://styles/mapbox/streets-v11"
-        width="100%"
-        height="40vw"
+        width={mapBounds.width}
+        height={mapBounds.height}
         onViewportChange={(newViewport: ViewportProps) => {
-          const { longitude, latitude, zoom, pitch, width, height } =
-            newViewport;
+          const { longitude, latitude, zoom, pitch } = newViewport;
 
+          getLocationsIDSWithinViewport();
           dispatch(updateViewport({ longitude, latitude, zoom, pitch }));
-          getLocationsIDSWithinViewport(width!, height!);
         }}
+    
         onClick={(e) => {
           isInLocations(e) ? handlePopup(e) : handleAddNewMarker(e);
         }}
@@ -181,7 +186,7 @@ const ReactMap = () => {
       <div>
         <p>{`Locations: ${ids.currentIds.size}`}</p>
 
-        <div style={{ height: "10em", width: "40em", overflowY: "scroll" }}>
+        <div style={{ height: "8em", width: "40em", overflowY: "scroll" }}>
           <ul>
             {Array.from(ids.currentIds).map((id: string) => {
               return <LocationItem locationID={id} />;
