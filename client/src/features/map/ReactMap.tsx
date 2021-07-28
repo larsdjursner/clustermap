@@ -13,6 +13,7 @@ import {
   selectClusterMap,
   clear,
   updateViewport,
+  setRenderedLocationIds,
 } from "./ReactMapSlice";
 import {
   clusterCountLayer,
@@ -35,9 +36,6 @@ const ReactMap = () => {
   });
 
   const mapRef = useRef<MapRef>(null);
-
-  const [ids, setIds] = useState<SetIDS>({ currentIds: new Set() });
-
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
   const [popupID, setPopupID] = useState<null | string>(null);
@@ -78,7 +76,7 @@ const ReactMap = () => {
       return;
     }
 
-    setIds({ currentIds: new Set() });
+    const setOfRenderedLocationIds: Set<string> = new Set();
 
     const clusterSource: GeoJSONSource = mapRef.current
       ?.getMap()
@@ -86,10 +84,7 @@ const ReactMap = () => {
 
     features.forEach((current: MapboxGeoJSONFeature) => {
       if (current.layer.id === "unclustered-point") {
-        setIds({
-          ...ids,
-          currentIds: ids.currentIds.add(current.properties?.id),
-        });
+        setOfRenderedLocationIds.add(current.properties?.id);
       }
       if (current.layer.id === "clusters") {
         const clusterId = current.properties?.cluster_id;
@@ -97,20 +92,25 @@ const ReactMap = () => {
 
         clusterSource.getClusterLeaves(clusterId, pointCount, 0, (_, feats) => {
           feats.forEach((curr) => {
-            setIds({
-              ...ids,
-              currentIds: ids.currentIds.add(curr.properties?.id),
-            });
+            const id = curr.properties?.id;
+
+            setOfRenderedLocationIds.add(id);
           });
         });
       }
     });
+    setTimeout(() => {
+      dispatch(
+        setRenderedLocationIds({ ids: Array.from(setOfRenderedLocationIds) })
+      );
+    }, 1);
   };
 
   return (
     <div style={{ margin: "10px" }}>
       <div className="sidebar">
-        Longitude: {clusterMap.viewportState.longitude} | Latitude:{" "}
+        Locations: {clusterMap.renderedLocationsIds.length} | Longitude:{" "}
+        {clusterMap.viewportState.longitude} | Latitude:{" "}
         {clusterMap.viewportState.latitude} | Zoom:{" "}
         {clusterMap.viewportState.zoom}
       </div>
@@ -123,11 +123,9 @@ const ReactMap = () => {
         height={mapBounds.height}
         onViewportChange={(newViewport: ViewportProps) => {
           const { longitude, latitude, zoom, pitch } = newViewport;
-
-          getLocationsIDSWithinViewport();
           dispatch(updateViewport({ longitude, latitude, zoom, pitch }));
+          getLocationsIDSWithinViewport();
         }}
-    
         onClick={(e) => {
           isInLocations(e) ? handlePopup(e) : handleAddNewMarker(e);
         }}
@@ -184,11 +182,11 @@ const ReactMap = () => {
       <button onClick={() => dispatch(clear())}>clear</button>
 
       <div>
-        <p>{`Locations: ${ids.currentIds.size}`}</p>
+        <p>{`Locations: ${clusterMap.renderedLocationsIds.length}`}</p>
 
         <div style={{ height: "8em", width: "40em", overflowY: "scroll" }}>
           <ul>
-            {Array.from(ids.currentIds).map((id: string) => {
+            {clusterMap.renderedLocationsIds.map((id: string) => {
               return <LocationItem locationID={id} />;
             })}
           </ul>
