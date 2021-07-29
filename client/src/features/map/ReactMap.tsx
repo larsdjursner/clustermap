@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ReactMapGl, {
   MapEvent,
   Source,
@@ -13,7 +13,6 @@ import {
   selectClusterMap,
   clear,
   setRenderedLocationIds,
-  setFocusedLocationId,
 } from "./ReactMapSlice";
 import {
   clusterCountLayer,
@@ -24,7 +23,6 @@ import { LocationItem } from "./partials/LocationItem";
 import { LocationPopup } from "./partials/LocationPopup";
 import { GeoJSONSource, MapboxGeoJSONFeature } from "mapbox-gl";
 import { easeCubic } from "d3-ease";
-import { ViewportProps } from "react-map-gl";
 
 export interface ViewportMutateProps {
   longitude: number;
@@ -230,8 +228,7 @@ const ReactMap = () => {
 };
 
 const filterByFocusedLocation = (id: string | null, ids: string[]) => {
-  if(ids.length === 0) return [];
-  if (id === null) return ids;
+  if (id === null || !ids.includes(id)) return ids;
   return [id, ...ids.filter((_id) => _id !== id)];
 };
 export default ReactMap;
