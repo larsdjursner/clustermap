@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { idText } from "typescript";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../../app/store";
 export interface IFeature extends GeoJSON.Feature {
@@ -11,40 +12,21 @@ export interface IFeature extends GeoJSON.Feature {
 export interface IFeatureCollection extends GeoJSON.FeatureCollection {
   features: IFeature[];
 }
-export interface IViewport {
-  longitude: number | undefined;
-  latitude: number | undefined;
-  zoom: number | undefined;
-  pitch: number;
-  bbox?: {
-    maxlat: number;
-    maxlon: number;
-    minlat: number;
-    minlon: number;
-  };
-  transitionDuration?: number;
-}
 export interface ClusterMapState {
-  viewportState: IViewport;
   locations: IFeatureCollection;
-  // renderedLocationsIds: Set<string>;
   renderedLocationsIds: string[];
+  focusedLocationID: string | null;
   status: "idle" | "loading" | "failed";
 }
 
 const initialState: ClusterMapState = {
-  viewportState: {
-    longitude: 12.53887,
-    latitude: 55.64115,
-    zoom: 9,
-    pitch: 0,
-  },
+  focusedLocationID: null,
   locations: {
     type: "FeatureCollection",
     features: [
       {
         type: "Feature",
-        properties: { name: "unclustered", id: uuidv4() },
+        properties: { name: "unclustered", id: uuidv4() , details: "test for unclustered layer"},
         geometry: { type: "Point", coordinates: [12.45887, 55.64115] },
       },
       {
@@ -59,7 +41,6 @@ const initialState: ClusterMapState = {
       },
     ],
   },
-  // renderedLocationsIds: new Set(),
   renderedLocationsIds: [],
   status: "idle",
 };
@@ -74,20 +55,11 @@ export const clusterMapSlice = createSlice({
     ) => {
       state.renderedLocationsIds = [...action.payload.ids];
     },
-    updateViewport: (
+    setFocusedLocationId: (
       state,
-      action: PayloadAction<{
-        longitude: number | undefined;
-        latitude: number | undefined;
-        zoom: number | undefined;
-        pitch?: number;
-        transitionDuration?: number;
-      }>
+      action: PayloadAction<{ id: string | null }>
     ) => {
-      state.viewportState = {
-        ...state.viewportState,
-        ...action.payload,
-      };
+      state.focusedLocationID = action.payload.id;
     },
     addLocation: (
       state,
@@ -132,7 +104,8 @@ export const {
   addLocation,
   clear,
   deleteLocation,
-  updateViewport,
+  setFocusedLocationId,
+  // updateViewport,
   setRenderedLocationIds,
 } = clusterMapSlice.actions;
 export const selectClusterMap = (state: RootState) => state.clusterMap;

@@ -1,19 +1,19 @@
-import { useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import ReactMapGl, {
   MapEvent,
   Source,
   Layer,
   MapRef,
   NavigationControl,
-  ViewportProps,
+  FlyToInterpolator,
 } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   addLocation,
   selectClusterMap,
   clear,
-  updateViewport,
   setRenderedLocationIds,
+  setFocusedLocationId,
 } from "./ReactMapSlice";
 import {
   clusterCountLayer,
@@ -23,22 +23,40 @@ import {
 import { LocationItem } from "./partials/LocationItem";
 import { LocationPopup } from "./partials/LocationPopup";
 import { GeoJSONSource, MapboxGeoJSONFeature } from "mapbox-gl";
+import { easeCubic } from "d3-ease";
+import { ViewportProps } from "react-map-gl";
 
-interface SetIDS {
-  currentIds: Set<string>;
+export interface ViewportMutateProps {
+  longitude: number;
+  latitude: number;
+  zoom: number;
 }
+const DEFAULT_VIEWPORT = {
+  longitude: 12.53887,
+  latitude: 55.64115,
+  zoom: 9,
+  pitch: 0,
+  transitionDuration: 2000,
+  transitionInterpolator: new FlyToInterpolator(),
+  transitionEasing: easeCubic,
+};
+
 const ReactMap = () => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
-  const [mapBounds, _] = useState<{ width: string; height: string }>({
+  const [mapBounds] = useState<{ width: string; height: string }>({
     width: "100%",
     height: "40vw",
   });
+  const [viewport, setViewport] = useState(DEFAULT_VIEWPORT);
 
   const mapRef = useRef<MapRef>(null);
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
   const [popupID, setPopupID] = useState<null | string>(null);
+
+  const width = mapRef.current?.getMap().getContainer().clientWidth;
+  const height = mapRef.current?.getMap().getContainer().clientHeight;
 
   const isInLocations = (e: MapEvent) => {
     return clusterMap.locations.features
@@ -60,13 +78,10 @@ const ReactMap = () => {
   };
 
   const getLocationsIDSWithinViewport = () => {
-    const width = mapRef.current?.getMap().getContainer().clientWidth;
-    const height = mapRef.current?.getMap().getContainer().clientHeight;
-
     const features = mapRef.current?.queryRenderedFeatures(
       [
-        [width / 2 - width / 2, height / 2 - height / 2],
-        [width / 2 + width / 2, height / 2 + height / 2],
+        [0, 0],
+        [width, height],
       ],
       {
         layers: ["unclustered-point", "clusters"],
@@ -77,7 +92,6 @@ const ReactMap = () => {
     }
 
     const setOfRenderedLocationIds: Set<string> = new Set();
-
     const clusterSource: GeoJSONSource = mapRef.current
       ?.getMap()
       .getSource("locations");
@@ -90,29 +104,47 @@ const ReactMap = () => {
         const clusterId = current.properties?.cluster_id;
         const pointCount = current.properties?.point_count;
 
-        clusterSource.getClusterLeaves(clusterId, pointCount, 0, (_, feats) => {
-          feats.forEach((curr) => {
-            const id = curr.properties?.id;
-
-            setOfRenderedLocationIds.add(id);
-          });
-        });
+        clusterSource.getClusterLeaves(
+          clusterId,
+          pointCount,
+          0,
+          (_, clusteredFeatures) => {
+            clusteredFeatures.forEach((clusteredFeature) => {
+              setOfRenderedLocationIds.add(clusteredFeature.properties?.id);
+            });
+          }
+        );
       }
     });
     setTimeout(() => {
       dispatch(
         setRenderedLocationIds({ ids: Array.from(setOfRenderedLocationIds) })
       );
-    }, 1);
+    }, 400);
+  };
+
+  const mutateViewport = (
+    longitude: number,
+    latitude: number,
+    zoom: number
+  ) => {
+    setViewport({
+      ...viewport,
+      latitude,
+      longitude,
+      zoom,
+      transitionDuration: 2000,
+      transitionInterpolator: new FlyToInterpolator(),
+      transitionEasing: easeCubic,
+    });
   };
 
   return (
     <div style={{ margin: "10px" }}>
       <div className="sidebar">
         Locations: {clusterMap.renderedLocationsIds.length} | Longitude:{" "}
-        {clusterMap.viewportState.longitude} | Latitude:{" "}
-        {clusterMap.viewportState.latitude} | Zoom:{" "}
-        {clusterMap.viewportState.zoom}
+        {viewport.longitude} | Latitude: {viewport.latitude} | Zoom:{" "}
+        {viewport.zoom}
       </div>
 
       <ReactMapGl
@@ -121,15 +153,14 @@ const ReactMap = () => {
         // style="mapbox://styles/mapbox/streets-v11"
         width={mapBounds.width}
         height={mapBounds.height}
-        onViewportChange={(newViewport: ViewportProps) => {
-          const { longitude, latitude, zoom, pitch } = newViewport;
-          dispatch(updateViewport({ longitude, latitude, zoom, pitch }));
+        onViewportChange={(newViewport: any) => {
+          setViewport(newViewport);
           getLocationsIDSWithinViewport();
         }}
         onClick={(e) => {
           isInLocations(e) ? handlePopup(e) : handleAddNewMarker(e);
         }}
-        {...clusterMap.viewportState}
+        {...viewport}
       >
         {popupID !== null ? (
           <LocationPopup id={popupID} toggle={setPopupID} />
@@ -168,10 +199,7 @@ const ReactMap = () => {
           dispatch(
             addLocation({
               name: name,
-              coordinates: [
-                clusterMap.viewportState.longitude!,
-                clusterMap.viewportState.latitude!,
-              ],
+              coordinates: [viewport.longitude!, viewport.latitude!],
               details: details,
             })
           )
@@ -186,8 +214,13 @@ const ReactMap = () => {
 
         <div style={{ height: "8em", width: "40em", overflowY: "scroll" }}>
           <ul>
-            {clusterMap.renderedLocationsIds.map((id: string) => {
-              return <LocationItem locationID={id} />;
+            {filterByFocusedLocation(
+              clusterMap.focusedLocationID,
+              clusterMap.renderedLocationsIds
+            ).map((id) => {
+              return (
+                <LocationItem locationID={id} mutateViewport={mutateViewport} />
+              );
             })}
           </ul>
         </div>
@@ -196,4 +229,9 @@ const ReactMap = () => {
   );
 };
 
+const filterByFocusedLocation = (id: string | null, ids: string[]) => {
+  if(ids.length === 0) return [];
+  if (id === null) return ids;
+  return [id, ...ids.filter((_id) => _id !== id)];
+};
 export default ReactMap;

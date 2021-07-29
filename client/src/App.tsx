@@ -3,6 +3,7 @@ import { Counter } from "./features/counter/Counter";
 import "./App.css";
 import ReactMap from "./features/map/ReactMap";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+import LocationPage from "./features/map/partials/LocationPage";
 
 function App() {
   return (
@@ -20,9 +21,7 @@ function App() {
           </Route>
           <Route exact path="/map" component={ReactMap} />
           <Route exact path="/counter" component={Counter} />
-          <Route exact path="/locations/:id">
-            <div>hey</div>
-          </Route>
+          <Route exact path="/locations/:id" component={LocationPage} />
         </Switch>
       </Router>
     </div>

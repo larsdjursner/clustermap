@@ -2,16 +2,20 @@ import {
   deleteLocation,
   IFeature,
   selectClusterMap,
-  updateViewport,
+  setFocusedLocationId,
 } from "../ReactMapSlice";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import React, { FC } from "react";
+import React, { Dispatch, FC, SetStateAction } from "react";
 
 interface ILocationItem {
   locationID: string;
+  mutateViewport: (longitude: number, latitude: number, zoom: number) => void;
 }
 
-export const LocationItem: FC<ILocationItem> = ({ locationID }) => {
+export const LocationItem: FC<ILocationItem> = ({
+  locationID,
+  mutateViewport,
+}) => {
   const dispatch = useAppDispatch();
   const clusterMap = useAppSelector(selectClusterMap);
   const loc = clusterMap.locations.features.filter(
@@ -21,29 +25,45 @@ export const LocationItem: FC<ILocationItem> = ({ locationID }) => {
   const handleGoToLocation = (loc: IFeature) => {
     if (loc.geometry.type !== "Point") return;
 
-    dispatch(
-      updateViewport({
-        longitude: loc.geometry.coordinates[0],
-        latitude: loc.geometry.coordinates[1],
-        zoom: 12,
-      })
+    dispatch(setFocusedLocationId({ id: locationID }));
+    mutateViewport(
+      loc.geometry.coordinates[0],
+      loc.geometry.coordinates[1],
+      12
     );
   };
 
   return (
-    <li key={locationID}>
-      <div>
-        <p onClick={() => handleGoToLocation(loc)}>
-          {`${loc.properties.name}, ${
-            loc.geometry.type === "Point" ? loc.geometry.coordinates : ""
-          }`}
-        </p>
+    <>
+      {loc ? (
+        <li key={locationID}>
+          <div>
+            <p onClick={() => handleGoToLocation(loc)}>
+              {clusterMap.focusedLocationID === locationID ? (
+                <b>{loc.properties.name}</b>
+              ) : (
+                <>{loc.properties.name}</>
+              )}
+            </p>
+            <p>{loc.properties.details}</p>
 
-        <button onClick={() => dispatch(deleteLocation({ id: locationID }))}>
-          {" "}
-          delete{" "}
-        </button>
-      </div>
-    </li>
+            <p>
+              {`${
+                loc.geometry.type === "Point" ? loc.geometry.coordinates : ""
+              }`}
+            </p>
+
+            <button
+              onClick={() => dispatch(deleteLocation({ id: locationID }))}
+            >
+              {" "}
+              delete{" "}
+            </button>
+          </div>
+        </li>
+      ) : (
+        <></>
+      )}
+    </>
   );
 };
