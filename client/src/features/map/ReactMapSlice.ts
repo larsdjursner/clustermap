@@ -1,12 +1,35 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { idText } from "typescript";
+import { ImportsNotUsedAsValues } from "typescript";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../../app/store";
+
+enum GradeEnum {
+  ez,
+  toomuch,
+}
+enum GenreEnum {
+  Bouldering,
+  SportsClimbing,
+  TraditionalClimbing,
+}
+enum CharacteristicsEnum {}
+
+interface IRoute {
+  name: string;
+  grade?: GradeEnum;
+  characteristics?: CharacteristicsEnum;
+  rating?: number;
+}
+
 export interface IFeature extends GeoJSON.Feature {
   properties: {
     id: string;
     name: string;
     details?: string;
+    genre?: GenreEnum[];
+    characteristics?: CharacteristicsEnum[];
+    rating?: number;
+    routes?: IRoute[];
   };
 }
 export interface IFeatureCollection extends GeoJSON.FeatureCollection {
@@ -26,17 +49,32 @@ const initialState: ClusterMapState = {
     features: [
       {
         type: "Feature",
-        properties: { name: "unclustered", id: uuidv4() , details: "test for unclustered layer"},
+        properties: {
+          name: "Bob's Backyard Bouldering Crag",
+          id: uuidv4(),
+        },
         geometry: { type: "Point", coordinates: [12.45887, 55.64115] },
       },
       {
         type: "Feature",
-        properties: { name: "Test Location", id: uuidv4() },
+        properties: {
+          name: "Copenhagen Boulders",
+          id: uuidv4(),
+          details: "bouldering gym for boulder bros",
+          genre: [GenreEnum.Bouldering],
+          routes: [{ name: "" }],
+        },
         geometry: { type: "Point", coordinates: [12.53887, 55.64115] },
       },
       {
         type: "Feature",
-        properties: { name: "Test Location2", id: uuidv4() },
+        properties: {
+          name: "Clyde's Sports Climbing Crag",
+          id: uuidv4(),
+          details: "bring your own rope",
+          genre: [GenreEnum.SportsClimbing],
+          routes: [{ name: "Smack City", grade: GradeEnum.toomuch }],
+        },
         geometry: { type: "Point", coordinates: [12.52887, 55.62115] },
       },
     ],

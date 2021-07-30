@@ -37,9 +37,7 @@ export const unclusteredPointLayer: LayerProps = {
   type: "symbol",
   source: "locations",
   filter: ["!", ["has", "point_count"]],
-  paint: {
-    // "background-color": "#4b5f80"
-  },
+  paint: {},
   layout: {
     "icon-image": "marker-15",
     "icon-anchor": "bottom",
