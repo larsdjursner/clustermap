@@ -5,16 +5,15 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { selectClusterMap, setFocusedLocationId } from "../ReactMapSlice";
 interface IPopup {
   id: string;
-  toggle: Dispatch<SetStateAction<string | null>>;
+  setPopupId: Dispatch<SetStateAction<string | null>>;
+  setStaticPopup: Dispatch<SetStateAction<boolean>>;
 }
 
-export const LocationPopup: FC<IPopup> = ({ id, toggle }) => {
+export const LocationPopup: FC<IPopup> = ({ id, setPopupId, setStaticPopup }) => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
-  const loc = clusterMap.locations.features.find(
-    (l) => l.properties.id === id
-  );
+  const loc = clusterMap.locations.features.find((l) => l.properties.id === id);
 
   dispatch(setFocusedLocationId({ id }));
   return (
@@ -22,10 +21,12 @@ export const LocationPopup: FC<IPopup> = ({ id, toggle }) => {
       longitude={
         loc?.geometry.type === "Point" ? loc?.geometry.coordinates[0] : 0
       }
-      latitude={loc?.geometry.type === "Point" ? loc?.geometry.coordinates[1] : 0}
+      latitude={
+        loc?.geometry.type === "Point" ? loc?.geometry.coordinates[1] : 0
+      }
       closeOnClick={false}
       closeButton={true}
-      onClose={() => toggle(null)}
+      onClose={() => {setPopupId(null); setStaticPopup(false)}}
       anchor={"top"}
     >
       <p>{loc?.properties.id}</p>

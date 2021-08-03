@@ -23,6 +23,8 @@ import { LocationItem } from "./partials/LocationItem";
 import { LocationPopup } from "./partials/LocationPopup";
 import { GeoJSONSource, MapboxGeoJSONFeature } from "mapbox-gl";
 import { easeCubic } from "d3-ease";
+import { HTMLOverlay } from "react-map-gl";
+import LocationsOverlay from "./partials/LocationsOverlay";
 
 export interface ViewportMutateProps {
   longitude: number;
@@ -44,14 +46,17 @@ const ReactMap = () => {
   const dispatch = useAppDispatch();
   const [mapBounds] = useState<{ width: string; height: string }>({
     width: "100%",
-    height: "40vw",
+    // height: "100%"
+    height: "50vw",
   });
   const [viewport, setViewport] = useState(DEFAULT_VIEWPORT);
 
   const mapRef = useRef<MapRef>(null);
+  // const renderedLocationsListRef = useRef<HTMLDivElement>(null);
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
   const [popupID, setPopupID] = useState<null | string>(null);
+  const [staticPopup, setStaticPopup] = useState(false);
 
   const width = mapRef.current?.getMap().getContainer().clientWidth;
   const height = mapRef.current?.getMap().getContainer().clientHeight;
@@ -135,15 +140,18 @@ const ReactMap = () => {
       transitionInterpolator: new FlyToInterpolator(),
       transitionEasing: easeCubic,
     });
+    // if (renderedLocationsListRef.current) {
+    //   renderedLocationsListRef.current.scrollTop = 0;
+    // }
   };
 
   return (
-    <div style={{ margin: "10px" }}>
-      <div className="sidebar">
+    <div>
+      {/* <div className="sidebar">
         Locations: {clusterMap.renderedLocationsIds.length} | Longitude:{" "}
         {viewport.longitude} | Latitude: {viewport.latitude} | Zoom:{" "}
         {viewport.zoom}
-      </div>
+      </div> */}
 
       <ReactMapGl
         ref={mapRef}
@@ -155,13 +163,32 @@ const ReactMap = () => {
           setViewport(newViewport);
           getLocationsIDSWithinViewport();
         }}
+        onHover={(e) => {
+          if (isInLocations(e)) {
+            handlePopup(e);
+            return;
+          }
+          if (!staticPopup) {
+            setPopupID(null);
+            return;
+          }
+        }}
         onClick={(e) => {
-          isInLocations(e) ? handlePopup(e) : handleAddNewMarker(e);
+          if (isInLocations(e)) {
+            handlePopup(e);
+            setStaticPopup(true);
+            return;
+          }
+          handleAddNewMarker(e);
         }}
         {...viewport}
       >
         {popupID !== null ? (
-          <LocationPopup id={popupID} toggle={setPopupID} />
+          <LocationPopup
+            id={popupID}
+            setPopupId={setPopupID}
+            setStaticPopup={setStaticPopup}
+          />
         ) : (
           <></>
         )}
@@ -178,10 +205,11 @@ const ReactMap = () => {
           <Layer {...clusterCountLayer} />
           <Layer {...unclusteredPointLayer} />
         </Source>
-        <NavigationControl />
+        {/* <NavigationControl /> */}
+        <LocationsOverlay mutateViewport={mutateViewport} />
       </ReactMapGl>
 
-      <input
+      {/* <inputF
         className="name"
         value={name}
         onChange={(e) => setName(e.target.value)}
@@ -205,30 +233,9 @@ const ReactMap = () => {
       >
         add location
       </button>
-      <button onClick={() => dispatch(clear())}>clear</button>
-
-      <div>
-        <p>{`Locations: ${clusterMap.renderedLocationsIds.length}`}</p>
-
-        <div style={{ height: "8em", width: "40em", overflowY: "scroll" }}>
-          <ul>
-            {filterByFocusedLocation(
-              clusterMap.focusedLocationID,
-              clusterMap.renderedLocationsIds
-            ).map((id) => {
-              return (
-                <LocationItem locationID={id} mutateViewport={mutateViewport} />
-              );
-            })}
-          </ul>
-        </div>
-      </div>
+      <button onClick={() => dispatch(clear())}>clear</button> */}
     </div>
   );
 };
 
-const filterByFocusedLocation = (id: string | null, ids: string[]) => {
-  if (id === null || !ids.includes(id)) return ids;
-  return [id, ...ids.filter((_id) => _id !== id)];
-};
 export default ReactMap;
