@@ -17,20 +17,7 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({ mutateViewport }) => {
   const dispatch = useAppDispatch();
 
   return (
-    <div
-      className={}
-      // style={{
-      //   height: "100%",
-      //   width: "20%",
-      //   position: "fixed",
-      //   top: "0",
-      //   right: "0",
-      //   backgroundColor: "white",
-      //   opacity: "60%",
-      //   overflowY: "scroll",
-      //   overflowX: "hidden",
-      // }}
-    >
+    <div className="h-4/5 w-1/5 fixed top-0 right-0 overflow-x-hidden overflow-y-scroll bg-gray-100 bg-opacity-60 no-scrollbar">
       <p>{`Locations: ${clusterMap.renderedLocationsIds.length}`}</p>
 
       <ul style={{ listStyleType: "none" }}>

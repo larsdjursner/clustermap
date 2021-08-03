@@ -146,7 +146,7 @@ const ReactMap = () => {
   };
 
   return (
-    <div>
+    <div >
       {/* <div className="sidebar">
         Locations: {clusterMap.renderedLocationsIds.length} | Longitude:{" "}
         {viewport.longitude} | Latitude: {viewport.latitude} | Zoom:{" "}

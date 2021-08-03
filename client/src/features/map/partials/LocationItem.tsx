@@ -35,10 +35,6 @@ export const LocationItem: FC<ILocationItem> = ({
     );
   };
 
-  // const changeBackground = (e: ) => {
-
-  // }
-
   return (
     <div
       onMouseEnter={(e) => setIsHover(true)}
@@ -55,19 +51,6 @@ export const LocationItem: FC<ILocationItem> = ({
               )}
             </p>
             <p>{loc.properties.details}</p>
-
-            {/* <p>
-              {`${
-                loc.geometry.type === "Point" ? loc.geometry.coordinates : ""
-              }`}
-            </p> */}
-
-            {/* <button
-              onClick={() => dispatch(deleteLocation({ id: locationID }))}
-            >
-              {" "}
-              delete{" "}
-            </button> */}
           </div>
         </li>
       ) : (
