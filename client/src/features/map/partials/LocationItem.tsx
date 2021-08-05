@@ -6,6 +6,7 @@ import {
 } from "../ReactMapSlice";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import React, { FC, useState } from "react";
+import temp from "../../../assets/temp.jpg"
 
 interface ILocationItem {
   locationID: string;
@@ -36,26 +37,27 @@ export const LocationItem: FC<ILocationItem> = ({
   };
 
   return (
-    <div
-      onMouseEnter={(e) => setIsHover(true)}
-      onMouseLeave={(e) => setIsHover(false)}
+    <li
+      key={locationID}
+      onClick={() => handleGoToLocation(loc)}
+      onMouseEnter={() => setIsHover(true)}
+      onMouseLeave={() => setIsHover(false)}
     >
-      {loc ? (
-        <li key={locationID}>
-          <div style={{ background: isHover ? "gray" : "white", opacity: "100%"}}>
-            <p onClick={() => handleGoToLocation(loc)}>
-              {clusterMap.focusedLocationID === locationID ? (
-                <b>{loc.properties.name}</b>
-              ) : (
-                <>{loc.properties.name}</>
-              )}
-            </p>
-            <p>{loc.properties.details}</p>
-          </div>
-        </li>
-      ) : (
-        <></>
-      )}
-    </div>
+      <div
+        className={`p-2 m-2 rounded-lg ${isHover ? "bg-gray-200" : ""}`}
+      >
+        {/* <img
+          className={"object-scale-down flex-initial"}
+          src={temp}
+        /> */}
+        <p
+          className={`
+            ${clusterMap.focusedLocationID === locationID ? "font-bold" : ""}`}
+        >
+          {loc.properties.name}
+        </p>
+        <p className={"text-xs"}>{loc.properties.details}</p>
+      </div>
+    </li>
   );
 };

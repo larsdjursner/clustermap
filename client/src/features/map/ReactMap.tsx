@@ -25,6 +25,7 @@ import { GeoJSONSource, MapboxGeoJSONFeature } from "mapbox-gl";
 import { easeCubic } from "d3-ease";
 import { HTMLOverlay } from "react-map-gl";
 import LocationsOverlay from "./partials/LocationsOverlay";
+import NavBar from "../nav/NavBar";
 
 export interface ViewportMutateProps {
   longitude: number;
@@ -46,15 +47,14 @@ const ReactMap = () => {
   const dispatch = useAppDispatch();
   const [mapBounds] = useState<{ width: string; height: string }>({
     width: "100%",
-    // height: "100%"
-    height: "50vw",
+    height: "55vw",
   });
   const [viewport, setViewport] = useState(DEFAULT_VIEWPORT);
 
   const mapRef = useRef<MapRef>(null);
   // const renderedLocationsListRef = useRef<HTMLDivElement>(null);
-  const [name, setName] = useState("");
-  const [details, setDetails] = useState("");
+  // const [name, setName] = useState("");
+  // const [details, setDetails] = useState("");
   const [popupID, setPopupID] = useState<null | string>(null);
   const [staticPopup, setStaticPopup] = useState(false);
 
@@ -136,22 +136,20 @@ const ReactMap = () => {
       latitude,
       longitude,
       zoom,
-      transitionDuration: 2000,
-      transitionInterpolator: new FlyToInterpolator(),
-      transitionEasing: easeCubic,
+      // transitionDuration: 2000,
+      // transitionInterpolator: new FlyToInterpolator(),
+      // transitionEasing: easeCubic,
     });
-    // if (renderedLocationsListRef.current) {
-    //   renderedLocationsListRef.current.scrollTop = 0;
-    // }
   };
 
   return (
-    <div >
+    <>
       {/* <div className="sidebar">
         Locations: {clusterMap.renderedLocationsIds.length} | Longitude:{" "}
         {viewport.longitude} | Latitude: {viewport.latitude} | Zoom:{" "}
         {viewport.zoom}
       </div> */}
+      <NavBar />
 
       <ReactMapGl
         ref={mapRef}
@@ -206,10 +204,11 @@ const ReactMap = () => {
           <Layer {...unclusteredPointLayer} />
         </Source>
         {/* <NavigationControl /> */}
+       
         <LocationsOverlay mutateViewport={mutateViewport} />
       </ReactMapGl>
 
-      {/* <inputF
+      {/* <input
         className="name"
         value={name}
         onChange={(e) => setName(e.target.value)}
@@ -234,7 +233,7 @@ const ReactMap = () => {
         add location
       </button>
       <button onClick={() => dispatch(clear())}>clear</button> */}
-    </div>
+    </>
   );
 };
 
