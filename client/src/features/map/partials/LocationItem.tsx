@@ -1,12 +1,11 @@
 import {
-  deleteLocation,
   IFeature,
   selectClusterMap,
   setFocusedLocationId,
 } from "../ReactMapSlice";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import React, { FC, useState } from "react";
-import temp from "../../../assets/temp.jpg"
+import temp from "../../../assets/temp.jpg";
 
 interface ILocationItem {
   locationID: string;
@@ -22,8 +21,7 @@ export const LocationItem: FC<ILocationItem> = ({
   const loc = clusterMap.locations.features.filter(
     (i) => i.properties.id === locationID
   )[0];
-
-  const [isHover, setIsHover] = useState(false);
+  const isFocus = clusterMap.focusedLocationID === locationID;
 
   const handleGoToLocation = (loc: IFeature) => {
     if (loc.geometry.type !== "Point") return;
@@ -40,19 +38,20 @@ export const LocationItem: FC<ILocationItem> = ({
     <li
       key={locationID}
       onClick={() => handleGoToLocation(loc)}
-      onMouseEnter={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}
+      className={`p-2 m-2 h-24 rounded flex flex-row justify-between ${
+        isFocus ? "bg-gray-100" : ""
+      }
+      transition duration-200 transform hover:bg-gray-200 hover:scale-105 hover:border-gray-700
+      `}
     >
-      <div
-        className={`p-2 m-2 rounded-lg ${isHover ? "bg-gray-200" : ""}`}
-      >
-        {/* <img
-          className={"object-scale-down flex-initial"}
-          src={temp}
-        /> */}
+      <div className={`w-1/4`}>
+        <img className="rounded shadow-lg object-scale-down" src={temp} />
+      </div>
+
+      <div className={`flex flex-col w-3/4 mx-2`}>
         <p
-          className={`
-            ${clusterMap.focusedLocationID === locationID ? "font-bold" : ""}`}
+          className={` text-sm
+            ${isFocus ? "font-bold" : ""}`}
         >
           {loc.properties.name}
         </p>

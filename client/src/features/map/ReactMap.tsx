@@ -136,9 +136,9 @@ const ReactMap = () => {
       latitude,
       longitude,
       zoom,
-      // transitionDuration: 2000,
-      // transitionInterpolator: new FlyToInterpolator(),
-      // transitionEasing: easeCubic,
+      transitionDuration: 1000,
+      transitionInterpolator: new FlyToInterpolator(),
+      transitionEasing: easeCubic,
     });
   };
 

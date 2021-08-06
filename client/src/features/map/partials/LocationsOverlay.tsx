@@ -19,7 +19,7 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({ mutateViewport }) => {
   const [isShown, setIsShown] = useState(true);
 
   return (
-    <div className={"flex flex-row justify-end items-start m-2"}>
+    <div className={"flex flex-row justify-end items-start m-2 h-4/5 max-h-4/5 min-h-4/5"}>
       <button className={`mr-2`} onClick={() => setIsShown(!isShown)}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -39,27 +39,29 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({ mutateViewport }) => {
 
       {isShown ? (
         <div
-          className={`h-4/5 w-1/5 rounded-lg overflow-x-hidden overflow-y-scroll bg-white bg-opacity-60 no-scrollbar`}
+          className={`rounded shadow-lg bg-white bg-opacity-80 w-1/5 flex flex-col justify-between self-stretch`}
         >
-          {clusterMap.renderedLocationsIds.length === 0 ? (
-            <p className={"m-2 text-sm"}>{"No locations to be found. Zoom and navigate to discover!"}</p>
-          ) : (
-            <ul className={`list-none flex-1`}>
-              {filterByFocusedLocation(
-                clusterMap.focusedLocationID,
-                clusterMap.renderedLocationsIds
-              ).map((id) => {
-                return (
-                  <LocationItem
-                    locationID={id}
-                    mutateViewport={mutateViewport}
-                  />
-                );
-              })}
-            </ul>
-          )}
+            {clusterMap.renderedLocationsIds.length === 0 ? (
+              <p className={"m-4 text-sm"}>
+                {"No locations to be found. Zoom and navigate to discover!"}
+              </p>
+            ) : (
+              <ul className={`list-none h-full flex-1 overflow-y-scroll overflow-x-hidden`}>
+                {filterByFocusedLocation(
+                  clusterMap.focusedLocationID,
+                  clusterMap.renderedLocationsIds
+                ).map((id) => {
+                  return (
+                    <LocationItem
+                      locationID={id}
+                      mutateViewport={mutateViewport}
+                    />
+                  );
+                })}
+              </ul>
+            )}
           <p
-            className={"m-4 mb-2"}
+            className={"m-4 text-sm"}
           >{`Locations: ${clusterMap.renderedLocationsIds.length}`}</p>
         </div>
       ) : (
