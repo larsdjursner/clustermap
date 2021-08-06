@@ -11,7 +11,6 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   addLocation,
   selectClusterMap,
-  clear,
   setRenderedLocationIds,
 } from "./ReactMapSlice";
 import {
@@ -19,11 +18,9 @@ import {
   clusterLayer,
   unclusteredPointLayer,
 } from "./layers";
-import { LocationItem } from "./partials/LocationItem";
 import { LocationPopup } from "./partials/LocationPopup";
 import { GeoJSONSource, MapboxGeoJSONFeature } from "mapbox-gl";
 import { easeCubic } from "d3-ease";
-import { HTMLOverlay } from "react-map-gl";
 import LocationsOverlay from "./partials/LocationsOverlay";
 import NavBar from "../nav/NavBar";
 
@@ -52,7 +49,6 @@ const ReactMap = () => {
   const [viewport, setViewport] = useState(DEFAULT_VIEWPORT);
 
   const mapRef = useRef<MapRef>(null);
-  // const renderedLocationsListRef = useRef<HTMLDivElement>(null);
   // const [name, setName] = useState("");
   // const [details, setDetails] = useState("");
   const [popupID, setPopupID] = useState<null | string>(null);
@@ -203,7 +199,6 @@ const ReactMap = () => {
           <Layer {...clusterCountLayer} />
           <Layer {...unclusteredPointLayer} />
         </Source>
-        {/* <NavigationControl /> */}
        
         <LocationsOverlay mutateViewport={mutateViewport} />
       </ReactMapGl>
