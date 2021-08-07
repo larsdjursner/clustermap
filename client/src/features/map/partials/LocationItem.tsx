@@ -6,6 +6,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import React, { FC, useState } from "react";
 import temp from "../../../assets/temp.jpg";
+import { Link } from "react-router-dom";
 
 interface ILocationItem {
   locationID: string;
@@ -48,7 +49,7 @@ export const LocationItem: FC<ILocationItem> = ({
         <img className="rounded shadow-lg object-scale-down" src={temp} />
       </div>
 
-      <div className={`flex flex-col w-3/4 mx-2`}>
+      <div className={`flex flex-col w-3/4 mx-2 h-auto justify-between`}>
         <p
           className={` text-sm
             ${isFocus ? "font-bold" : ""}`}
@@ -56,6 +57,9 @@ export const LocationItem: FC<ILocationItem> = ({
           {loc.properties.name}
         </p>
         <p className={"text-xs"}>{loc.properties.details}</p>
+        <div className={"text-xs self-end mb-0"}>
+          <Link to={`/locations/${loc?.properties.id}`}>View more</Link>
+        </div>
       </div>
     </li>
   );

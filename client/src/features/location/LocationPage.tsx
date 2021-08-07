@@ -2,8 +2,8 @@ import React, { FC } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { selectClusterMap } from "../ReactMapSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectClusterMap } from "../map/ReactMapSlice";
 
 interface Props {
   id: string;

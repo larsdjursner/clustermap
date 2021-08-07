@@ -26,7 +26,13 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({ mutateViewport }) => {
       }
     >
       <div className={"flex flex-col justify-start"}>
-        <button className={"self-baseline mb-2"} onClick={() => setIsShown(!isShown)}>
+        <button
+          title="Toggle Sidebar"
+          className={
+            "self-baseline mb-2 focus:outline-none hover:scale-110 transform"
+          }
+          onClick={() => setIsShown(!isShown)}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-7 w-7"
@@ -42,14 +48,14 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({ mutateViewport }) => {
             />
           </svg>
         </button>
-        <div className={" self-baseline"}>
+        <div className={"self-baseline"}>
           <NavigationControl />
         </div>
       </div>
 
       {isShown ? (
         <div
-          className={`rounded shadow-lg bg-white bg-opacity-80 w-1/5 flex flex-col justify-between self-stretch ml-2`}
+          className={`rounded shadow-lg bg-white bg-opacity-80 w-1/5 flex flex-col justify-between self-stretch ml-2 `}
         >
           {clusterMap.renderedLocationsIds.length === 0 ? (
             <p className={"m-4 text-sm"}>

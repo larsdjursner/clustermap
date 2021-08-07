@@ -3,7 +3,7 @@ import { Counter } from "./features/counter/Counter";
 import "./App.css";
 import ReactMap from "./features/map/ReactMap";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
-import LocationPage from "./features/map/partials/LocationPage";
+import LocationPage from "./features/location/LocationPage";
 
 function App() {
   return (

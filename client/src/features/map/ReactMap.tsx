@@ -23,6 +23,7 @@ import { GeoJSONSource, MapboxGeoJSONFeature } from "mapbox-gl";
 import { easeCubic } from "d3-ease";
 import LocationsOverlay from "./partials/LocationsOverlay";
 import NavBar from "../nav/NavBar";
+import { LocationItemStatic } from "./partials/LocationItemStatic";
 
 export interface ViewportMutateProps {
   longitude: number;
@@ -49,10 +50,7 @@ const ReactMap = () => {
   const [viewport, setViewport] = useState(DEFAULT_VIEWPORT);
 
   const mapRef = useRef<MapRef>(null);
-  // const [name, setName] = useState("");
-  // const [details, setDetails] = useState("");
   const [popupID, setPopupID] = useState<null | string>(null);
-  const [staticPopup, setStaticPopup] = useState(false);
 
   const width = mapRef.current?.getMap().getContainer().clientWidth;
   const height = mapRef.current?.getMap().getContainer().clientHeight;
@@ -140,17 +138,13 @@ const ReactMap = () => {
 
   return (
     <>
-      {/* <div className="sidebar">
-        Locations: {clusterMap.renderedLocationsIds.length} | Longitude:{" "}
-        {viewport.longitude} | Latitude: {viewport.latitude} | Zoom:{" "}
-        {viewport.zoom}
-      </div> */}
       <NavBar />
 
       <ReactMapGl
+        className={"overflow-hidden"}
         ref={mapRef}
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!}
-        // style="mapbox://styles/mapbox/streets-v11"
+        // style={"mapbox://styles/mapbox/streets-v11"}
         width={mapBounds.width}
         height={mapBounds.height}
         onViewportChange={(newViewport: any) => {
@@ -158,35 +152,13 @@ const ReactMap = () => {
           getLocationsIDSWithinViewport();
         }}
         onHover={(e) => {
-          if (isInLocations(e)) {
-            handlePopup(e);
-            return;
-          }
-          if (!staticPopup) {
-            setPopupID(null);
-            return;
-          }
+          isInLocations(e) ? handlePopup(e) : setPopupID(null);
         }}
         onClick={(e) => {
-          if (isInLocations(e)) {
-            handlePopup(e);
-            setStaticPopup(true);
-            return;
-          }
-          handleAddNewMarker(e);
+          isInLocations(e) ? handlePopup(e) : handleAddNewMarker(e);
         }}
         {...viewport}
       >
-        {popupID !== null ? (
-          <LocationPopup
-            id={popupID}
-            setPopupId={setPopupID}
-            setStaticPopup={setStaticPopup}
-          />
-        ) : (
-          <></>
-        )}
-
         <Source
           id="locations"
           type="geojson"
@@ -199,8 +171,23 @@ const ReactMap = () => {
           <Layer {...clusterCountLayer} />
           <Layer {...unclusteredPointLayer} />
         </Source>
-       
+
         <LocationsOverlay mutateViewport={mutateViewport} />
+        {clusterMap.focusedLocationID ? (
+          <div className={"flex justify-center h-20 w-48"}>
+            <div className={" self-end"}>
+              <LocationItemStatic locationID={clusterMap.focusedLocationID} />
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
+
+        {popupID !== null ? (
+          <LocationPopup id={popupID} setPopupId={setPopupID} />
+        ) : (
+          <></>
+        )}
       </ReactMapGl>
 
       {/* <input
