@@ -39,8 +39,8 @@ export const LocationItem: FC<ILocationItem> = ({
     <li
       key={locationID}
       onClick={() => handleGoToLocation(loc)}
-      className={`p-2 m-2 h-24 rounded flex flex-row justify-between ${
-        isFocus ? "bg-gray-100" : ""
+      className={`p-2 m-2 h-24 rounded flex flex-row justify-between cursor-pointer ${
+        isFocus ? "bg-gray-200" : ""
       }
       transition duration-200 transform hover:bg-gray-200 hover:scale-105 hover:border-gray-700
       `}
@@ -57,7 +57,7 @@ export const LocationItem: FC<ILocationItem> = ({
           {loc.properties.name}
         </p>
         <p className={"text-xs"}>{loc.properties.details}</p>
-        <div className={"text-xs self-end mb-0"}>
+        <div className={`text-xs self-end mb-0 hover:underline ${isFocus ? "font-bold" : ""}`}>
           <Link to={`/locations/${loc?.properties.id}`}>View more</Link>
         </div>
       </div>

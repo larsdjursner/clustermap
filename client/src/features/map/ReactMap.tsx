@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import ReactMapGl, {
   MapEvent,
   Source,
@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   addLocation,
   selectClusterMap,
+  setFocusedLocationId,
   setRenderedLocationIds,
 } from "./ReactMapSlice";
 import {
@@ -62,19 +63,30 @@ const ReactMap = () => {
   };
 
   const handlePopup = (e: MapEvent): void => {
-    setPopupID(e.features?.[0]?.properties.id);
+    if (isInLocations(e)) {
+      setPopupID(e.features?.[0]?.properties.id);
+      return;
+    }
+    setPopupID(null);
+  };
+
+  const handleFocus = (e: MapEvent): void => {
+    if (isInLocations(e)) {
+      const id = e.features?.[0]?.properties.id;
+      dispatch(setFocusedLocationId({ id: id }));
+      return;
+    }
+    handleAddNewMarker(e);
   };
 
   const handleAddNewMarker = (e: MapEvent): void => {
     e.preventDefault();
     setPopupID(null);
     if (!e.rightButton) return;
-
-    const [lon, lat] = e.lngLat;
-    dispatch(addLocation({ name: "test", coordinates: [lon, lat] }));
+    dispatch(addLocation({ name: "test", coordinates: e.lngLat }));
   };
 
-  const getLocationsIDSWithinViewport = () => {
+  useMemo(() => {
     const features = mapRef.current?.queryRenderedFeatures(
       [
         [0, 0],
@@ -117,8 +129,8 @@ const ReactMap = () => {
       dispatch(
         setRenderedLocationIds({ ids: Array.from(setOfRenderedLocationIds) })
       );
-    }, 400);
-  };
+    }, 200);
+  }, [viewport]);
 
   const mutateViewport = (
     longitude: number,
@@ -135,7 +147,6 @@ const ReactMap = () => {
       transitionEasing: easeCubic,
     });
   };
-
   return (
     <>
       <NavBar />
@@ -149,14 +160,10 @@ const ReactMap = () => {
         height={mapBounds.height}
         onViewportChange={(newViewport: any) => {
           setViewport(newViewport);
-          getLocationsIDSWithinViewport();
+          // getLocationsIDSWithinViewport();
         }}
-        onHover={(e) => {
-          isInLocations(e) ? handlePopup(e) : setPopupID(null);
-        }}
-        onClick={(e) => {
-          isInLocations(e) ? handlePopup(e) : handleAddNewMarker(e);
-        }}
+        onHover={(e) => handlePopup(e)}
+        onClick={(e) => handleFocus(e)}
         {...viewport}
       >
         <Source
@@ -174,11 +181,7 @@ const ReactMap = () => {
 
         <LocationsOverlay mutateViewport={mutateViewport} />
         {clusterMap.focusedLocationID ? (
-          <div className={"flex justify-center h-20 w-48"}>
-            <div className={" self-end"}>
-              <LocationItemStatic locationID={clusterMap.focusedLocationID} />
-            </div>
-          </div>
+          <LocationItemStatic locationID={clusterMap.focusedLocationID} />
         ) : (
           <></>
         )}
