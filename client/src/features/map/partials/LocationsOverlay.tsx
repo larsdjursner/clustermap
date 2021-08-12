@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { Dispatch, FC, SetStateAction, useState } from "react";
 import { NavigationControl } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { selectClusterMap } from "../ReactMapSlice";
@@ -10,10 +10,11 @@ const filterByFocusedLocation = (id: string | null, ids: string[]) => {
 };
 
 interface ILocationsOverlay {
-  mutateViewport: (longitude: number, latitude: number, zoom: number) => void;
+  mutateViewport: (longitude: number, latitude: number, zoom: number) => void;  
+  setSettings: Dispatch<SetStateAction<{ scrollZoom: boolean; }>>
 }
 
-const LocationsOverlay: FC<ILocationsOverlay> = ({ mutateViewport }) => {
+const LocationsOverlay: FC<ILocationsOverlay> = ({ mutateViewport, setSettings }) => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
@@ -56,6 +57,8 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({ mutateViewport }) => {
       {isShown ? (
         <div
           className={`rounded shadow-lg bg-white bg-opacity-80 w-1/5 flex flex-col justify-between self-stretch ml-2 `}
+          onMouseEnter={() => setSettings({scrollZoom: false}) }
+          onMouseLeave={() => setSettings({scrollZoom: true})}
         >
           {clusterMap.renderedLocationsIds.length === 0 ? (
             <p className={"m-4 text-sm"}>

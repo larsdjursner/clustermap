@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import { useParams } from "react-router";
-import { Link } from "react-router-dom";
-
+import temp from "../../assets/temp.jpg";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectClusterMap } from "../map/ReactMapSlice";
 
@@ -19,17 +18,17 @@ const LocationPage = () => {
   )!;
   // if (loc.geometry.type !== "Point") return;
   return (
-    <div>
-      <h1>{loc.properties.name}</h1>
-      <p>{loc.properties.details}</p>
-      {/* <Link
-        to={{
-          pathname: `https://www.google.com/maps/@${loc.geometry.coordinates[0]},${loc.geometry.coordinates[1]},12z`,
-        }}
-        target="_blank"
-      > 
-         Navigate to this crag
-      </Link> */}
+    <div className={" h-full w-full"}>
+      <div 
+      // style={{ backgroundImage: `url(${temp})` }}
+      // className={` h-48`}
+      >
+        <img src={temp} />
+        <div className={`flex flex-row justify-center`}>
+          {/* <h1>{loc.properties.name}</h1> */}
+        </div>
+        {/* <p>{loc.properties.details}</p> */}
+      </div>
     </div>
   );
 };

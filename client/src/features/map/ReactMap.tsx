@@ -1,10 +1,9 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import {  useMemo, useRef, useState } from "react";
 import ReactMapGl, {
   MapEvent,
   Source,
   Layer,
   MapRef,
-  NavigationControl,
   FlyToInterpolator,
 } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -49,6 +48,9 @@ const ReactMap = () => {
     height: "55vw",
   });
   const [viewport, setViewport] = useState(DEFAULT_VIEWPORT);
+  const [settings, setSettings] = useState({
+    scrollZoom: true
+  })
 
   const mapRef = useRef<MapRef>(null);
   const [popupID, setPopupID] = useState<null | string>(null);
@@ -142,7 +144,7 @@ const ReactMap = () => {
       latitude,
       longitude,
       zoom,
-      transitionDuration: 1000,
+      transitionDuration: 2000,
       transitionInterpolator: new FlyToInterpolator(),
       transitionEasing: easeCubic,
     });
@@ -160,11 +162,11 @@ const ReactMap = () => {
         height={mapBounds.height}
         onViewportChange={(newViewport: any) => {
           setViewport(newViewport);
-          // getLocationsIDSWithinViewport();
         }}
         onHover={(e) => handlePopup(e)}
         onClick={(e) => handleFocus(e)}
         {...viewport}
+        {...settings}
       >
         <Source
           id="locations"
@@ -179,7 +181,8 @@ const ReactMap = () => {
           <Layer {...unclusteredPointLayer} />
         </Source>
 
-        <LocationsOverlay mutateViewport={mutateViewport} />
+        <LocationsOverlay mutateViewport={mutateViewport} setSettings={setSettings}/>
+
         {clusterMap.focusedLocationID ? (
           <LocationItemStatic locationID={clusterMap.focusedLocationID} />
         ) : (
@@ -192,32 +195,6 @@ const ReactMap = () => {
           <></>
         )}
       </ReactMapGl>
-
-      {/* <input
-        className="name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-
-      <input
-        className="details"
-        value={details}
-        onChange={(e) => setDetails(e.target.value)}
-      />
-      <button
-        onClick={() =>
-          dispatch(
-            addLocation({
-              name: name,
-              coordinates: [viewport.longitude!, viewport.latitude!],
-              details: details,
-            })
-          )
-        }
-      >
-        add location
-      </button>
-      <button onClick={() => dispatch(clear())}>clear</button> */}
     </>
   );
 };

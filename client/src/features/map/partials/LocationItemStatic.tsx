@@ -1,6 +1,6 @@
 import { selectClusterMap, setFocusedLocationId } from "../ReactMapSlice";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import React, { FC, useState } from "react";
+import { FC } from "react";
 import temp from "../../../assets/temp.jpg";
 
 interface ILocationItemStatic {

@@ -37,7 +37,7 @@ export const LocationItem: FC<ILocationItem> = ({
 
   return (
     <li
-      key={locationID}
+      key={"li"+locationID}
       onClick={() => handleGoToLocation(loc)}
       className={`p-2 m-2 h-24 rounded flex flex-row justify-between cursor-pointer ${
         isFocus ? "bg-gray-200" : ""

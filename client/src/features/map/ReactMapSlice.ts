@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ImportsNotUsedAsValues } from "typescript";
 import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../../app/store";
 
@@ -21,6 +20,11 @@ interface IRoute {
   rating?: number;
 }
 
+interface ILocation {
+  area: string;
+  country: string;
+}
+
 export interface IFeature extends GeoJSON.Feature {
   properties: {
     id: string;
@@ -30,6 +34,7 @@ export interface IFeature extends GeoJSON.Feature {
     characteristics?: CharacteristicsEnum[];
     rating?: number;
     routes?: IRoute[];
+    location?: ILocation;
   };
 }
 export interface IFeatureCollection extends GeoJSON.FeatureCollection {
@@ -143,7 +148,6 @@ export const {
   clear,
   deleteLocation,
   setFocusedLocationId,
-  // updateViewport,
   setRenderedLocationIds,
 } = clusterMapSlice.actions;
 export const selectClusterMap = (state: RootState) => state.clusterMap;
