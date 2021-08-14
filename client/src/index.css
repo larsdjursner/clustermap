@@ -16,6 +16,10 @@ code {
     monospace;
 }
 
+.h-80vh {
+  height: 80vh;
+}
+
 ::-webkit-scrollbar {
   width: 0.5em;
 }

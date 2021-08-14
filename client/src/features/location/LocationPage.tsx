@@ -4,6 +4,7 @@ import temp from "../../assets/temp.jpg";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectClusterMap } from "../map/ReactMapSlice";
 
+
 interface Props {
   id: string;
 }
@@ -13,21 +14,22 @@ const LocationPage = () => {
   const dispatch = useAppDispatch();
 
   const { id } = useParams<Props>();
-  const loc = clusterMap.locations.features.find(
-    (l) => l.properties.id === id
-  )!;
-  // if (loc.geometry.type !== "Point") return;
+  const loc = clusterMap.locations.features
+    .filter((l) => l.geometry.type === "Point")
+    .find((l) => l.properties.id === id)!;
+
   return (
-    <div className={" h-full w-full"}>
-      <div 
-      // style={{ backgroundImage: `url(${temp})` }}
-      // className={` h-48`}
+    <div className={"h-80vh"}>
+      <div
+        style={{ backgroundImage: `url(${temp})` }}
+        className={`object-scale-down w-full h-full`}
       >
-        <img src={temp} />
-        <div className={`flex flex-row justify-center`}>
-          {/* <h1>{loc.properties.name}</h1> */}
+        <div className={`flex flex-row justify-center items-center h-full`}>
+          <p className={`text-4xl text-white text font-black`}>{loc.properties.name}</p>
         </div>
-        {/* <p>{loc.properties.details}</p> */}
+      </div>
+      <div className={`w-full h-screen`}>
+        <p className={"text-3xl"}>{loc.properties.name}</p>
       </div>
     </div>
   );
