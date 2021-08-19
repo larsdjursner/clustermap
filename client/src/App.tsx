@@ -1,11 +1,23 @@
-import React from "react";
-import { Counter } from "./features/counter/Counter";
+import React, { useState } from "react";
+import { Counter } from "./components/counter/Counter";
 import "./App.css";
-import ReactMap from "./features/map/ReactMap";
+import ReactMap from "./components/map/ReactMap";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
-import LocationPage from "./features/location/LocationPage";
+import LocationPage from "./components/location/LocationPage";
+import fire from "./fire";
+import Login from "./components/sessions/SignIn";
+import SignIn from "./components/sessions/SignIn";
+import SignUp from "./components/sessions/SignUp";
 
 function App() {
+  // const [isAuth, setIsAuth] = useState(false);
+
+  // fire.auth().onAuthStateChanged((user) => {
+  //   return user ? setIsAuth(true) : setIsAuth(false);
+  // });
+
+  // console.log("logged in?", isAuth);
+
   return (
     <div className="App">
       <Router>
@@ -22,6 +34,8 @@ function App() {
           <Route exact path="/map" component={ReactMap} />
           <Route exact path="/counter" component={Counter} />
           <Route exact path="/locations/:id" component={LocationPage} />
+          <Route exact path="/signin" component={SignIn} />
+          <Route exact path="/signup" component={SignUp} />
         </Switch>
       </Router>
     </div>
