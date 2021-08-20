@@ -3,6 +3,8 @@ import { NavigationControl } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { selectClusterMap } from "../ReactMapSlice";
 import { LocationItem } from "./LocationItem";
+import { ReactComponent as LeftChevronIcon } from "../../../icons/LeftChevron.svg";
+import { ReactComponent as RightChevronIcon } from "../../../icons/RightChevron.svg";
 
 const filterByFocusedLocation = (id: string | null, ids: string[]) => {
   if (id === null || !ids.includes(id)) return ids;
@@ -10,15 +12,18 @@ const filterByFocusedLocation = (id: string | null, ids: string[]) => {
 };
 
 interface ILocationsOverlay {
-  mutateViewport: (longitude: number, latitude: number, zoom: number) => void;  
-  setSettings: Dispatch<SetStateAction<{ scrollZoom: boolean; }>>
+  mutateViewport: (longitude: number, latitude: number, zoom: number) => void;
+  setSettings: Dispatch<SetStateAction<{ scrollZoom: boolean }>>;
 }
 
-const LocationsOverlay: FC<ILocationsOverlay> = ({ mutateViewport, setSettings }) => {
+const LocationsOverlay: FC<ILocationsOverlay> = ({
+  mutateViewport,
+  setSettings,
+}) => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
-  const [isShown, setIsShown] = useState(true);
+  const [open, setOpen] = useState(true);
 
   return (
     <div
@@ -32,33 +37,20 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({ mutateViewport, setSettings }
           className={
             "self-baseline mb-2 focus:outline-none hover:scale-110 transform"
           }
-          onClick={() => setIsShown(!isShown)}
+          onClick={() => setOpen(!open)}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-7 w-7"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
+          {open ? <RightChevronIcon /> : <LeftChevronIcon />}
         </button>
         <div className={"self-baseline"}>
           <NavigationControl />
         </div>
       </div>
 
-      {isShown ? (
+      {open ? (
         <div
           className={`rounded shadow-lg bg-white bg-opacity-80 w-1/5 flex flex-col justify-between self-stretch ml-2 `}
-          onMouseEnter={() => setSettings({scrollZoom: false}) }
-          onMouseLeave={() => setSettings({scrollZoom: true})}
+          onMouseEnter={() => setSettings({ scrollZoom: false })}
+          onMouseLeave={() => setSettings({ scrollZoom: true })}
         >
           {clusterMap.renderedLocationsIds.length === 0 ? (
             <p className={"m-4 text-sm"}>

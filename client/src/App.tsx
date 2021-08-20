@@ -2,24 +2,37 @@ import React, { useState } from "react";
 import { Counter } from "./components/counter/Counter";
 import "./App.css";
 import ReactMap from "./components/map/ReactMap";
-import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Link,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
 import LocationPage from "./components/location/LocationPage";
 import fire from "./fire";
-import Login from "./components/sessions/SignIn";
 import SignIn from "./components/sessions/SignIn";
 import SignUp from "./components/sessions/SignUp";
+import { useAppDispatch, useAppSelector } from "./app/hooks";
+import { selectAuth } from "./components/sessions/AuthSlice";
+import NavBar from "./components/nav/NavBar";
+import NavItem from "./components/nav/NavItem";
+import { ReactComponent as MenuIcon } from "./icons/Menu.svg";
+import { ReactComponent as CogIcon } from "./icons/Cog.svg";
+import { ReactComponent as GlobeIcon } from "./icons/Globe.svg";
+import { ReactComponent as AccountIcon } from "./icons/Account.svg";
 
 function App() {
-  // const [isAuth, setIsAuth] = useState(false);
-
-  // fire.auth().onAuthStateChanged((user) => {
-  //   return user ? setIsAuth(true) : setIsAuth(false);
-  // });
-
-  // console.log("logged in?", isAuth);
+  const auth = useAppSelector(selectAuth);
+  const dispatch = useAppDispatch();
 
   return (
     <div className="App">
+      <NavBar>
+        <NavItem icon={<GlobeIcon className="w-5 h-5  text-gray-200" />} />
+        <NavItem icon={<MenuIcon className="w-5 h-5  text-gray-200" />} />
+        <NavItem icon={<AccountIcon className="w-5 h-5  text-gray-200" />} />
+      </NavBar>
       <Router>
         <Switch>
           <Route exact path="/">
@@ -34,8 +47,16 @@ function App() {
           <Route exact path="/map" component={ReactMap} />
           <Route exact path="/counter" component={Counter} />
           <Route exact path="/locations/:id" component={LocationPage} />
-          <Route exact path="/signin" component={SignIn} />
-          <Route exact path="/signup" component={SignUp} />
+          <Route
+            exact
+            path="/signin"
+            render={() => (!auth.isAuth ? <SignIn /> : <Redirect to="/" />)}
+          />
+          <Route
+            exact
+            path="/signup"
+            render={() => (!auth.isAuth ? <SignUp /> : <Redirect to="/" />)}
+          />
         </Switch>
       </Router>
     </div>
