@@ -28,27 +28,12 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({
   return (
     <div
       className={
-        "flex flex-row justify-end items-start m-2 h-4/5 max-h-4/5 min-h-4/5"
+        "flex flex-row justify-start items-start m-2 h-4/5 max-h-4/5 min-h-4/5"
       }
     >
-      <div className={"flex flex-col justify-start"}>
-        <button
-          title="Toggle Sidebar"
-          className={
-            "self-baseline mb-2 focus:outline-none hover:scale-110 transform"
-          }
-          onClick={() => setOpen(!open)}
-        >
-          {open ? <RightChevronIcon /> : <LeftChevronIcon />}
-        </button>
-        <div className={"self-baseline"}>
-          <NavigationControl />
-        </div>
-      </div>
-
       {open ? (
         <div
-          className={`rounded shadow-lg bg-white bg-opacity-80 w-1/5 flex flex-col justify-between self-stretch ml-2 `}
+          className={`rounded shadow-lg bg-white bg-opacity-80 w-1/5 flex flex-col justify-between self-stretch mr-2 `}
           onMouseEnter={() => setSettings({ scrollZoom: false })}
           onMouseLeave={() => setSettings({ scrollZoom: true })}
         >
@@ -80,6 +65,20 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({
       ) : (
         <></>
       )}
+      <div className={"flex flex-col justify-start"}>
+        <button
+          title="Toggle Sidebar"
+          className={
+            "self-baseline mb-2 focus:outline-none hover:scale-110 transform"
+          }
+          onClick={() => setOpen(!open)}
+        >
+          {open ? <LeftChevronIcon /> : <RightChevronIcon />}
+        </button>
+        <div className={"self-baseline"}>
+          <NavigationControl />
+        </div>
+      </div>
     </div>
   );
 };

@@ -21,6 +21,7 @@ import { ReactComponent as MenuIcon } from "./icons/Menu.svg";
 import { ReactComponent as CogIcon } from "./icons/Cog.svg";
 import { ReactComponent as GlobeIcon } from "./icons/Globe.svg";
 import { ReactComponent as AccountIcon } from "./icons/Account.svg";
+import DropdownMenu from "./components/nav/DropdownMenu";
 
 function App() {
   const auth = useAppSelector(selectAuth);
@@ -28,12 +29,20 @@ function App() {
 
   return (
     <div className="App">
-      <NavBar>
-        <NavItem icon={<GlobeIcon className="w-5 h-5  text-gray-200" />} />
-        <NavItem icon={<MenuIcon className="w-5 h-5  text-gray-200" />} />
-        <NavItem icon={<AccountIcon className="w-5 h-5  text-gray-200" />} />
-      </NavBar>
       <Router>
+        <NavBar>
+          <NavItem
+            icon={
+              <Link to="/map">
+                <GlobeIcon className="w-5 h-5  text-gray-200" />
+              </Link>
+            }
+          />
+          <NavItem icon={<MenuIcon className="w-5 h-5  text-gray-200" />} />
+          <NavItem icon={<AccountIcon className="w-5 h-5  text-gray-200" />}>
+            <DropdownMenu></DropdownMenu>
+          </NavItem>
+        </NavBar>
         <Switch>
           <Route exact path="/">
             <h3>landing page</h3>
