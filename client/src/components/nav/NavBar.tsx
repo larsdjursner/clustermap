@@ -1,9 +1,6 @@
-import React, { FC } from "react";
-import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectAuth, signOut } from "../sessions/AuthSlice";
+import { FC } from "react";
 
-const NavBar: FC = (props: any) => {
+const NavBar: FC = ({ children }) => {
   return (
     <nav
       className={
@@ -11,7 +8,7 @@ const NavBar: FC = (props: any) => {
       }
     >
       <ul className={" list-none m-0 p-0 max-w-full h-full flex justify-end"}>
-        {props.children}
+        {children}
       </ul>
     </nav>
   );

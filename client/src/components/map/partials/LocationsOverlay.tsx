@@ -3,8 +3,7 @@ import { NavigationControl } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { selectClusterMap } from "../ReactMapSlice";
 import { LocationItem } from "./LocationItem";
-import { ReactComponent as LeftChevronIcon } from "../../../icons/LeftChevron.svg";
-import { ReactComponent as RightChevronIcon } from "../../../icons/RightChevron.svg";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 
 const filterByFocusedLocation = (id: string | null, ids: string[]) => {
   if (id === null || !ids.includes(id)) return ids;
@@ -31,7 +30,7 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({
         "flex flex-row justify-start items-start m-2 h-4/5 max-h-4/5 min-h-4/5"
       }
     >
-      {open ? (
+      {open && (
         <div
           className={`rounded shadow-lg bg-white bg-opacity-80 w-1/5 flex flex-col justify-between self-stretch mr-2 `}
           onMouseEnter={() => setSettings({ scrollZoom: false })}
@@ -62,8 +61,6 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({
             className={"m-4 text-sm"}
           >{`Locations: ${clusterMap.renderedLocationsIds.length}`}</p>
         </div>
-      ) : (
-        <></>
       )}
       <div className={"flex flex-col justify-start"}>
         <button
@@ -73,7 +70,11 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({
           }
           onClick={() => setOpen(!open)}
         >
-          {open ? <LeftChevronIcon /> : <RightChevronIcon />}
+          {open ? (
+            <ChevronLeftIcon className={"h-7 w-7"} />
+          ) : (
+            <ChevronRightIcon className={"h-7 w-7"} />
+          )}
         </button>
         <div className={"self-baseline"}>
           <NavigationControl />

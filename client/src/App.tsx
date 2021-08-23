@@ -17,11 +17,9 @@ import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { selectAuth } from "./components/sessions/AuthSlice";
 import NavBar from "./components/nav/NavBar";
 import NavItem from "./components/nav/NavItem";
-import { ReactComponent as MenuIcon } from "./icons/Menu.svg";
-import { ReactComponent as CogIcon } from "./icons/Cog.svg";
-import { ReactComponent as GlobeIcon } from "./icons/Globe.svg";
-import { ReactComponent as AccountIcon } from "./icons/Account.svg";
 import DropdownMenu from "./components/nav/DropdownMenu";
+import { GlobeIcon, MenuIcon } from "@heroicons/react/outline";
+import ForgotPassword from "./components/sessions/ForgotPassword";
 
 function App() {
   const auth = useAppSelector(selectAuth);
@@ -38,8 +36,7 @@ function App() {
               </Link>
             }
           />
-          <NavItem icon={<MenuIcon className="w-5 h-5  text-gray-200" />} />
-          <NavItem icon={<AccountIcon className="w-5 h-5  text-gray-200" />}>
+          <NavItem icon={<MenuIcon className="w-5 h-5  text-gray-200" />}>
             <DropdownMenu></DropdownMenu>
           </NavItem>
         </NavBar>
@@ -50,7 +47,7 @@ function App() {
               <Link to="/map">go to map</Link>
             </div>
             <div>
-              <Link to="/counter">go to counter</Link>
+              <Link to="/counter">go to counter, placeholder</Link>
             </div>
           </Route>
           <Route exact path="/map" component={ReactMap} />
@@ -66,6 +63,7 @@ function App() {
             path="/signup"
             render={() => (!auth.isAuth ? <SignUp /> : <Redirect to="/" />)}
           />
+          <Route exact path="/resetpassword" component={ForgotPassword} />
         </Switch>
       </Router>
     </div>

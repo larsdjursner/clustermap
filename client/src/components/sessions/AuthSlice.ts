@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import firebase from "firebase";
-import userEvent from "@testing-library/user-event";
+import fire from "../../fire";
 
 export interface User {
   id: string;
@@ -28,6 +27,7 @@ export const authSlice = createSlice({
       state.user = action.payload.user;
     },
     signOut: (state) => {
+      fire.auth().signOut();
       state.isAuth = false;
       state.user = null;
     },
