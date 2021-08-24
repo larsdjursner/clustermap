@@ -23,7 +23,7 @@ const DropdownMenu: FC<Props> = ({ open, children }) => {
     >
       {auth.isAuth ? (
         <>
-          <DropdownItem leftIcon={<GlobeIcon />}>My Account</DropdownItem>
+          <DropdownItem leftIcon={<GlobeIcon />}>{auth.user?.displayName}</DropdownItem>
           <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronRightIcon />}>
             Settings
           </DropdownItem>

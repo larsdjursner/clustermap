@@ -9,7 +9,8 @@ export interface User {
 
 export interface AuthState {
   isAuth: boolean;
-  user: User | null;
+  // user: User | null;
+  user: firebase.default.User | null;
 }
 
 const initialState: AuthState = {
@@ -22,7 +23,15 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuth: (state, action: PayloadAction<{ user: User }>) => {
+    setAuth: (
+      state,
+      action: PayloadAction<{ user: firebase.default.User | null }>
+    ) => {
+      if (action.payload.user === null) {
+        state.isAuth = false;
+        state.user = null;
+        return;
+      }
       state.isAuth = true;
       state.user = action.payload.user;
     },

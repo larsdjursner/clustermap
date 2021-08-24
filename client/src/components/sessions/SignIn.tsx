@@ -7,6 +7,7 @@ import { selectAuth, setAuth, User } from "./AuthSlice";
 const SignIn = () => {
   const auth = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,11 +18,7 @@ const SignIn = () => {
       .signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
         if (userCredential.user) {
-          const user: User = {
-            id: userCredential.user.uid,
-            email: userCredential.user.email,
-          };
-          dispatch(setAuth({ user: user }));
+          dispatch(setAuth({ user: userCredential.user }));
           console.log(userCredential.user.refreshToken);
         }
       })

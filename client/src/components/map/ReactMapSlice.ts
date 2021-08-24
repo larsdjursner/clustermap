@@ -17,7 +17,6 @@ interface IRoute {
   name: string;
   grade?: GradeEnum;
   characteristics?: CharacteristicsEnum;
-  rating?: number;
 }
 
 interface ILocation {

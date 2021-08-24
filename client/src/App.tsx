@@ -14,7 +14,7 @@ import fire from "./fire";
 import SignIn from "./components/sessions/SignIn";
 import SignUp from "./components/sessions/SignUp";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { selectAuth } from "./components/sessions/AuthSlice";
+import { selectAuth, setAuth } from "./components/sessions/AuthSlice";
 import NavBar from "./components/nav/NavBar";
 import NavItem from "./components/nav/NavItem";
 import DropdownMenu from "./components/nav/DropdownMenu";
@@ -24,6 +24,10 @@ import ForgotPassword from "./components/sessions/ForgotPassword";
 function App() {
   const auth = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
+
+  fire.auth().onAuthStateChanged((user) => {
+    return user ? dispatch(setAuth({user: user})) : dispatch(setAuth({user: null}))
+});
 
   return (
     <div className="App">
