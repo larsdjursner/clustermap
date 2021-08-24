@@ -36,3 +36,4 @@ lerna-debug.log*
 
 #firebase auth
 firebaseServiceAccount.json
+.env

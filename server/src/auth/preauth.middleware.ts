@@ -40,13 +40,13 @@ export class PreauthMiddleware implements NestMiddleware {
         })
         .catch((err) => {
           console.error(err);
-          this.accesDenied(req.url, res);
+          this.accessDenied(req.url, res);
         });
       return;
     }
     next();
   }
-  private accesDenied(url: string, res: Response) {
+  private accessDenied(url: string, res: Response) {
     res.status(403).json({
       statusCode: 403,
       timestamp: new Date().toISOString(),
