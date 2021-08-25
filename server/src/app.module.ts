@@ -11,16 +11,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MapModule } from './map/map.module';
 import { MongooseModule } from '@nestjs/mongoose';
 
-// const dbstring = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@clustermap.gka76.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
-// const init = 'mongodb://localhost/nest';
-
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: '../.env' }),
+    ConfigModule.forRoot(),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('DB_STRING'),
+        uri: configService.get<string>('MONGODB_STRING'),
       }),
       inject: [ConfigService],
     }),
