@@ -1,4 +1,10 @@
 import { MongooseModule, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import GeoJSON, {
+  GeoJsonGeometryTypes,
+  Geometry,
+  Point,
+  Position,
+} from 'geojson';
 import { Document } from 'mongoose';
 import { Mongoose } from 'mongoose';
 
@@ -23,14 +29,13 @@ export class FeatureProperties {
 }
 
 @Schema()
-export class Geometry {
-  @Prop({required: true, default: "Point" })
-  _type: String
+export class FeatureGeometry {
+  @Prop()
+  type: 'Point';
 
-  @Prop({ required: true })
+  @Prop()
   coordinates: [Number];
 }
-
 
 @Schema()
 export class Route {
@@ -52,11 +57,11 @@ export enum GenreEnum {
 
 @Schema()
 export class Feature {
-  @Prop({ required: true })
-  type: string;
+  @Prop()
+  type: 'Feature';
 
-  @Prop({ required: true })
-  geometry: Geometry;
+  @Prop()
+  geometry: FeatureGeometry;
 
   @Prop({ required: true })
   properties: FeatureProperties;

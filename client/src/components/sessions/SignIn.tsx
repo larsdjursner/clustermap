@@ -18,8 +18,9 @@ const SignIn = () => {
       .signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
         if (userCredential.user) {
-          dispatch(setAuth({ user: userCredential.user }));
-          console.log(userCredential.user.refreshToken);
+          // TODO FIX USER IN STATE (functions being saved atm)
+          dispatch(setAuth());
+          console.log(userCredential.user.getIdToken());
         }
       })
       .catch((error) => {

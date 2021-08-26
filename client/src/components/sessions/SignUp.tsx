@@ -25,7 +25,7 @@ const SignUp = () => {
             user.updateProfile({
               displayName: `${firstName} ${lastName}`,
             });
-            dispatch(setAuth({ user: user }));
+            dispatch(setAuth());
           }
         })
         .catch((error) => {

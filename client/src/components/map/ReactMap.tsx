@@ -1,4 +1,4 @@
-import {  useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ReactMapGl, {
   MapEvent,
   Source,
@@ -24,6 +24,7 @@ import { easeCubic } from "d3-ease";
 import LocationsOverlay from "./partials/LocationsOverlay";
 import NavBar from "../nav/NavBar";
 import { LocationItemStatic } from "./partials/LocationItemStatic";
+import apiTest from "./mapService";
 
 export interface ViewportMutateProps {
   longitude: number;
@@ -49,8 +50,8 @@ const ReactMap = () => {
   });
   const [viewport, setViewport] = useState(DEFAULT_VIEWPORT);
   const [settings, setSettings] = useState({
-    scrollZoom: true
-  })
+    scrollZoom: true,
+  });
 
   const mapRef = useRef<MapRef>(null);
   const [popupID, setPopupID] = useState<null | string>(null);
@@ -149,53 +150,51 @@ const ReactMap = () => {
       transitionEasing: easeCubic,
     });
   };
+
+  useEffect(() => {
+    apiTest().then((res) => console.log(res));
+  }, []);
   return (
-    <>
-      <NavBar />
-
-      <ReactMapGl
-        className={"overflow-hidden"}
-        ref={mapRef}
-        mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!}
-        // style={"mapbox://styles/mapbox/streets-v11"}
-        width={mapBounds.width}
-        height={mapBounds.height}
-        onViewportChange={(newViewport: any) => {
-          setViewport(newViewport);
-        }}
-        onHover={(e) => handlePopup(e)}
-        onClick={(e) => handleFocus(e)}
-        {...viewport}
-        {...settings}
+    <ReactMapGl
+      className={"overflow-hidden"}
+      ref={mapRef}
+      mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!}
+      // style={"mapbox://styles/mapbox/streets-v11"}
+      width={mapBounds.width}
+      height={mapBounds.height}
+      onViewportChange={(newViewport: any) => {
+        setViewport(newViewport);
+      }}
+      onHover={(e) => handlePopup(e)}
+      onClick={(e) => handleFocus(e)}
+      {...viewport}
+      {...settings}
+    >
+      <Source
+        id="locations"
+        type="geojson"
+        data={clusterMap.locations}
+        cluster={true}
+        clusterMaxZoom={14}
+        clusterRadius={50}
       >
-        <Source
-          id="locations"
-          type="geojson"
-          data={clusterMap.locations}
-          cluster={true}
-          clusterMaxZoom={14}
-          clusterRadius={50}
-        >
-          <Layer {...clusterLayer} />
-          <Layer {...clusterCountLayer} />
-          <Layer {...unclusteredPointLayer} />
-        </Source>
+        <Layer {...clusterLayer} />
+        <Layer {...clusterCountLayer} />
+        <Layer {...unclusteredPointLayer} />
+      </Source>
 
-        <LocationsOverlay mutateViewport={mutateViewport} setSettings={setSettings}/>
+      <LocationsOverlay
+        mutateViewport={mutateViewport}
+        setSettings={setSettings}
+      />
 
-        {clusterMap.focusedLocationID ? (
-          <LocationItemStatic locationID={clusterMap.focusedLocationID} />
-        ) : (
-          <></>
-        )}
-
-        {popupID !== null ? (
-          <LocationPopup id={popupID} setPopupId={setPopupID} />
-        ) : (
-          <></>
-        )}
-      </ReactMapGl>
-    </>
+      {clusterMap.focusedLocationID && (
+        <LocationItemStatic locationID={clusterMap.focusedLocationID} />
+      )}
+      {popupID !== null && (
+        <LocationPopup id={popupID} setPopupId={setPopupID} />
+      )}
+    </ReactMapGl>
   );
 };
 

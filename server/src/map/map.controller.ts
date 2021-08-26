@@ -7,11 +7,12 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { json } from 'express';
 import { CreateFeatureDto } from './dto/create-feature.dto';
 import { UpdateFeatureDto } from './dto/update-feature.dto';
 import { MapService } from './map.service';
 
-@Controller('map')
+@Controller('locations')
 export class MapController {
   constructor(private readonly service: MapService) {}
 
@@ -31,7 +32,10 @@ export class MapController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateTodoDto: UpdateFeatureDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateTodoDto: UpdateFeatureDto,
+  ) {
     return await this.service.update(id, updateTodoDto);
   }
 

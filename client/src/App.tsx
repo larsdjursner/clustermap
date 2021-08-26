@@ -26,7 +26,7 @@ function App() {
   const dispatch = useAppDispatch();
 
   fire.auth().onAuthStateChanged((user) => {
-    return user ? dispatch(setAuth({user: user})) : dispatch(setAuth({user: null}))
+    return (user && dispatch(setAuth()))
 });
 
   return (

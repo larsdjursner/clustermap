@@ -5,12 +5,13 @@ import fire from "../../fire";
 export interface User {
   id: string;
   email: string | null;
+  displayName: string | null;
 }
 
 export interface AuthState {
   isAuth: boolean;
-  // user: User | null;
-  user: firebase.default.User | null;
+  user: User | null;
+  // user: firebase.default.User | null;
 }
 
 const initialState: AuthState = {
@@ -23,17 +24,16 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuth: (
-      state,
-      action: PayloadAction<{ user: firebase.default.User | null }>
-    ) => {
-      if (action.payload.user === null) {
-        state.isAuth = false;
-        state.user = null;
-        return;
+    setAuth: (state) => {
+      const user = fire.auth().currentUser;
+      if (user !== null) {
+        state.isAuth = true;
+        state.user = {
+          id: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+        };
       }
-      state.isAuth = true;
-      state.user = action.payload.user;
     },
     signOut: (state) => {
       fire.auth().signOut();
