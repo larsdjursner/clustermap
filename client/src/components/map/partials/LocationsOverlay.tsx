@@ -48,12 +48,19 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({
                 clusterMap.focusedLocationID,
                 clusterMap.renderedLocationsIds
               ).map((id) => {
+                const loc = clusterMap.locations.features.find(i => i.id === id)
+                console.log(id)
+                console.log(clusterMap.locations.features[0].id)
+                if(loc) {
+
                 return (
                   <LocationItem
-                    locationID={id}
+                    key={"li"+id}
+                    location={loc}
                     mutateViewport={mutateViewport}
                   />
                 );
+                }
               })}
             </ul>
           )}

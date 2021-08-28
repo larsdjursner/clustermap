@@ -1,70 +1,39 @@
-import { MongooseModule, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import GeoJSON, {
-  GeoJsonGeometryTypes,
-  Geometry,
-  Point,
-  Position,
-} from 'geojson';
-import { Document } from 'mongoose';
-import { Mongoose } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import * as mongoose from 'mongoose';
 
 export type FeatureDocument = Feature & Document;
-
 @Schema()
-export class FeatureProperties {
-  @Prop({ required: true })
-  id: string;
-
-  @Prop({ required: true })
-  name: string;
-
-  @Prop()
-  genre: GenreEnum[];
-
-  @Prop()
-  route?: Route[];
-
-  @Prop({ required: true })
-  createdAt: Date;
-}
-
-@Schema()
-export class FeatureGeometry {
-  @Prop()
-  type: 'Point';
+export class Geometry {
+  @Prop({ type: String, default: 'Point' })
+  type: string;
 
   @Prop()
   coordinates: [Number];
 }
+const GeometrySchema = SchemaFactory.createForClass(Geometry).remove('_id');
 
 @Schema()
-export class Route {
-  @Prop({ required: true })
+export class Properties {
+  @Prop({ type: String, required: true })
   name: string;
 
-  @Prop()
-  grade: string;
-
-  @Prop()
-  characteristics: string;
-}
-
-export enum GenreEnum {
-  Bouldering,
-  SportsClimbing,
-  TraditionalClimbing,
+  @Prop({ type: Date, default: Date.now })
+  createdAt: Date;
 }
 
 @Schema()
 export class Feature {
-  @Prop()
-  type: 'Feature';
+  @Prop({ type: String })
+  id: string;
 
-  @Prop()
-  geometry: FeatureGeometry;
+  @Prop({ type: String, default: 'Feature' })
+  type: string;
 
-  @Prop({ required: true })
-  properties: FeatureProperties;
+  @Prop({ type: GeometrySchema })
+  geometry: Geometry;
+
+  @Prop({ type: Properties })
+  properties: Properties;
 }
 
 export const FeatureSchema = SchemaFactory.createForClass(Feature);

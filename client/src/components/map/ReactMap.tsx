@@ -9,8 +9,10 @@ import ReactMapGl, {
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   addLocation,
+  IFeature,
   selectClusterMap,
   setFocusedLocationId,
+  setLocationsAPI,
   setRenderedLocationIds,
 } from "./ReactMapSlice";
 import {
@@ -22,10 +24,12 @@ import { LocationPopup } from "./partials/LocationPopup";
 import { GeoJSONSource, MapboxGeoJSONFeature } from "mapbox-gl";
 import { easeCubic } from "d3-ease";
 import LocationsOverlay from "./partials/LocationsOverlay";
-import NavBar from "../nav/NavBar";
 import { LocationItemStatic } from "./partials/LocationItemStatic";
-import apiTest from "./mapService";
+import fetchLocationFeatures from "./mapService";
 
+export type UnclusteredFeature = {
+  _id: string;
+} & MapboxGeoJSONFeature;
 export interface ViewportMutateProps {
   longitude: number;
   latitude: number;
@@ -61,13 +65,13 @@ const ReactMap = () => {
 
   const isInLocations = (e: MapEvent) => {
     return clusterMap.locations.features
-      .map((i) => i.properties.id)
-      .includes(e.features?.[0]?.properties.id);
+      .map((i) => i.id)
+      .includes(e.features?.[0]?.id);
   };
 
   const handlePopup = (e: MapEvent): void => {
     if (isInLocations(e)) {
-      setPopupID(e.features?.[0]?.properties.id);
+      setPopupID(e.features?.[0]?.id);
       return;
     }
     setPopupID(null);
@@ -75,7 +79,7 @@ const ReactMap = () => {
 
   const handleFocus = (e: MapEvent): void => {
     if (isInLocations(e)) {
-      const id = e.features?.[0]?.properties.id;
+      const id = e.features?.[0]?.id;
       dispatch(setFocusedLocationId({ id: id }));
       return;
     }
@@ -110,7 +114,14 @@ const ReactMap = () => {
 
     features.forEach((current: MapboxGeoJSONFeature) => {
       if (current.layer.id === "unclustered-point") {
-        setOfRenderedLocationIds.add(current.properties?.id);
+        const feature = clusterMap.locations.features.find(
+          (i) =>
+            i.properties.name === current.properties?.name &&
+            i.properties.createdAt === current.properties?.createdAt
+        ); //super unsatisfying hack until id can be properly assigned to locations through mapbox api
+        if (feature) {
+          setOfRenderedLocationIds.add(feature?.id!);
+        }
       }
       if (current.layer.id === "clusters") {
         const clusterId = current.properties?.cluster_id;
@@ -121,8 +132,9 @@ const ReactMap = () => {
           pointCount,
           0,
           (_, clusteredFeatures) => {
-            clusteredFeatures.forEach((clusteredFeature) => {
-              setOfRenderedLocationIds.add(clusteredFeature.properties?.id);
+            clusteredFeatures.map((clusteredFeature) => {
+              const feature = clusteredFeature as IFeature;
+              setOfRenderedLocationIds.add(feature.id);
             });
           }
         );
@@ -152,7 +164,9 @@ const ReactMap = () => {
   };
 
   useEffect(() => {
-    apiTest().then((res) => console.log(res));
+    fetchLocationFeatures().then((res: IFeature[]) => {
+      dispatch(setLocationsAPI({ locations: res }));
+    });
   }, []);
   return (
     <ReactMapGl

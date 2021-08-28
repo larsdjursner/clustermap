@@ -1,12 +1,8 @@
-const apiTest = async () => {
-  return await fetch("http://localhost:8000/locations")
+const API_URI = "http://localhost:8000"
+
+const fetchLocationFeatures = async () => {
+  return await fetch(`${API_URI}/locations`)
     .then((response) => response.json())
-//     .then((data) => {
-//       console.log("Success:", data);
-//     })
-//     .catch((error) => {
-//       console.error("Error:", error);
-//     });
 };
 
-export default apiTest;
+export default fetchLocationFeatures;

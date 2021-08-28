@@ -11,7 +11,7 @@ export const LocationItemStatic: FC<ILocationItemStatic> = ({ locationID }) => {
   const dispatch = useAppDispatch();
   const clusterMap = useAppSelector(selectClusterMap);
   const loc = clusterMap.locations.features.filter(
-    (i) => i.properties.id === locationID
+    (i) => i.id === locationID
   )[0];
 
   return (

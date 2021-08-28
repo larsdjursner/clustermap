@@ -18,8 +18,12 @@ const SignIn = () => {
       .signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
         if (userCredential.user) {
-          // TODO FIX USER IN STATE (functions being saved atm)
-          dispatch(setAuth());
+          const user : User = {
+            id: userCredential.user.uid,
+            email: userCredential.user.email,
+            displayName: userCredential.user.displayName
+          } 
+          dispatch(setAuth({user}));
           console.log(userCredential.user.getIdToken());
         }
       })

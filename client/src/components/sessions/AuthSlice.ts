@@ -24,15 +24,12 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuth: (state) => {
-      const user = fire.auth().currentUser;
+    setAuth: (state, action: PayloadAction<{user: User}>) => {
+      // FIX THIS
+      const user = action.payload.user
       if (user !== null) {
         state.isAuth = true;
-        state.user = {
-          id: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-        };
+        state.user = user
       }
     },
     signOut: (state) => {

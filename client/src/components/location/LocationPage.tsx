@@ -16,7 +16,7 @@ const LocationPage = () => {
   const { id } = useParams<Props>();
   const loc = clusterMap.locations.features
     .filter((l) => l.geometry.type === "Point")
-    .find((l) => l.properties.id === id)!;
+    .find((l) => l.id === id)!;
 
   return (
     <div className={"h-80vh"}>

@@ -11,7 +11,7 @@ export const LocationPopup: FC<IPopup> = ({ id, setPopupId }) => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
-  const loc = clusterMap.locations.features.find((l) => l.properties.id === id);
+  const loc = clusterMap.locations.features.find((l) => l.id === id);
 
   return (
     <Popup

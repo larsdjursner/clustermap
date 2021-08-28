@@ -18,7 +18,10 @@ export class MapController {
 
   @Get()
   async index() {
-    return await this.service.findAll();
+    // return await this.service.findAll();
+    const index = await this.service.findAll();
+    console.log(index);
+    return index;
   }
 
   @Get(':id')
@@ -42,5 +45,10 @@ export class MapController {
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return await this.service.delete(id);
+  }
+
+  @Delete()
+  async clear() {
+    return await this.service.clear();
   }
 }

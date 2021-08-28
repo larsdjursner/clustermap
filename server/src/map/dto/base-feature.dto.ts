@@ -1,13 +1,11 @@
-import { GenreEnum } from '../schemas/feature.schema';
-
 export class BaseFeatureDto {
+  id: string;
   type: string;
   geometry: {
-    type: 'Point';
+    type: string;
     coordinates: [Number];
   };
   properties: {
-    id: string;
     name: string;
   };
 }

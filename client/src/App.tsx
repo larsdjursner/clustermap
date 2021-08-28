@@ -25,9 +25,15 @@ function App() {
   const auth = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
 
-  fire.auth().onAuthStateChanged((user) => {
-    return (user && dispatch(setAuth()))
-});
+//   fire.auth().onAuthStateChanged((_user) => {
+//     const user : User = {
+//       id: _user.uid,
+//       email: _user.email,
+//       displayName: _user.displayName
+//     } 
+//     dispatch(setAuth({user}));
+//     return (user && dispatch(setAuth()))
+// });
 
   return (
     <div className="App">
