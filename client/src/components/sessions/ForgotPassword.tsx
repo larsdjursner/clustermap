@@ -1,6 +1,5 @@
 import { CheckCircleIcon } from "@heroicons/react/solid";
 import { FormEvent, useState } from "react";
-import { Redirect } from "react-router-dom";
 import fire from "../../fire";
 
 const ForgotPassword = () => {

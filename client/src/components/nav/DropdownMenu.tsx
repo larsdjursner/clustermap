@@ -5,7 +5,7 @@ import { FC } from "react";
 import DropdownItem from "./DropdownItem";
 import { CogIcon, GlobeIcon } from "@heroicons/react/outline";
 import { ChevronRightIcon } from "@heroicons/react/solid";
-import fire from "../../fire";
+import { clear } from "../map/ReactMapSlice";
 
 interface Props {
   open?: boolean;
@@ -23,14 +23,18 @@ const DropdownMenu: FC<Props> = ({ open, children }) => {
     >
       {auth.isAuth ? (
         <>
-          <DropdownItem leftIcon={<GlobeIcon />}>{auth.user?.displayName}</DropdownItem>
+          <DropdownItem leftIcon={<GlobeIcon />}>
+            {auth.user?.displayName}
+          </DropdownItem>
           <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronRightIcon />}>
             Settings
           </DropdownItem>
           <DropdownItem>
             <div
               onClick={() => {
+                dispatch(clear());
                 dispatch(signOut());
+                localStorage.removeItem("jwt");
               }}
             >
               Sign Out

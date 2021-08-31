@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GeoJsonProperties, Geometry } from "geojson";
-import { v4 as uuidv4 } from "uuid";
 import { RootState } from "../../app/store";
 
 enum GradeEnum {
@@ -91,6 +90,8 @@ export const clusterMapSlice = createSlice({
     ) => {},
     clear: (state) => {
       state.locations.features = [];
+      state.focusedLocationID = null;
+      state.renderedLocationsIds = []
     },
     deleteLocation: (state, action: PayloadAction<{ id: string }>) => {},
   },

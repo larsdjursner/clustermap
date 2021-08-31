@@ -1,11 +1,11 @@
 import { FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppDispatch } from "../../app/hooks";
 import fire from "../../fire";
-import { selectAuth, setAuth, User } from "./AuthSlice";
+import { clear } from "../map/ReactMapSlice";
+import { setAuth, User } from "./AuthSlice";
 
 const SignUp = () => {
-  const auth = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -19,19 +19,23 @@ const SignUp = () => {
       fire
         .auth()
         .createUserWithEmailAndPassword(email, password)
-        .then((res) => {
-          const user = fire.auth().currentUser;
-          if (user) {
-            user.updateProfile({
+        .then((userCredential) => {
+          const _user = userCredential.user;
+          if (_user) {
+            _user.updateProfile({
               displayName: `${firstName} ${lastName}`,
             });
-            if (user) {
-              const newUser: User = {
-                id: user.uid,
-                email: user.email,
-                displayName: user.displayName,
+            if (_user) {
+              const user: User = {
+                id: _user.uid,
+                email: _user.email,
+                displayName: _user.displayName,
               };
-              dispatch(setAuth({ user: newUser }));
+              dispatch(clear());
+              dispatch(setAuth({ user }));
+              _user
+                .getIdToken()
+                .then((res) => localStorage.setItem("jwt", res));
             }
           }
         })

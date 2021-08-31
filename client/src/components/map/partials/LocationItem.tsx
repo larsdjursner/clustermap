@@ -9,24 +9,23 @@ import temp from "../../../assets/temp.jpg";
 import { Link } from "react-router-dom";
 
 interface ILocationItem {
-  location: IFeature;
+  locationId: string;
   mutateViewport: (longitude: number, latitude: number, zoom: number) => void;
 }
 
 export const LocationItem: FC<ILocationItem> = ({
-  location,
+  locationId,
   mutateViewport,
 }) => {
   const dispatch = useAppDispatch();
   const clusterMap = useAppSelector(selectClusterMap);
-  // const loc = clusterMap.locations.features.filter(
-  //   (i) => i._id === locationID
-  // )[0];
-  const isFocus = clusterMap.focusedLocationID === location.id;
+  const location = clusterMap.locations.features.find(
+    (i) => i.id === locationId
+  )!;
 
+  const isFocus = clusterMap.focusedLocationID === location.id;
   const handleGoToLocation = (loc: IFeature) => {
     if (loc.geometry.type !== "Point") return;
-
     dispatch(setFocusedLocationId({ id: location.id }));
     mutateViewport(
       loc.geometry.coordinates[0],

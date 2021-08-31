@@ -1,11 +1,11 @@
 import { FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppDispatch } from "../../app/hooks";
 import fire from "../../fire";
-import { selectAuth, setAuth, User } from "./AuthSlice";
+import { clear } from "../map/ReactMapSlice";
+import { setAuth, User } from "./AuthSlice";
 
 const SignIn = () => {
-  const auth = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
 
   const [email, setEmail] = useState("");
@@ -18,13 +18,16 @@ const SignIn = () => {
       .signInWithEmailAndPassword(email, password)
       .then((userCredential) => {
         if (userCredential.user) {
-          const user : User = {
+          const user: User = {
             id: userCredential.user.uid,
             email: userCredential.user.email,
-            displayName: userCredential.user.displayName
-          } 
-          dispatch(setAuth({user}));
-          console.log(userCredential.user.getIdToken());
+            displayName: userCredential.user.displayName,
+          };
+          dispatch(clear());
+          dispatch(setAuth({ user }));
+          userCredential.user
+            .getIdToken()
+            .then((res) => localStorage.setItem("jwt", res));
         }
       })
       .catch((error) => {

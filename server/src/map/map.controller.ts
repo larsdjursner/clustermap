@@ -7,7 +7,6 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { json } from 'express';
 import { CreateFeatureDto } from './dto/create-feature.dto';
 import { UpdateFeatureDto } from './dto/update-feature.dto';
 import { MapService } from './map.service';
@@ -18,10 +17,7 @@ export class MapController {
 
   @Get()
   async index() {
-    // return await this.service.findAll();
-    const index = await this.service.findAll();
-    console.log(index);
-    return index;
+    return await this.service.findAll();
   }
 
   @Get(':id')
