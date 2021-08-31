@@ -23,18 +23,14 @@ import { MongooseModule } from '@nestjs/mongoose';
     }),
     MapModule,
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
-export class AppModule {}
-
-// @Module({
-//   imports: [MapModule],
-//   controllers: [AppController],
-//   providers: [AppService],
-// })
-// export class AppModule implements NestModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer
-//       .apply(PreauthMiddleware)
-//       .forRoutes({ path: '*', method: RequestMethod.ALL });
-//   }
-// }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(PreauthMiddleware)
+      .exclude({ path: '/locations', method: RequestMethod.GET })
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}
