@@ -42,9 +42,4 @@ export class MapController {
   async delete(@Param('id') id: string) {
     return await this.service.delete(id);
   }
-
-  @Delete()
-  async clear() {
-    return await this.service.clear();
-  }
 }

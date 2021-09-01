@@ -29,7 +29,7 @@ export class PreauthMiddleware implements NestMiddleware {
     const token = req.headers.authorization;
 
     if (token === undefined || token === null) {
-      this.accessDenied(req.url, res);
+      this.accessDenied(req.url, res, "Not authorized");
       next();
     }
 
@@ -45,17 +45,17 @@ export class PreauthMiddleware implements NestMiddleware {
       })
       .catch((err) => {
         console.error(err);
-        this.accessDenied(req.url, res);
+        this.accessDenied(req.url, res, err);
         next();
       });
     return;
   }
-  private accessDenied(url: string, res: Response) {
+  private accessDenied(url: string, res: Response, err: string) {
     res.status(403).json({
       statusCode: 403,
       timestamp: new Date().toISOString(),
       path: url,
-      message: 'Access Denied',
+      message: `Access denied, ${err}`,
     });
   }
 }

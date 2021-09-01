@@ -36,8 +36,4 @@ export class MapService {
     return await this.model.findOneAndDelete({id: id}).exec()
   }
 
-  //dev
-  async clear(): Promise<Feature[]> {
-    return await this.model.remove()
-  }
 }
