@@ -1,7 +1,7 @@
 import { Dispatch, FC, SetStateAction } from "react";
 import { Popup } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { selectClusterMap, setFocusedLocationId } from "../ReactMapSlice";
+import { selectClusterMap } from "../ReactMapSlice";
 interface IPopup {
   id: string;
   setPopupId: Dispatch<SetStateAction<string | null>>;

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect,  useRef, useState } from "react";
 import ReactMapGl, {
   MapEvent,
   Source,
@@ -8,7 +8,7 @@ import ReactMapGl, {
 } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
-  addLocation,
+  createLocationAsync,
   IFeature,
   selectClusterMap,
   setFocusedLocationId,
@@ -25,10 +25,10 @@ import { GeoJSONSource, MapboxGeoJSONFeature } from "mapbox-gl";
 import { easeCubic } from "d3-ease";
 import LocationsOverlay from "./partials/LocationsOverlay";
 import { LocationItemStatic } from "./partials/LocationItemStatic";
-import fetchLocationFeatures from "./mapService";
+import { fetchLocationFeatures } from "./mapService";
 
 export type UnclusteredFeature = {
-  _id: string;
+  id: string;
 } & MapboxGeoJSONFeature;
 export interface ViewportMutateProps {
   longitude: number;
@@ -77,23 +77,52 @@ const ReactMap = () => {
     setPopupID(null);
   };
 
+  const handleOnClick = (e: MapEvent): void => {
+    if (clusterMap.toggleCreateLocationMode) {
+      handleCreateLocation(e);
+      return;
+    }
+    // handleFocus(e);
+  };
   const handleFocus = (e: MapEvent): void => {
     if (isInLocations(e)) {
       const id = e.features?.[0]?.id;
       dispatch(setFocusedLocationId({ id: id }));
-      return;
     }
-    handleAddNewMarker(e);
   };
 
-  const handleAddNewMarker = (e: MapEvent): void => {
-    e.preventDefault();
-    setPopupID(null);
-    if (!e.rightButton) return;
-    dispatch(addLocation({ name: "test", coordinates: e.lngLat }));
+  const handleCreateLocation = (e: MapEvent): void => {
+    dispatch(
+      createLocationAsync({
+        properties: { name: "test" },
+        geometry: { coordinates: e.lngLat },
+      })
+    );
   };
 
-  useMemo(() => {
+  const mutateViewport = (
+    longitude: number,
+    latitude: number,
+    zoom: number
+  ) => {
+    setViewport({
+      ...viewport,
+      latitude,
+      longitude,
+      zoom,
+      transitionDuration: 2000,
+      transitionInterpolator: new FlyToInterpolator(),
+      transitionEasing: easeCubic,
+    });
+  };
+
+  useEffect(() => {
+    fetchLocationFeatures().then((res: IFeature[]) => {
+      dispatch(setLocationsAPI({ locations: res }));
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
     const features = mapRef.current?.queryRenderedFeatures(
       [
         [0, 0],
@@ -134,7 +163,7 @@ const ReactMap = () => {
           (_, clusteredFeatures) => {
             clusteredFeatures.map((clusteredFeature) => {
               const feature = clusteredFeature as IFeature;
-              setOfRenderedLocationIds.add(feature.id);
+              return setOfRenderedLocationIds.add(feature.id);
             });
           }
         );
@@ -145,29 +174,8 @@ const ReactMap = () => {
         setRenderedLocationIds({ ids: Array.from(setOfRenderedLocationIds) })
       );
     }, 200);
-  }, [viewport]);
+  }, [viewport, dispatch]);
 
-  const mutateViewport = (
-    longitude: number,
-    latitude: number,
-    zoom: number
-  ) => {
-    setViewport({
-      ...viewport,
-      latitude,
-      longitude,
-      zoom,
-      transitionDuration: 2000,
-      transitionInterpolator: new FlyToInterpolator(),
-      transitionEasing: easeCubic,
-    });
-  };
-
-  useEffect(() => {
-    fetchLocationFeatures().then((res: IFeature[]) => {
-      dispatch(setLocationsAPI({ locations: res }));
-    });
-  }, []);
   return (
     <ReactMapGl
       className={"overflow-hidden"}
@@ -180,7 +188,7 @@ const ReactMap = () => {
         setViewport(newViewport);
       }}
       onHover={(e) => handlePopup(e)}
-      onClick={(e) => handleFocus(e)}
+      onClick={(e) => handleOnClick(e)}
       {...viewport}
       {...settings}
     >
@@ -202,6 +210,9 @@ const ReactMap = () => {
         setSettings={setSettings}
       />
 
+      {clusterMap.toggleCreateLocationMode && (
+        <div className={" bg-white z-50"}>toggled on</div>
+      )}
       {clusterMap.focusedLocationID && (
         <LocationItemStatic locationID={clusterMap.focusedLocationID} />
       )}

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { FC } from "react";
 import DropdownItem from "./DropdownItem";
 import { CogIcon, GlobeIcon } from "@heroicons/react/outline";
-import { ChevronRightIcon } from "@heroicons/react/solid";
+import { ChevronRightIcon, LoginIcon, LogoutIcon } from "@heroicons/react/solid";
 import { clear } from "../map/ReactMapSlice";
 
 interface Props {
@@ -29,7 +29,7 @@ const DropdownMenu: FC<Props> = ({ open, children }) => {
           <DropdownItem leftIcon={<CogIcon />} rightIcon={<ChevronRightIcon />}>
             Settings
           </DropdownItem>
-          <DropdownItem>
+          <DropdownItem leftIcon={<LogoutIcon/>}>
             <div
               onClick={() => {
                 dispatch(clear());
@@ -42,7 +42,7 @@ const DropdownMenu: FC<Props> = ({ open, children }) => {
           </DropdownItem>
         </>
       ) : (
-        <DropdownItem>
+        <DropdownItem leftIcon={<LoginIcon/>}>
           <Link to="/signin">Sign In</Link>
         </DropdownItem>
       )}

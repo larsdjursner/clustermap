@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GeoJsonProperties, Geometry } from "geojson";
 import { RootState } from "../../app/store";
+import { createLocation } from "./mapService";
 
 enum GradeEnum {
   ez,
@@ -34,7 +35,16 @@ export interface IFeature extends GeoJSON.Feature<Geometry, GeoJsonProperties> {
     rating?: number;
     routes?: IRoute[];
     location?: ILocation;
-    createdAt: Date
+    createdAt: Date;
+  };
+}
+
+export interface FeatureCreateDTO {
+  properties: {
+    name: string;
+  };
+  geometry: {
+    coordinates: [number, number];
   };
 }
 
@@ -45,6 +55,7 @@ export interface ClusterMapState {
   locations: IFeatureCollection;
   renderedLocationsIds: string[];
   focusedLocationID: string | null;
+  toggleCreateLocationMode: boolean;
   status: "idle" | "loading" | "failed";
 }
 
@@ -55,13 +66,24 @@ const initialState: ClusterMapState = {
     features: [],
   },
   renderedLocationsIds: [],
+  toggleCreateLocationMode: false,
   status: "idle",
 };
+
+export const createLocationAsync = createAsyncThunk(
+  "locations/createLocation",
+  async (createDTO: FeatureCreateDTO) => {
+    return await createLocation(createDTO);
+  }
+);
 
 export const clusterMapSlice = createSlice({
   name: "clusterMap",
   initialState,
   reducers: {
+    toggleCreateLocationMode: (state) => {
+      state.toggleCreateLocationMode = !state.toggleCreateLocationMode;
+    },
     setLocationsAPI: (
       state,
       action: PayloadAction<{ locations: IFeature[] }>
@@ -80,30 +102,36 @@ export const clusterMapSlice = createSlice({
     ) => {
       state.focusedLocationID = action.payload.id;
     },
-    addLocation: (
-      state,
-      action: PayloadAction<{
-        name: string;
-        coordinates: [number, number];
-        details?: string;
-      }>
-    ) => {},
     clear: (state) => {
       state.locations.features = [];
       state.focusedLocationID = null;
-      state.renderedLocationsIds = []
+      state.renderedLocationsIds = [];
     },
     deleteLocation: (state, action: PayloadAction<{ id: string }>) => {},
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(createLocationAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(createLocationAsync.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.toggleCreateLocationMode = false;
+        state.locations.features = [
+          ...state.locations.features,
+          action.payload,
+        ];
+      });
   },
 });
 
 export const {
-  addLocation,
   clear,
   deleteLocation,
   setFocusedLocationId,
   setRenderedLocationIds,
   setLocationsAPI,
+  toggleCreateLocationMode,
 } = clusterMapSlice.actions;
 export const selectClusterMap = (state: RootState) => state.clusterMap;
 

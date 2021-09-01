@@ -22,7 +22,7 @@ export const LocationItemStatic: FC<ILocationItemStatic> = ({ locationID }) => {
         `}
         >
           <div className={`w-1/4`}>
-            <img className="rounded shadow-lg object-scale-down" src={temp} />
+            <img className="rounded shadow-lg object-scale-down" src={temp} alt={""}/>
           </div>
 
           <div className={`flex flex-col w-3/4 mx-2`}>

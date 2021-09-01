@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { Counter } from "./components/counter/Counter";
 import "./App.css";
 import ReactMap from "./components/map/ReactMap";
@@ -9,36 +8,43 @@ import {
   Route,
   Switch,
 } from "react-router-dom";
-import LocationPage from "./components/location/LocationPage";
-import fire from "./fire";
+import Location from "./components/location/Location";
 import SignIn from "./components/sessions/SignIn";
 import SignUp from "./components/sessions/SignUp";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { selectAuth, setAuth } from "./components/sessions/AuthSlice";
+import { selectAuth } from "./components/sessions/AuthSlice";
 import NavBar from "./components/nav/NavBar";
 import NavItem from "./components/nav/NavItem";
 import DropdownMenu from "./components/nav/DropdownMenu";
 import { GlobeIcon, MenuIcon } from "@heroicons/react/outline";
 import ForgotPassword from "./components/sessions/ForgotPassword";
+import { PlusIcon } from "@heroicons/react/solid";
+import { toggleCreateLocationMode } from "./components/map/ReactMapSlice";
 
 function App() {
   const auth = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
 
-//   fire.auth().onAuthStateChanged((_user) => {
-//     const user : User = {
-//       id: _user.uid,
-//       email: _user.email,
-//       displayName: _user.displayName
-//     } 
-//     dispatch(setAuth({user}));
-//     return (user && dispatch(setAuth()))
-// });
-
   return (
     <div className="App">
       <Router>
         <NavBar>
+          <NavItem
+            icon={
+              auth.isAuth ? (
+                <Link to="/map">
+                  <PlusIcon
+                    className="w-5 h-5  text-gray-200"
+                    onClick={() => dispatch(toggleCreateLocationMode())}
+                  />
+                </Link>
+              ) : (
+                <Link to="/signin">
+                  <PlusIcon className="w-5 h-5  text-gray-200" />
+                </Link>
+              )
+            }
+          />
           <NavItem
             icon={
               <Link to="/map">
@@ -62,16 +68,16 @@ function App() {
           </Route>
           <Route exact path="/map" component={ReactMap} />
           <Route exact path="/counter" component={Counter} />
-          <Route exact path="/locations/:id" component={LocationPage} />
+          <Route exact path="/locations/:id" component={Location} />
           <Route
             exact
             path="/signin"
-            render={() => (!auth.isAuth ? <SignIn /> : <Redirect to="/" />)}
+            render={() => (auth.isAuth ? <Redirect to="/" /> : <SignIn />)}
           />
           <Route
             exact
             path="/signup"
-            render={() => (!auth.isAuth ? <SignUp /> : <Redirect to="/" />)}
+            render={() => (auth.isAuth ? <Redirect to="/" /> : <SignUp />)}
           />
           <Route exact path="/resetpassword" component={ForgotPassword} />
         </Switch>

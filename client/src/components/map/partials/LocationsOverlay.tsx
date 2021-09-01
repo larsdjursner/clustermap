@@ -1,6 +1,6 @@
 import { Dispatch, FC, SetStateAction, useState } from "react";
 import { NavigationControl } from "react-map-gl";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { useAppSelector } from "../../../app/hooks";
 import { selectClusterMap } from "../ReactMapSlice";
 import { LocationItem } from "./LocationItem";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
@@ -20,7 +20,6 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({
   setSettings,
 }) => {
   const clusterMap = useAppSelector(selectClusterMap);
-  // const dispatch = useAppDispatch();
 
   const [open, setOpen] = useState(true);
 
