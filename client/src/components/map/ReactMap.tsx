@@ -1,4 +1,4 @@
-import { useEffect,  useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactMapGl, {
   MapEvent,
   Source,
@@ -26,6 +26,8 @@ import { easeCubic } from "d3-ease";
 import LocationsOverlay from "./partials/LocationsOverlay";
 import { LocationItemStatic } from "./partials/LocationItemStatic";
 import { fetchLocationFeatures } from "./mapService";
+import CreateLocationOverlay from "./partials/CreateLocationOverlay";
+import Overlay from "./partials/Overlay";
 
 export type UnclusteredFeature = {
   id: string;
@@ -63,7 +65,7 @@ const ReactMap = () => {
   const width = mapRef.current?.getMap().getContainer().clientWidth;
   const height = mapRef.current?.getMap().getContainer().clientHeight;
 
-  const isInLocations = (e: MapEvent) => {
+  const isInLocations = (e: MapEvent): boolean => {
     return clusterMap.locations.features
       .map((i) => i.id)
       .includes(e.features?.[0]?.id);
@@ -92,12 +94,14 @@ const ReactMap = () => {
   };
 
   const handleCreateLocation = (e: MapEvent): void => {
-    dispatch(
-      createLocationAsync({
-        properties: { name: "test" },
-        geometry: { coordinates: e.lngLat },
-      })
-    );
+    //needs to make sure we dont click in the overlay
+    console.log(e.lngLat)
+    // dispatch(
+    //   createLocationAsync({
+    //     properties: { name: "test" },
+    //     geometry: { coordinates: e.lngLat },
+    //   })
+    // );
   };
 
   const mutateViewport = (
@@ -205,14 +209,14 @@ const ReactMap = () => {
         <Layer {...unclusteredPointLayer} />
       </Source>
 
-      <LocationsOverlay
-        mutateViewport={mutateViewport}
-        setSettings={setSettings}
-      />
+      <Overlay>
+        <LocationsOverlay
+          mutateViewport={mutateViewport}
+          setSettings={setSettings}
+        />
+        <CreateLocationOverlay />
+      </Overlay>
 
-      {clusterMap.toggleCreateLocationMode && (
-        <div className={" bg-white z-50"}>toggled on</div>
-      )}
       {clusterMap.focusedLocationID && (
         <LocationItemStatic locationID={clusterMap.focusedLocationID} />
       )}

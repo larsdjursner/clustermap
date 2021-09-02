@@ -1,9 +1,10 @@
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
 import { NavigationControl } from "react-map-gl";
 import { useAppSelector } from "../../../app/hooks";
 import { selectClusterMap } from "../ReactMapSlice";
 import { LocationItem } from "./LocationItem";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
+import CreateLocationOverlay from "./CreateLocationOverlay";
 
 const filterByFocusedLocation = (id: string | null, ids: string[]) => {
   if (id === null || !ids.includes(id)) return ids;
@@ -23,63 +24,66 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({
 
   const [open, setOpen] = useState(true);
 
+  useEffect(() => {
+    setOpen(!clusterMap.toggleCreateLocationMode);
+  }, [clusterMap.toggleCreateLocationMode]);
   return (
     <div
       className={
-        "flex flex-row justify-start items-start m-2 h-4/5 max-h-4/5 min-h-4/5"
+        "flex items-start w-full"
       }
     >
-      {open && (
-        <div
-          className={`rounded shadow-lg bg-white bg-opacity-80 w-1/5 flex flex-col justify-between self-stretch mr-2 `}
-          onMouseEnter={() => setSettings({ scrollZoom: false })}
-          onMouseLeave={() => setSettings({ scrollZoom: true })}
-        >
-          {clusterMap.renderedLocationsIds.length === 0 ? (
-            <p className={"m-4 text-sm"}>
-              {"No locations to be found. Zoom and navigate to discover!"}
-            </p>
-          ) : (
-            <ul
-              className={`list-none h-full flex-1 overflow-y-scroll overflow-x-hidden`}
-            >
-              {filterByFocusedLocation(
-                clusterMap.focusedLocationID,
-                clusterMap.renderedLocationsIds
-              ).map((id) => {
-                return (
-                  <LocationItem
-                    key={"li" + id}
-                    locationId={id}
-                    mutateViewport={mutateViewport}
-                  />
-                );
-              })}
-            </ul>
-          )}
-          <p
-            className={"m-4 text-sm"}
-          >{`Locations: ${clusterMap.renderedLocationsIds.length}`}</p>
+        {open && (
+          <div
+            className={`rounded shadow-lg bg-white bg-opacity-80 w-1/5 flex flex-col justify-between self-stretch mr-2 `}
+            onMouseEnter={() => setSettings({ scrollZoom: false })}
+            onMouseLeave={() => setSettings({ scrollZoom: true })}
+          >
+            {clusterMap.renderedLocationsIds.length === 0 ? (
+              <p className={"m-4 text-sm"}>
+                {"No locations to be found. Zoom and navigate to discover!"}
+              </p>
+            ) : (
+              <ul
+                className={`list-none h-full flex-1 overflow-y-scroll overflow-x-hidden`}
+              >
+                {filterByFocusedLocation(
+                  clusterMap.focusedLocationID,
+                  clusterMap.renderedLocationsIds
+                ).map((id) => {
+                  return (
+                    <LocationItem
+                      key={"li" + id}
+                      locationId={id}
+                      mutateViewport={mutateViewport}
+                    />
+                  );
+                })}
+              </ul>
+            )}
+            <p
+              className={"m-4 text-sm"}
+            >{`Locations: ${clusterMap.renderedLocationsIds.length}`}</p>
+          </div>
+        )}
+        <div className={"flex flex-col justify-start"}>
+          <button
+            title="Toggle Sidebar"
+            className={
+              "self-baseline mb-2 focus:outline-none hover:scale-110 transform"
+            }
+            onClick={() => setOpen(!open)}
+          >
+            {open ? (
+              <ChevronLeftIcon className={"h-7 w-7"} />
+            ) : (
+              <ChevronRightIcon className={"h-7 w-7"} />
+            )}
+          </button>
+          <div className={"self-baseline"}>
+            <NavigationControl />
+          </div>
         </div>
-      )}
-      <div className={"flex flex-col justify-start"}>
-        <button
-          title="Toggle Sidebar"
-          className={
-            "self-baseline mb-2 focus:outline-none hover:scale-110 transform"
-          }
-          onClick={() => setOpen(!open)}
-        >
-          {open ? (
-            <ChevronLeftIcon className={"h-7 w-7"} />
-          ) : (
-            <ChevronRightIcon className={"h-7 w-7"} />
-          )}
-        </button>
-        <div className={"self-baseline"}>
-          <NavigationControl />
-        </div>
-      </div>
     </div>
   );
 };

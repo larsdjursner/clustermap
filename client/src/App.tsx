@@ -29,7 +29,7 @@ function App() {
     <div className="App">
       <Router>
         <NavBar>
-          <NavItem
+          {/* <NavItem
             icon={
               auth.isAuth ? (
                 <Link to="/map">
@@ -44,7 +44,7 @@ function App() {
                 </Link>
               )
             }
-          />
+          /> */}
           <NavItem
             icon={
               <Link to="/map">
