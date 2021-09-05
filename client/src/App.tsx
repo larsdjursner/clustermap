@@ -18,33 +18,18 @@ import NavItem from "./components/nav/NavItem";
 import DropdownMenu from "./components/nav/DropdownMenu";
 import { GlobeIcon, MenuIcon } from "@heroicons/react/outline";
 import ForgotPassword from "./components/sessions/ForgotPassword";
-import { PlusIcon } from "@heroicons/react/solid";
-import { toggleCreateLocationMode } from "./components/map/ReactMapSlice";
+import fire from "./fire";
 
 function App() {
   const auth = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
+  
+  // fire.auth().curre
 
   return (
     <div className="App">
       <Router>
         <NavBar>
-          {/* <NavItem
-            icon={
-              auth.isAuth ? (
-                <Link to="/map">
-                  <PlusIcon
-                    className="w-5 h-5  text-gray-200"
-                    onClick={() => dispatch(toggleCreateLocationMode())}
-                  />
-                </Link>
-              ) : (
-                <Link to="/signin">
-                  <PlusIcon className="w-5 h-5  text-gray-200" />
-                </Link>
-              )
-            }
-          /> */}
           <NavItem
             icon={
               <Link to="/map">

@@ -25,7 +25,6 @@ export class PreauthMiddleware implements NestMiddleware {
     });
   }
   use(req: Request, res: Response, next: Function) {
-    console.log(req.headers.authorization);
     const token = req.headers.authorization;
 
     if (token === undefined || token === null) {

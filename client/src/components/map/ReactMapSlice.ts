@@ -39,7 +39,7 @@ export interface IFeature extends GeoJSON.Feature<Geometry, GeoJsonProperties> {
   };
 }
 
-export interface FeatureCreateDTO {
+export interface CreateFeatureDTO {
   properties: {
     name: string;
   };
@@ -55,7 +55,8 @@ export interface ClusterMapState {
   locations: IFeatureCollection;
   renderedLocationsIds: string[];
   focusedLocationID: string | null;
-  toggleCreateLocationMode: boolean;
+  createLocationMode: boolean;
+  createLocationCoordinates: [number, number] | null;
   status: "idle" | "loading" | "failed";
 }
 
@@ -66,13 +67,14 @@ const initialState: ClusterMapState = {
     features: [],
   },
   renderedLocationsIds: [],
-  toggleCreateLocationMode: false,
+  createLocationMode: false,
+  createLocationCoordinates: null,
   status: "idle",
 };
 
 export const createLocationAsync = createAsyncThunk(
   "locations/createLocation",
-  async (createDTO: FeatureCreateDTO) => {
+  async (createDTO: CreateFeatureDTO) => {
     return await createLocation(createDTO);
   }
 );
@@ -82,7 +84,14 @@ export const clusterMapSlice = createSlice({
   initialState,
   reducers: {
     toggleCreateLocationMode: (state) => {
-      state.toggleCreateLocationMode = !state.toggleCreateLocationMode;
+      state.createLocationMode = !state.createLocationMode;
+      console.log(state.createLocationMode)
+    },
+    setCreateLocationCoordinates: (
+      state,
+      action: PayloadAction<{ coords: [number, number] }>
+    ) => {
+      state.createLocationCoordinates = action.payload.coords;
     },
     setLocationsAPI: (
       state,
@@ -116,7 +125,7 @@ export const clusterMapSlice = createSlice({
       })
       .addCase(createLocationAsync.fulfilled, (state, action) => {
         state.status = "idle";
-        state.toggleCreateLocationMode = false;
+        state.createLocationMode = false;
         state.locations.features = [
           ...state.locations.features,
           action.payload,
@@ -132,6 +141,7 @@ export const {
   setRenderedLocationIds,
   setLocationsAPI,
   toggleCreateLocationMode,
+  setCreateLocationCoordinates
 } = clusterMapSlice.actions;
 export const selectClusterMap = (state: RootState) => state.clusterMap;
 

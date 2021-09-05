@@ -1,4 +1,4 @@
-import { FeatureCreateDTO  } from "./ReactMapSlice";
+import { CreateFeatureDTO  } from "./ReactMapSlice";
 
 const API_URI = process.env.REACT_APP_API_URI!;
 const token = `Bearer ${localStorage.getItem("jwt")}`;
@@ -9,7 +9,7 @@ const fetchLocationFeatures = async () => {
   );
 };
 
-const createLocation = async (feature: FeatureCreateDTO) => {
+const createLocation = async (feature: CreateFeatureDTO) => {
   return fetch(`${API_URI}/locations`, {
     method: "POST",
     headers: {

@@ -37,14 +37,14 @@ export const LocationItem: FC<ILocationItem> = ({
   return (
     <li
       onClick={() => handleGoToLocation(location)}
-      className={`p-2 m-2 h-24 rounded flex flex-row justify-between cursor-pointer ${
+      className={`p-2 m-4 rounded flex flex-row justify-between cursor-pointer ${
         isFocus && "bg-gray-200"
       }
       transition duration-200 transform hover:bg-gray-200 hover:scale-105 hover:border-gray-700
       `}
     >
       <div className={`w-1/4`}>
-        <img className="rounded shadow-lg object-scale-down" src={temp} />
+        <img className="rounded shadow-lg object-scale-down max-h-full" src={temp} />
       </div>
 
       <div className={`flex flex-col w-3/4 mx-2 h-auto justify-between`}>

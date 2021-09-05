@@ -25,8 +25,8 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({
   const [open, setOpen] = useState(true);
 
   useEffect(() => {
-    setOpen(!clusterMap.toggleCreateLocationMode);
-  }, [clusterMap.toggleCreateLocationMode]);
+    setOpen(false);
+  }, [clusterMap.createLocationMode]);
   return (
     <div
       className={
@@ -35,7 +35,7 @@ const LocationsOverlay: FC<ILocationsOverlay> = ({
     >
         {open && (
           <div
-            className={`rounded shadow-lg bg-white bg-opacity-80 w-1/5 flex flex-col justify-between self-stretch mr-2 `}
+            className={`rounded shadow-lg bg-white bg-opacity-80 flex flex-col justify-between self-stretch mr-2 w-1/4`}
             onMouseEnter={() => setSettings({ scrollZoom: false })}
             onMouseLeave={() => setSettings({ scrollZoom: true })}
           >

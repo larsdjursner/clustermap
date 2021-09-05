@@ -25,6 +25,8 @@ export class MapService {
     const createDto = dto
     createDto.properties.createdAt = new Date();
     createDto.id = uuidv4();
+
+    console.log(createDto)
     return await new this.model({ ...createDto }).save();
   }
 

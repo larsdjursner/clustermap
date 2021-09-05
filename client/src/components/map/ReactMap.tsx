@@ -5,12 +5,14 @@ import ReactMapGl, {
   Layer,
   MapRef,
   FlyToInterpolator,
+  Marker,
 } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   createLocationAsync,
   IFeature,
   selectClusterMap,
+  setCreateLocationCoordinates,
   setFocusedLocationId,
   setLocationsAPI,
   setRenderedLocationIds,
@@ -28,6 +30,7 @@ import { LocationItemStatic } from "./partials/LocationItemStatic";
 import { fetchLocationFeatures } from "./mapService";
 import CreateLocationOverlay from "./partials/CreateLocationOverlay";
 import Overlay from "./partials/Overlay";
+import { LocationMarkerIcon } from "@heroicons/react/solid";
 
 export type UnclusteredFeature = {
   id: string;
@@ -80,7 +83,7 @@ const ReactMap = () => {
   };
 
   const handleOnClick = (e: MapEvent): void => {
-    if (clusterMap.toggleCreateLocationMode) {
+    if (clusterMap.createLocationMode) {
       handleCreateLocation(e);
       return;
     }
@@ -94,14 +97,8 @@ const ReactMap = () => {
   };
 
   const handleCreateLocation = (e: MapEvent): void => {
-    //needs to make sure we dont click in the overlay
-    console.log(e.lngLat)
-    // dispatch(
-    //   createLocationAsync({
-    //     properties: { name: "test" },
-    //     geometry: { coordinates: e.lngLat },
-    //   })
-    // );
+    console.log(e.lngLat);
+    dispatch(setCreateLocationCoordinates({ coords: e.lngLat }));
   };
 
   const mutateViewport = (
@@ -126,63 +123,66 @@ const ReactMap = () => {
     });
   }, [dispatch]);
 
+  //add skeleton loading for list
   useEffect(() => {
-    const features = mapRef.current?.queryRenderedFeatures(
-      [
-        [0, 0],
-        [width, height],
-      ],
-      {
-        layers: ["unclustered-point", "clusters"],
-      }
-    );
-    if (features === undefined) {
-      return;
-    }
-
-    const setOfRenderedLocationIds: Set<string> = new Set();
-    const clusterSource: GeoJSONSource = mapRef.current
-      ?.getMap()
-      .getSource("locations");
-
-    features.forEach((current: MapboxGeoJSONFeature) => {
-      if (current.layer.id === "unclustered-point") {
-        const feature = clusterMap.locations.features.find(
-          (i) =>
-            i.properties.name === current.properties?.name &&
-            i.properties.createdAt === current.properties?.createdAt
-        ); //super unsatisfying hack until id can be properly assigned to locations through mapbox api
-        if (feature) {
-          setOfRenderedLocationIds.add(feature?.id!);
+    if (clusterMap.status == "idle") {
+      const features = mapRef.current?.queryRenderedFeatures(
+        [
+          [0, 0],
+          [width, height],
+        ],
+        {
+          layers: ["unclustered-point", "clusters"],
         }
-      }
-      if (current.layer.id === "clusters") {
-        const clusterId = current.properties?.cluster_id;
-        const pointCount = current.properties?.point_count;
-
-        clusterSource.getClusterLeaves(
-          clusterId,
-          pointCount,
-          0,
-          (_, clusteredFeatures) => {
-            clusteredFeatures.map((clusteredFeature) => {
-              const feature = clusteredFeature as IFeature;
-              return setOfRenderedLocationIds.add(feature.id);
-            });
-          }
-        );
-      }
-    });
-    setTimeout(() => {
-      dispatch(
-        setRenderedLocationIds({ ids: Array.from(setOfRenderedLocationIds) })
       );
-    }, 200);
+      if (features === undefined) {
+        return;
+      }
+
+      const setOfRenderedLocationIds: Set<string> = new Set();
+      const clusterSource: GeoJSONSource = mapRef.current
+        ?.getMap()
+        .getSource("locations");
+
+      features.forEach((current: MapboxGeoJSONFeature) => {
+        if (current.layer.id === "unclustered-point") {
+          const feature = clusterMap.locations.features.find(
+            (i) =>
+              i.properties.name === current.properties?.name &&
+              i.properties.createdAt === current.properties?.createdAt
+          ); //super unsatisfying hack until id can be properly assigned to locations through mapbox api
+          if (feature) {
+            setOfRenderedLocationIds.add(feature?.id!);
+          }
+        }
+        if (current.layer.id === "clusters") {
+          const clusterId = current.properties?.cluster_id;
+          const pointCount = current.properties?.point_count;
+
+          clusterSource.getClusterLeaves(
+            clusterId,
+            pointCount,
+            0,
+            (_, clusteredFeatures) => {
+              clusteredFeatures.map((clusteredFeature) => {
+                const feature = clusteredFeature as IFeature;
+                return setOfRenderedLocationIds.add(feature.id);
+              });
+            }
+          );
+        }
+      });
+      setTimeout(() => {
+        dispatch(
+          setRenderedLocationIds({ ids: Array.from(setOfRenderedLocationIds) })
+        );
+      }, 200);
+    }
   }, [viewport, dispatch]);
 
   return (
     <ReactMapGl
-      className={"overflow-hidden"}
+      className={"overflow-hidden absolute"}
       ref={mapRef}
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!}
       // style={"mapbox://styles/mapbox/streets-v11"}
@@ -216,6 +216,17 @@ const ReactMap = () => {
         />
         <CreateLocationOverlay />
       </Overlay>
+
+      {clusterMap.createLocationCoordinates && (
+        <Marker
+          longitude={clusterMap.createLocationCoordinates[0]}
+          latitude={clusterMap.createLocationCoordinates[1]}
+          offsetLeft={-15}
+          offsetTop={-25}
+        >
+          <LocationMarkerIcon  className={"h-7 w-7"}/>
+        </Marker>
+      )}
 
       {clusterMap.focusedLocationID && (
         <LocationItemStatic locationID={clusterMap.focusedLocationID} />
