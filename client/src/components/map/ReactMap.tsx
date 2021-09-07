@@ -25,12 +25,11 @@ import {
 import { LocationPopup } from "./partials/LocationPopup";
 import { GeoJSONSource, MapboxGeoJSONFeature } from "mapbox-gl";
 import { easeCubic } from "d3-ease";
-import LocationsOverlay from "./partials/LocationsOverlay";
 import { LocationItemStatic } from "./partials/LocationItemStatic";
 import { fetchLocationFeatures } from "./mapService";
-import CreateLocationOverlay from "./partials/CreateLocationOverlay";
-import Overlay from "./partials/Overlay";
 import { LocationMarkerIcon } from "@heroicons/react/solid";
+import OverlayShowLocations from "./partials/OverlayShowLocations";
+import OverlayCreateLocations from "./partials/OverlayCreateLocations";
 
 export type UnclusteredFeature = {
   id: string;
@@ -55,12 +54,9 @@ const ReactMap = () => {
   const dispatch = useAppDispatch();
   const [mapBounds] = useState<{ width: string; height: string }>({
     width: "100%",
-    height: "55vw",
+    height: "54.2vw",
   });
   const [viewport, setViewport] = useState(DEFAULT_VIEWPORT);
-  const [settings, setSettings] = useState({
-    scrollZoom: true,
-  });
 
   const mapRef = useRef<MapRef>(null);
   const [popupID, setPopupID] = useState<null | string>(null);
@@ -121,7 +117,7 @@ const ReactMap = () => {
     fetchLocationFeatures().then((res: IFeature[]) => {
       dispatch(setLocationsAPI({ locations: res }));
     });
-  }, [dispatch]);
+  }, []);
 
   //add skeleton loading for list
   useEffect(() => {
@@ -181,60 +177,56 @@ const ReactMap = () => {
   }, [viewport, dispatch]);
 
   return (
-    <ReactMapGl
-      className={"overflow-hidden absolute"}
-      ref={mapRef}
-      mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!}
-      // style={"mapbox://styles/mapbox/streets-v11"}
-      width={mapBounds.width}
-      height={mapBounds.height}
-      onViewportChange={(newViewport: any) => {
-        setViewport(newViewport);
-      }}
-      onHover={(e) => handlePopup(e)}
-      onClick={(e) => handleOnClick(e)}
-      {...viewport}
-      {...settings}
-    >
-      <Source
-        id="locations"
-        type="geojson"
-        data={clusterMap.locations}
-        cluster={true}
-        clusterMaxZoom={14}
-        clusterRadius={50}
+    <>
+      <ReactMapGl
+        className={"overflow-hidden absolute"}
+        ref={mapRef}
+        mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!}
+        mapStyle="mapbox://styles/mapbox/dark-v9"
+        width={mapBounds.width}
+        height={mapBounds.height}
+        onViewportChange={(newViewport: any) => {
+          setViewport(newViewport);
+        }}
+        onHover={(e) => handlePopup(e)}
+        onClick={(e) => handleOnClick(e)}
+        {...viewport}
       >
-        <Layer {...clusterLayer} />
-        <Layer {...clusterCountLayer} />
-        <Layer {...unclusteredPointLayer} />
-      </Source>
-
-      <Overlay>
-        <LocationsOverlay
-          mutateViewport={mutateViewport}
-          setSettings={setSettings}
-        />
-        <CreateLocationOverlay />
-      </Overlay>
-
-      {clusterMap.createLocationCoordinates && (
-        <Marker
-          longitude={clusterMap.createLocationCoordinates[0]}
-          latitude={clusterMap.createLocationCoordinates[1]}
-          offsetLeft={-15}
-          offsetTop={-25}
+        <Source
+          id="locations"
+          type="geojson"
+          data={clusterMap.locations}
+          cluster={true}
+          clusterMaxZoom={14}
+          clusterRadius={50}
         >
-          <LocationMarkerIcon  className={"h-7 w-7"}/>
-        </Marker>
-      )}
+          <Layer {...clusterLayer} />
+          <Layer {...clusterCountLayer} />
+          <Layer {...unclusteredPointLayer} />
+        </Source>
 
-      {clusterMap.focusedLocationID && (
-        <LocationItemStatic locationID={clusterMap.focusedLocationID} />
-      )}
-      {popupID !== null && (
-        <LocationPopup id={popupID} setPopupId={setPopupID} />
-      )}
-    </ReactMapGl>
+        {clusterMap.createLocationCoordinates && (
+          <Marker
+            longitude={clusterMap.createLocationCoordinates[0]}
+            latitude={clusterMap.createLocationCoordinates[1]}
+            offsetLeft={-15}
+            offsetTop={-25}
+          >
+            <LocationMarkerIcon className={"h-7 w-7"} />
+          </Marker>
+        )}
+
+        {/* {clusterMap.focusedLocationID && (
+          <LocationItemStatic locationID={clusterMap.focusedLocationID} />
+        )} */}
+        {/* {popupID !== null && (
+          <LocationPopup id={popupID} setPopupId={setPopupID} />
+        )} */}
+      </ReactMapGl>
+
+      <OverlayShowLocations mutateViewport={mutateViewport} />
+      <OverlayCreateLocations mutateViewport={mutateViewport} />
+    </>
   );
 };
 
