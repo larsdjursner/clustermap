@@ -212,7 +212,7 @@ const ReactMap = () => {
             offsetLeft={-15}
             offsetTop={-25}
           >
-            <LocationMarkerIcon className={"h-7 w-7"} />
+            <LocationMarkerIcon className={"h-7 w-7 stroke-current text-white"} />
           </Marker>
         )}
 

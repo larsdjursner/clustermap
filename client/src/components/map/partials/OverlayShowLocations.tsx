@@ -66,9 +66,9 @@ const OverlayShowLocations: FC<IOverlayChildLocations> = ({
           onClick={() => setOpen(!open)}
         >
           {open ? (
-            <ChevronLeftIcon className={"h-7 w-7"} />
+            <ChevronLeftIcon className={"h-7 w-7 stroke-current text-white"} />
           ) : (
-            <ChevronRightIcon className={"h-7 w-7"} />
+            <ChevronRightIcon className={"h-7 w-7 stroke-current text-white"} />
           )}
         </button>
       </div>

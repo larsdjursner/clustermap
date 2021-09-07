@@ -5,6 +5,7 @@ import { selectAuth } from "../../sessions/AuthSlice";
 import {
   CreateFeatureDTO,
   createLocationAsync,
+  resetCreateLocationCoordinates,
   selectClusterMap,
   toggleCreateLocationMode,
 } from "../ReactMapSlice";
@@ -26,6 +27,11 @@ const OverlayCreateLocations: FC<IOverlayChildLocations> = ({
     }
   };
 
+  const cleanUp = () => {
+    dispatch(resetCreateLocationCoordinates());
+    setOpen(false);
+  };
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -45,7 +51,8 @@ const OverlayCreateLocations: FC<IOverlayChildLocations> = ({
         clusterMap.createLocationCoordinates[1],
         12
       );
-      setOpen(false);
+
+      cleanUp();
     }
   };
   return (
@@ -95,9 +102,9 @@ const OverlayCreateLocations: FC<IOverlayChildLocations> = ({
           }}
         >
           {open ? (
-            <MinusIcon className={"h-7 w-7"} />
+            <MinusIcon className={"h-7 w-7 stroke-current text-white"} />
           ) : (
-            <PlusIcon className={"h-7 w-7"} />
+            <PlusIcon className={"h-7 w-7 stroke-current text-white"} />
           )}
         </button>
       </div>

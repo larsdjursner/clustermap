@@ -85,13 +85,16 @@ export const clusterMapSlice = createSlice({
   reducers: {
     toggleCreateLocationMode: (state) => {
       state.createLocationMode = !state.createLocationMode;
-      console.log(state.createLocationMode)
+      console.log(state.createLocationMode);
     },
     setCreateLocationCoordinates: (
       state,
       action: PayloadAction<{ coords: [number, number] }>
     ) => {
       state.createLocationCoordinates = action.payload.coords;
+    },
+    resetCreateLocationCoordinates: (state) => {
+      state.createLocationCoordinates = null;
     },
     setLocationsAPI: (
       state,
@@ -141,7 +144,8 @@ export const {
   setRenderedLocationIds,
   setLocationsAPI,
   toggleCreateLocationMode,
-  setCreateLocationCoordinates
+  setCreateLocationCoordinates,
+  resetCreateLocationCoordinates
 } = clusterMapSlice.actions;
 export const selectClusterMap = (state: RootState) => state.clusterMap;
 
