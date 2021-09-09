@@ -10,6 +10,7 @@ const SignIn = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,6 +34,10 @@ const SignIn = () => {
       .catch((error) => {
         alert(error.message);
       });
+    if (rememberMe) {
+      console.log("persistence set")
+      fire.auth().setPersistence(fire.auth.Auth.Persistence.SESSION);
+    }
   };
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -106,6 +111,7 @@ const SignIn = () => {
                   name="remember-me"
                   type="checkbox"
                   className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  onChange={(e) => setRememberMe(e.target.checked)}
                 />
                 <label
                   htmlFor="remember-me"

@@ -121,7 +121,7 @@ const ReactMap = () => {
 
   //add skeleton loading for list
   useEffect(() => {
-    if (clusterMap.status == "idle") {
+    if (clusterMap.status === "idle") {
       const features = mapRef.current?.queryRenderedFeatures(
         [
           [0, 0],

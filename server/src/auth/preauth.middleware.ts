@@ -17,10 +17,10 @@ const firebase_params = {
 };
 
 export class PreauthMiddleware implements NestMiddleware {
-  private defaultApp: any;
+  private fire: any;
 
   constructor() {
-    this.defaultApp = firebase.initializeApp({
+    this.fire = firebase.initializeApp({
       credential: firebase.credential.cert(firebase_params),
     });
   }
@@ -32,7 +32,7 @@ export class PreauthMiddleware implements NestMiddleware {
       next();
     }
 
-    this.defaultApp
+    this.fire
       .auth()
       .verifyIdToken(token.replace('Bearer ', ''))
       .then(async (decodedToken) => {

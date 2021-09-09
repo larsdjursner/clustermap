@@ -12,35 +12,42 @@ import Location from "./components/location/Location";
 import SignIn from "./components/sessions/SignIn";
 import SignUp from "./components/sessions/SignUp";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import { selectAuth } from "./components/sessions/AuthSlice";
+import {
+  selectAuth,
+  setAuth,
+  User,
+} from "./components/sessions/AuthSlice";
 import NavBar from "./components/nav/NavBar";
-import NavItem from "./components/nav/NavItem";
-import DropdownMenu from "./components/nav/DropdownMenu";
-import { GlobeIcon, MenuIcon } from "@heroicons/react/outline";
-import ForgotPassword from "./components/sessions/ForgotPassword";
 import fire from "./fire";
+import { clear } from "./components/map/ReactMapSlice";
+import ForgotPassword from "./components/sessions/ForgotPassword";
 
 function App() {
   const auth = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
-  
-  // fire.auth().curre
+
+  fire.auth().onAuthStateChanged((currentLoggedInUser) => {
+    if (currentLoggedInUser && !auth.isAuth) {
+      const user: User = {
+        id: currentLoggedInUser.uid,
+        email: currentLoggedInUser.email,
+        displayName: currentLoggedInUser.displayName,
+      };
+      dispatch(clear());
+      dispatch(setAuth({ user }));
+
+      currentLoggedInUser
+        .getIdToken(true)
+        .then((res) => localStorage.setItem("jwt", res));
+
+      return;
+    }
+  });
 
   return (
     <div className="App">
       <Router>
-        <NavBar>
-          <NavItem
-            icon={
-              <Link to="/map">
-                <GlobeIcon className="w-5 h-5  text-gray-200" />
-              </Link>
-            }
-          />
-          <NavItem icon={<MenuIcon className="w-5 h-5  text-gray-200" />}>
-            <DropdownMenu></DropdownMenu>
-          </NavItem>
-        </NavBar>
+        <NavBar />
         <Switch>
           <Route exact path="/">
             <h3>landing page</h3>
