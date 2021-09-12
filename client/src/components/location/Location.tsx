@@ -1,4 +1,3 @@
-import React, { FC } from "react";
 import { useParams } from "react-router";
 import temp from "../../assets/temp.jpg";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -9,14 +8,14 @@ interface Props {
   id: string;
 }
 
-const LocationPage = () => {
+const Location = () => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
   const { id } = useParams<Props>();
   const loc = clusterMap.locations.features
     .filter((l) => l.geometry.type === "Point")
-    .find((l) => l.properties.id === id)!;
+    .find((l) => l.id === id)!;
 
   return (
     <div className={"h-80vh"}>
@@ -35,4 +34,4 @@ const LocationPage = () => {
   );
 };
 
-export default LocationPage;
+export default Location;

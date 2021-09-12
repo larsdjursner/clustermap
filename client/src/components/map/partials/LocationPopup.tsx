@@ -1,7 +1,7 @@
 import { Dispatch, FC, SetStateAction } from "react";
 import { Popup } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { selectClusterMap, setFocusedLocationId } from "../ReactMapSlice";
+import { selectClusterMap } from "../ReactMapSlice";
 interface IPopup {
   id: string;
   setPopupId: Dispatch<SetStateAction<string | null>>;
@@ -11,7 +11,7 @@ export const LocationPopup: FC<IPopup> = ({ id, setPopupId }) => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
-  const loc = clusterMap.locations.features.find((l) => l.properties.id === id);
+  const loc = clusterMap.locations.features.find((l) => l.id === id);
 
   return (
     <Popup

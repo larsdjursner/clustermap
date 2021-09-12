@@ -1,11 +1,14 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import counterReducer from "../features/counter/counterSlice";
-import clusterMapReducer from "../features/map/ReactMapSlice";
+import counterReducer from "../components/counter/counterSlice";
+import clusterMapReducer from "../components/map/ReactMapSlice";
+import authReducer from "../components/sessions/AuthSlice"
+
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     clusterMap: clusterMapReducer,
+    auth: authReducer
   },
 });
 
