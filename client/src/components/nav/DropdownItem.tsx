@@ -8,7 +8,7 @@ interface Props {
 const DropdownItem: FC<Props> = ({ children, leftIcon, rightIcon }) => {
   return (
     <div
-      className=" h-12 flex items-center p-2 border-b-1 border-solid hover:bg-gray-300 rounded-lg"
+      className=" h-12 flex items-center p-2 border-b-1 border-solid hover:bg-gray-300 rounded-lg cursor-pointer"
     >
       <span className="mr-2">{leftIcon}</span>
       {children}
