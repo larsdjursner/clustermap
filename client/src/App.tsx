@@ -37,7 +37,7 @@ function App() {
       dispatch(setAuth({ user }));
 
       currentLoggedInUser
-        .getIdToken(true)
+        .getIdToken()
         .then((res) => localStorage.setItem("jwt", res));
 
       return;

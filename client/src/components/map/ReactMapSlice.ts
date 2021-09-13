@@ -115,7 +115,6 @@ export const clusterMapSlice = createSlice({
       state.focusedLocationID = action.payload.id;
     },
     clear: (state) => {
-      state.locations.features = [];
       state.focusedLocationID = null;
       state.renderedLocationsIds = [];
     },

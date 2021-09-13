@@ -61,9 +61,6 @@ const ReactMap = () => {
   const mapRef = useRef<MapRef>(null);
   const [popupID, setPopupID] = useState<null | string>(null);
 
-  const width = mapRef.current?.getMap().getContainer().clientWidth;
-  const height = mapRef.current?.getMap().getContainer().clientHeight;
-
   const isInLocations = (e: MapEvent): boolean => {
     return clusterMap.locations.features
       .map((i) => i.id)
@@ -72,7 +69,11 @@ const ReactMap = () => {
 
   const handlePopup = (e: MapEvent): void => {
     if (isInLocations(e)) {
-      setPopupID(e.features?.[0]?.id);
+      console.log("inloc");
+
+      const id = e.features?.[0]?.id;
+      dispatch(setFocusedLocationId({ id: id }));
+      setPopupID(id);
       return;
     }
     setPopupID(null);
@@ -83,17 +84,10 @@ const ReactMap = () => {
       handleCreateLocation(e);
       return;
     }
-    // handleFocus(e);
-  };
-  const handleFocus = (e: MapEvent): void => {
-    if (isInLocations(e)) {
-      const id = e.features?.[0]?.id;
-      dispatch(setFocusedLocationId({ id: id }));
-    }
+    handlePopup(e);
   };
 
   const handleCreateLocation = (e: MapEvent): void => {
-    console.log(e.lngLat);
     dispatch(setCreateLocationCoordinates({ coords: e.lngLat }));
   };
 
@@ -125,7 +119,10 @@ const ReactMap = () => {
       const features = mapRef.current?.queryRenderedFeatures(
         [
           [0, 0],
-          [width, height],
+          [
+            mapRef.current?.getMap().getContainer().clientWidth,
+            mapRef.current?.getMap().getContainer().clientHeight,
+          ],
         ],
         {
           layers: ["unclustered-point", "clusters"],
@@ -160,7 +157,7 @@ const ReactMap = () => {
             pointCount,
             0,
             (_, clusteredFeatures) => {
-              clusteredFeatures.map((clusteredFeature) => {
+              clusteredFeatures?.map((clusteredFeature) => {
                 const feature = clusteredFeature as IFeature;
                 return setOfRenderedLocationIds.add(feature.id);
               });
@@ -172,9 +169,9 @@ const ReactMap = () => {
         dispatch(
           setRenderedLocationIds({ ids: Array.from(setOfRenderedLocationIds) })
         );
-      }, 200);
+      }, 500);
     }
-  }, [viewport, dispatch]);
+  }, [viewport]);
 
   return (
     <>
@@ -188,7 +185,6 @@ const ReactMap = () => {
         onViewportChange={(newViewport: any) => {
           setViewport(newViewport);
         }}
-        onHover={(e) => handlePopup(e)}
         onClick={(e) => handleOnClick(e)}
         {...viewport}
       >
@@ -212,16 +208,13 @@ const ReactMap = () => {
             offsetLeft={-15}
             offsetTop={-25}
           >
-            <LocationMarkerIcon className={"h-7 w-7 stroke-current text-white"} />
+            <LocationMarkerIcon
+              className={"h-7 w-7 stroke-current text-white"}
+            />
           </Marker>
         )}
 
-        {/* {clusterMap.focusedLocationID && (
-          <LocationItemStatic locationID={clusterMap.focusedLocationID} />
-        )} */}
-        {/* {popupID !== null && (
-          <LocationPopup id={popupID} setPopupId={setPopupID} />
-        )} */}
+        {popupID && <LocationPopup id={popupID} setPopupId={setPopupID} />}
       </ReactMapGl>
 
       <OverlayShowLocations mutateViewport={mutateViewport} />

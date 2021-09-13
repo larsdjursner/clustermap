@@ -21,8 +21,8 @@ export const LocationPopup: FC<IPopup> = ({ id, setPopupId }) => {
       latitude={
         loc?.geometry.type === "Point" ? loc?.geometry.coordinates[1] : 0
       }
+      tipSize={5}
       // closeOnClick={false}
-      // closeButton={true}
       // onClose={() => {
       //   setPopupId(null);
       // }}
