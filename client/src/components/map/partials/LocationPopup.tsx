@@ -3,11 +3,11 @@ import { Popup } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { selectClusterMap } from "../ReactMapSlice";
 interface IPopup {
-  id: string;
+  featureId: string;
   setPopupId: Dispatch<SetStateAction<string | null>>;
 }
 
-export const LocationPopup: FC<IPopup> = ({ id, setPopupId }) => {
+export const LocationPopup: FC<IPopup> = ({ featureId: id, setPopupId }) => {
   const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
@@ -22,10 +22,10 @@ export const LocationPopup: FC<IPopup> = ({ id, setPopupId }) => {
         loc?.geometry.type === "Point" ? loc?.geometry.coordinates[1] : 0
       }
       tipSize={5}
-      // closeOnClick={false}
-      // onClose={() => {
-      //   setPopupId(null);
-      // }}
+      closeOnClick={false}
+      onClose={() => {
+        setPopupId(null);
+      }}
       anchor={"top"}
     >
       <p>{loc?.properties.name}</p>

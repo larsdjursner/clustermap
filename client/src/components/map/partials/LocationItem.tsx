@@ -20,13 +20,13 @@ export const LocationItem: FC<ILocationItem> = ({
   const dispatch = useAppDispatch();
   const clusterMap = useAppSelector(selectClusterMap);
   const location = clusterMap.locations.features.find(
-    (i) => i.id === locationId
+    (i) => i.properties.featureId === locationId
   )!;
 
-  const isFocus = clusterMap.focusedLocationID === location.id;
+  const isFocus = clusterMap.focusedLocationID === location.properties.featureId;
   const handleGoToLocation = (loc: IFeature) => {
     if (loc.geometry.type !== "Point") return;
-    dispatch(setFocusedLocationId({ id: location.id }));
+    dispatch(setFocusedLocationId({ id: location.properties.featureId }));
     mutateViewport(
       loc.geometry.coordinates[0],
       loc.geometry.coordinates[1],
@@ -60,7 +60,7 @@ export const LocationItem: FC<ILocationItem> = ({
             isFocus && "font-bold"
           }`}
         >
-          <Link to={`/locations/${location.id}`}>View more</Link>
+          <Link to={`/locations/${location.properties.featureId}`}>View more</Link>
         </div>
       </div>
     </li>

@@ -14,6 +14,9 @@ const GeometrySchema = SchemaFactory.createForClass(Geometry).remove('_id');
 
 @Schema()
 export class Properties {
+  @Prop({ type: String })
+  id: string;
+
   @Prop({ type: String, required: true })
   name: string;
 
@@ -23,8 +26,8 @@ export class Properties {
 
 @Schema()
 export class Feature {
-  @Prop({ type: String })
-  id: string;
+  // @Prop({ type: String })
+  // id: string;
 
   @Prop({ type: String, default: 'Feature' })
   type: string;

@@ -30,10 +30,11 @@ import { fetchLocationFeatures } from "./mapService";
 import { LocationMarkerIcon } from "@heroicons/react/solid";
 import OverlayShowLocations from "./partials/OverlayShowLocations";
 import OverlayCreateLocations from "./partials/OverlayCreateLocations";
+import { selectAuth } from "../sessions/AuthSlice";
 
-export type UnclusteredFeature = {
-  id: string;
-} & MapboxGeoJSONFeature;
+// export type UnclusteredFeature = {
+//   id: string;
+// } & MapboxGeoJSONFeature;
 export interface ViewportMutateProps {
   longitude: number;
   latitude: number;
@@ -51,6 +52,8 @@ const DEFAULT_VIEWPORT = {
 
 const ReactMap = () => {
   const clusterMap = useAppSelector(selectClusterMap);
+  const auth = useAppSelector(selectAuth);
+
   const dispatch = useAppDispatch();
   const [mapBounds] = useState<{ width: string; height: string }>({
     width: "100%",
@@ -61,17 +64,17 @@ const ReactMap = () => {
   const mapRef = useRef<MapRef>(null);
   const [popupID, setPopupID] = useState<null | string>(null);
 
-  const isInLocations = (e: MapEvent): boolean => {
-    return clusterMap.locations.features
-      .map((i) => i.id)
-      .includes(e.features?.[0]?.id);
+  const isInRenderedFeatures = (e: MapEvent): boolean => {
+    return clusterMap.renderedLocationsIds.includes(
+      e.features?.[0].properties.featureId
+    );
   };
 
   const handlePopup = (e: MapEvent): void => {
-    if (isInLocations(e)) {
+    if (isInRenderedFeatures(e)) {
       console.log("inloc");
 
-      const id = e.features?.[0]?.id;
+      const id = e.features?.[0]?.properties.featureId;
       dispatch(setFocusedLocationId({ id: id }));
       setPopupID(id);
       return;
@@ -140,12 +143,10 @@ const ReactMap = () => {
       features.forEach((current: MapboxGeoJSONFeature) => {
         if (current.layer.id === "unclustered-point") {
           const feature = clusterMap.locations.features.find(
-            (i) =>
-              i.properties.name === current.properties?.name &&
-              i.properties.createdAt === current.properties?.createdAt
-          ); //super unsatisfying hack until id can be properly assigned to locations through mapbox api
+            (i) => i.properties.featureId === current.properties?.featureId
+          );
           if (feature) {
-            setOfRenderedLocationIds.add(feature?.id!);
+            setOfRenderedLocationIds.add(feature.properties.featureId);
           }
         }
         if (current.layer.id === "clusters") {
@@ -159,7 +160,9 @@ const ReactMap = () => {
             (_, clusteredFeatures) => {
               clusteredFeatures?.map((clusteredFeature) => {
                 const feature = clusteredFeature as IFeature;
-                return setOfRenderedLocationIds.add(feature.id);
+                return setOfRenderedLocationIds.add(
+                  feature.properties.featureId
+                );
               });
             }
           );
@@ -214,7 +217,9 @@ const ReactMap = () => {
           </Marker>
         )}
 
-        {popupID && <LocationPopup id={popupID} setPopupId={setPopupID} />}
+        {popupID && (
+          <LocationPopup featureId={popupID} setPopupId={setPopupID} />
+        )}
       </ReactMapGl>
 
       <OverlayShowLocations mutateViewport={mutateViewport} />

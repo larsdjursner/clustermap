@@ -26,8 +26,8 @@ interface ILocation {
 }
 
 export interface IFeature extends GeoJSON.Feature<Geometry, GeoJsonProperties> {
-  id: string;
   properties: {
+    featureId: string;
     name: string;
     details?: string;
     genre?: GenreEnum[];
@@ -144,7 +144,7 @@ export const {
   setLocationsAPI,
   toggleCreateLocationMode,
   setCreateLocationCoordinates,
-  resetCreateLocationCoordinates
+  resetCreateLocationCoordinates,
 } = clusterMapSlice.actions;
 export const selectClusterMap = (state: RootState) => state.clusterMap;
 
