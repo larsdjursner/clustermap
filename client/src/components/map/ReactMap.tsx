@@ -72,14 +72,15 @@ const ReactMap = () => {
 
   const handlePopup = (e: MapEvent): void => {
     if (isInRenderedFeatures(e)) {
-      console.log("inloc");
-
       const id = e.features?.[0]?.properties.featureId;
       dispatch(setFocusedLocationId({ id: id }));
       setPopupID(id);
+      console.log(popupID);
       return;
     }
     setPopupID(null);
+    console.log(popupID);
+    return;
   };
 
   const handleOnClick = (e: MapEvent): void => {
