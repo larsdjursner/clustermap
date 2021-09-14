@@ -21,6 +21,7 @@ import NavBar from "./components/nav/NavBar";
 import fire from "./fire";
 import { clear } from "./components/map/ReactMapSlice";
 import ForgotPassword from "./components/sessions/ForgotPassword";
+// import NavBar from "./components/nav/NewNavBar";
 
 function App() {
   const auth = useAppSelector(selectAuth);

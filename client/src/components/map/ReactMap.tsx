@@ -32,9 +32,6 @@ import OverlayShowLocations from "./partials/OverlayShowLocations";
 import OverlayCreateLocations from "./partials/OverlayCreateLocations";
 import { selectAuth } from "../sessions/AuthSlice";
 
-// export type UnclusteredFeature = {
-//   id: string;
-// } & MapboxGeoJSONFeature;
 export interface ViewportMutateProps {
   longitude: number;
   latitude: number;
@@ -48,6 +45,8 @@ const DEFAULT_VIEWPORT = {
   transitionDuration: 2000,
   transitionInterpolator: new FlyToInterpolator(),
   transitionEasing: easeCubic,
+  width: "100vw",
+  height: "100vh",
 };
 
 const ReactMap = () => {
@@ -55,10 +54,6 @@ const ReactMap = () => {
   const auth = useAppSelector(selectAuth);
 
   const dispatch = useAppDispatch();
-  const [mapBounds] = useState<{ width: string; height: string }>({
-    width: "100%",
-    height: "54.2vw",
-  });
   const [viewport, setViewport] = useState(DEFAULT_VIEWPORT);
 
   const mapRef = useRef<MapRef>(null);
@@ -180,12 +175,10 @@ const ReactMap = () => {
   return (
     <>
       <ReactMapGl
-        className={"overflow-hidden absolute"}
+        className={"overflow-hidden "}
         ref={mapRef}
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!}
         mapStyle="mapbox://styles/mapbox/dark-v9"
-        width={mapBounds.width}
-        height={mapBounds.height}
         onViewportChange={(newViewport: any) => {
           setViewport(newViewport);
         }}

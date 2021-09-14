@@ -9,7 +9,8 @@ const NavItem : FC<Props>= ({icon, children}) => {
   return (
     <li className="w-12 flex items-center justify-center">
       <div
-        className="w-8 h-8 rounded-full bg-gray-500 p-2 m-1 flex items-center justify-center transition filter duration-300 hover:bg-gray-400"
+        className="w-8 h-8 rounded-full 
+        bg-gray-500 p-2 m-1 flex items-center justify-center hover:bg-gray-400 transition duration-500 ease-out cursor-pointer"
         onClick={() => setOpen(!open)}
       >
         {icon }
