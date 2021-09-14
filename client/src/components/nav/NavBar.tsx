@@ -22,7 +22,8 @@ const NavBar: FC = () => {
   return (
     <nav
       className={
-        " h-12 bg-gray-800 py-0 px-4 border-b-1 border-solid border-gray-900 absolute z-40 w-full"
+        " h-12 bg-gray-800 py-0 px-4 border-b-1 border-solid border-gray-900 "
+        // absolute z-40 w-full"
       }
     >
       <ul
