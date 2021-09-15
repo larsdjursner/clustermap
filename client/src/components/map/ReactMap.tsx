@@ -46,7 +46,7 @@ const DEFAULT_VIEWPORT = {
   transitionInterpolator: new FlyToInterpolator(),
   transitionEasing: easeCubic,
   width: "100vw",
-  height: "93.7vh",
+  height: "93.8vh",
 };
 
 const ReactMap = () => {
