@@ -1,4 +1,3 @@
-import { Counter } from "./components/counter/Counter";
 import "./App.css";
 import ReactMap from "./components/map/ReactMap";
 import {
@@ -12,16 +11,12 @@ import Location from "./components/location/Location";
 import SignIn from "./components/sessions/SignIn";
 import SignUp from "./components/sessions/SignUp";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
-import {
-  selectAuth,
-  setAuth,
-  User,
-} from "./components/sessions/AuthSlice";
+import { selectAuth, setAuth, User } from "./components/sessions/AuthSlice";
 import NavBar from "./components/nav/NavBar";
 import fire from "./fire";
 import { clear } from "./components/map/ReactMapSlice";
 import ForgotPassword from "./components/sessions/ForgotPassword";
-// import NavBar from "./components/nav/NewNavBar";
+import LandingPage from "./components/landing/LandingPage";
 
 function App() {
   const auth = useAppSelector(selectAuth);
@@ -50,17 +45,8 @@ function App() {
       <Router>
         <NavBar />
         <Switch>
-          <Route exact path="/">
-            <h3>landing page</h3>
-            <div>
-              <Link to="/map">go to map</Link>
-            </div>
-            <div>
-              <Link to="/counter">go to counter, placeholder</Link>
-            </div>
-          </Route>
+          <Route exact path="/" component={LandingPage} />
           <Route exact path="/map" component={ReactMap} />
-          <Route exact path="/counter" component={Counter} />
           <Route exact path="/locations/:id" component={Location} />
           <Route
             exact

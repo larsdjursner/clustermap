@@ -1,20 +1,15 @@
 import {
-  ChevronRightIcon,
-  CogIcon,
   GlobeIcon,
-  LoginIcon,
-  LogoutIcon,
-  MenuIcon,
 } from "@heroicons/react/solid";
 import { FC } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectAuth, signOut } from "../sessions/AuthSlice";
-import DropdownItem from "./DropdownItem";
-import DropdownMenu from "./DropdownMenu";
+import { selectAuth} from "../sessions/AuthSlice";
 import NavItem from "./NavItem";
-import { clear } from "../map/ReactMapSlice";
 import MountainLogo from "./partials/MountainLogo";
+import MenuDropdown from "./MenuDropdown";
+import SearchBarPlaceholder from "./SearchBarPlaceholder";
+import DarkModeToggle from "./DarkModeToggle";
 
 const NavBar: FC = () => {
   const auth = useAppSelector(selectAuth);
@@ -22,15 +17,24 @@ const NavBar: FC = () => {
   return (
     <nav
       className={
-        " h-12 bg-gray-800 py-0 px-4 border-b-1 border-solid border-gray-900 "
-        // absolute z-40 w-full"
+        "w-screen h-12 bg-gray-700 py-0 px-4 border-solid border-gray-800 border-b-2"
       }
     >
-      <ul
-        className={" list-none m-0 p-0 max-w-full h-full flex justify-between"}
-      >
-        <MountainLogo />
-        <ul className={" list-none m-0 p-0 max-w-full h-full flex justify-end"}>
+      <div className={"m-0 p-0 max-w-full h-full flex justify-between"}>
+        <div
+          className={
+            "m-0 p-0 max-w-full h-full flex justify-between gap-40 items-center"
+          }
+        >
+          <MountainLogo />
+          <SearchBarPlaceholder />
+        </div>
+        <div
+          className={
+            "m-0 p-0 max-w-full h-full flex justify-end place-content-center gap-10 mr-8"
+          }
+        >
+          {/* <DarkModeToggle/> */}
           <NavItem
             icon={
               <Link to="/map">
@@ -38,40 +42,9 @@ const NavBar: FC = () => {
               </Link>
             }
           />
-          <NavItem icon={<MenuIcon className="w-5 h-5  text-gray-200" />}>
-            <DropdownMenu>
-              {auth.isAuth ? (
-                <>
-                  <DropdownItem leftIcon={<GlobeIcon />}>
-                    {auth.user?.displayName}
-                  </DropdownItem>
-                  <DropdownItem
-                    leftIcon={<CogIcon />}
-                    rightIcon={<ChevronRightIcon />}
-                  >
-                    Settings
-                  </DropdownItem>
-                  <DropdownItem leftIcon={<LogoutIcon />}>
-                    <div
-                      onClick={() => {
-                        dispatch(clear());
-                        dispatch(signOut());
-                        localStorage.removeItem("jwt");
-                      }}
-                    >
-                      <Link to="/">Sign Out</Link>
-                    </div>
-                  </DropdownItem>
-                </>
-              ) : (
-                <DropdownItem leftIcon={<LoginIcon />}>
-                  <Link to="/signin">Sign In</Link>
-                </DropdownItem>
-              )}
-            </DropdownMenu>
-          </NavItem>
-        </ul>
-      </ul>
+          <MenuDropdown />
+        </div>
+      </div>
     </nav>
   );
 };
