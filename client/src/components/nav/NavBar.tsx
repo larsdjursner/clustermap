@@ -1,12 +1,10 @@
-import {
-  GlobeIcon,
-} from "@heroicons/react/solid";
+import { GlobeIcon } from "@heroicons/react/solid";
 import { FC } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectAuth} from "../sessions/AuthSlice";
+import { selectAuth } from "../sessions/AuthSlice";
 import NavItem from "./NavItem";
-import MountainLogo from "./partials/MountainLogo";
+import NavLogo from "./partials/NavLogo";
 import MenuDropdown from "./MenuDropdown";
 import SearchBarPlaceholder from "./SearchBarPlaceholder";
 import DarkModeToggle from "./DarkModeToggle";
@@ -26,7 +24,7 @@ const NavBar: FC = () => {
             "m-0 p-0 max-w-full h-full flex justify-between gap-40 items-center"
           }
         >
-          <MountainLogo />
+          <NavLogo />
           <SearchBarPlaceholder />
         </div>
         <div
@@ -34,7 +32,7 @@ const NavBar: FC = () => {
             "m-0 p-0 max-w-full h-full flex justify-end place-content-center gap-10 mr-8"
           }
         >
-          {/* <DarkModeToggle/> */}
+          <NavItem icon={<DarkModeToggle />} />
           <NavItem
             icon={
               <Link to="/map">

@@ -36,7 +36,7 @@ const MenuDropdown = () => {
     <div className={"flex items-center"}>
       <Menu as="div" className=" relative inline-block text-left">
         <div>
-          <Menu.Button className="inline-flex justify-center w-26 gap-2 px-4 py-2 text-sm font-medium text-white bg-black rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+          <Menu.Button className="inline-flex justify-center w-28 gap-2 px-4 py-2 text-sm font-medium text-white bg-black rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
             {auth.isAuth ? (
               <>
                 <p>{generateInitials()}</p>
@@ -71,7 +71,7 @@ const MenuDropdown = () => {
                       <UserIcon className={"h-5 w-5 mx-2 text-blue-900"} />
                     }
                   >
-                    {auth.user?.displayName}
+                    <Link to="/account">{auth.user?.displayName}</Link>
                   </MenuItem>
                   <MenuItem
                     inActiveIcon={
@@ -81,7 +81,7 @@ const MenuDropdown = () => {
                       <CogIcon className={"h-5 w-5 mx-2 text-blue-900"} />
                     }
                   >
-                    {"Settings"}
+                    <Link to="/settings">Settings</Link>
                   </MenuItem>
                   <MenuItem
                     inActiveIcon={

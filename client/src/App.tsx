@@ -17,6 +17,8 @@ import fire from "./fire";
 import { clear } from "./components/map/ReactMapSlice";
 import ForgotPassword from "./components/sessions/ForgotPassword";
 import LandingPage from "./components/landing/LandingPage";
+import Settings from "./components/sessions/Settings";
+import Account from "./components/sessions/Account";
 
 function App() {
   const auth = useAppSelector(selectAuth);
@@ -47,6 +49,8 @@ function App() {
         <Switch>
           <Route exact path="/" component={LandingPage} />
           <Route exact path="/map" component={ReactMap} />
+          <Route exact path="/settings" component={Settings} />
+          <Route exact path="/account" component={Account} />
           <Route exact path="/locations/:id" component={Location} />
           <Route
             exact

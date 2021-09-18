@@ -11,7 +11,7 @@ const DarkModeToggle = () => {
       onChange={setEnabled}
       className={`${
         enabled ? "bg-gray-600" : "bg-gray-200"
-      } relative inline-flex items-center h-6 rounded-full w-11`}
+      } relative inline-flex items-center h-5 rounded-full w-11`}
     >
       <span className="sr-only">Darkmode</span>
       <span

@@ -1,6 +1,7 @@
 import { MinusIcon, PlusIcon } from "@heroicons/react/solid";
 import { cleanup } from "@testing-library/react";
-import { FC, FormEvent, useState } from "react";
+import { useMemo } from "hoist-non-react-statics/node_modules/@types/react";
+import { FC, FormEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { selectAuth } from "../../sessions/AuthSlice";
 import {
@@ -34,6 +35,13 @@ const OverlayCreateLocations: FC<IOverlayChildLocations> = ({
     setOpen(bool);
   };
 
+  const trimCoords = () => {
+    const arr = clusterMap.createLocationCoordinates;
+    if (arr) {
+      return [arr[0].toString().slice(0, 5), arr[1].toString().slice(0, 5)];
+    }
+  };
+
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -62,16 +70,14 @@ const OverlayCreateLocations: FC<IOverlayChildLocations> = ({
       <div className={`flex flex-row-reverse items-start`}>
         {open && (
           <div
-            className={`rounded shadow-lg bg-white bg-opacity-80 flex flex-col justify-between self-stretch h-1/2`}
+            className={`rounded shadow-lg bg-white bg-opacity-80 flex flex-col justify-between self-stretch h-1/2 w-full`}
           >
             {auth.isAuth ? (
               <div>
                 <div className={"m-4 h-14"}>
-                  <p className={"text-sm w-full"}>
+                  <p className={"text-sm w-full break-normal"}>
                     {clusterMap.createLocationCoordinates != null
-                      ? `Your location ${name} will be placed at ${
-                          clusterMap.createLocationCoordinates
-                        }`
+                      ? `Your location ${name} will be placed at ${trimCoords()}`
                       : "Click a spot on the map to place coordinates for your new climbing location!"}
                   </p>
                 </div>
