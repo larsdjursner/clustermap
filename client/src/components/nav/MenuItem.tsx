@@ -12,7 +12,7 @@ const MenuItem: FC<Props> = ({ activeIcon, inActiveIcon, handleClick, children }
       {({ active }) => (
         <button
           className={`${
-            active ? "bg-blue-200 text-gray-900" : "text-gray-600"
+            active ? "bg-gray-300 text-gray-900 font-bold" : "text-gray-600"
           } group flex rounded-md items-center w-full py-2 my-2 text-md justify-start gap-4`}
         >
           {active ? activeIcon : inActiveIcon && inActiveIcon}

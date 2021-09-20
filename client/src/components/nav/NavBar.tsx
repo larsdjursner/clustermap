@@ -24,14 +24,14 @@ const NavBar: FC = () => {
           }
         >
           <NavLogo />
-          <SearchBarPlaceholder />
+          {/* <SearchBarPlaceholder /> */}
         </div>
         <div
           className={
             "m-0 p-0 max-w-full h-full flex justify-end place-content-center gap-10 mr-8"
           }
         >
-          <NavItem icon={<DarkModeToggle />} />
+          {/* <NavItem icon={<DarkModeToggle />} /> */}
           <NavItem
             icon={
               <Link to="/map">

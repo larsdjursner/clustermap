@@ -25,7 +25,6 @@ import {
 import { LocationPopup } from "./partials/LocationPopup";
 import { GeoJSONSource, MapboxGeoJSONFeature } from "mapbox-gl";
 import { easeCubic } from "d3-ease";
-import { LocationItemStatic } from "./partials/LocationItemStatic";
 import { fetchLocationFeatures } from "./mapService";
 import { LocationMarkerIcon } from "@heroicons/react/solid";
 import OverlayShowLocations from "./partials/OverlayShowLocations";

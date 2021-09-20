@@ -21,7 +21,7 @@ const MenuDropdown = () => {
   const generateInitials = () => {
     if (auth.user?.displayName) {
       const nameArray = auth.user?.displayName.split(" ");
-      return nameArray[0][0] + nameArray[nameArray.length - 1][0];
+      return nameArray[0];
     }
     return "";
   };
@@ -66,7 +66,7 @@ const MenuDropdown = () => {
                       <UserIcon className={"h-5 w-5 mx-2 text-gray-600"} />
                     }
                     activeIcon={
-                      <UserIcon className={"h-5 w-5 mx-2 text-blue-900"} />
+                      <UserIcon className={"h-5 w-5 mx-2 text-gray-900"} />
                     }
                   >
                     <Link to="/account">{auth.user?.displayName}</Link>
@@ -76,7 +76,7 @@ const MenuDropdown = () => {
                       <CogIcon className={"h-5 w-5 mx-2 text-gray-600"} />
                     }
                     activeIcon={
-                      <CogIcon className={"h-5 w-5 mx-2 text-blue-900"} />
+                      <CogIcon className={"h-5 w-5 mx-2 text-gray-900"} />
                     }
                   >
                     <Link to="/settings">Settings</Link>
@@ -86,7 +86,7 @@ const MenuDropdown = () => {
                       <LogoutIcon className={"h-5 w-5 mx-2 text-gray-600"} />
                     }
                     activeIcon={
-                      <LogoutIcon className={"h-5 w-5 mx-2 text-blue-900"} />
+                      <LogoutIcon className={"h-5 w-5 mx-2 text-gray-900"} />
                     }
                     handleClick={SignOutCallback}
                   >
@@ -99,7 +99,7 @@ const MenuDropdown = () => {
                     <LoginIcon className={"h-5 w-5 mx-2 text-gray-600"} />
                   }
                   activeIcon={
-                    <LoginIcon className={"h-5 w-5 mx-2 text-blue-900"} />
+                    <LoginIcon className={"h-5 w-5 mx-2 text-gray-900"} />
                   }
                 >
                   <Link to="/signin">Sign In</Link>

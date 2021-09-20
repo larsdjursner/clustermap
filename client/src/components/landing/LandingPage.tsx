@@ -4,7 +4,10 @@ const LandingPage = () => {
   return (
     <div className={"bg-gray-600 w-screen h-body"}>
       <div className={"h-full w-full"}>
-        <img src={landingtemp} className={" h-full w-full object-contain"} />
+        <img
+          src={landingtemp}
+          className={" h-full w-full object-cover object-top"}
+        />
       </div>
     </div>
   );
