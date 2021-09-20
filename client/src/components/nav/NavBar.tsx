@@ -10,12 +10,11 @@ import SearchBarPlaceholder from "./SearchBarPlaceholder";
 import DarkModeToggle from "./DarkModeToggle";
 
 const NavBar: FC = () => {
-  const auth = useAppSelector(selectAuth);
-  const dispatch = useAppDispatch();
+
   return (
     <nav
       className={
-        "w-screen h-12 bg-gray-700 py-0 px-4 border-solid border-gray-800 border-b-2"
+        "w-screen h-nav bg-gray-700 py-0 px-4 border-solid border-gray-800 border-b-2"
       }
     >
       <div className={"m-0 p-0 max-w-full h-full flex justify-between"}>

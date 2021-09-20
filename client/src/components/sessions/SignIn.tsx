@@ -27,21 +27,27 @@ const SignIn = () => {
           };
           dispatch(clear());
           dispatch(setAuth({ user }));
-          userCredential.user
-            .getIdToken()
-            .then((res) => localStorage.setItem("jwt", res));
+          userCredential.user.getIdToken().then((res) => {
+            if (rememberMe) {
+              localStorage.setItem("jwt", res);
+              fire.auth().setPersistence(fire.auth.Auth.Persistence.LOCAL);
+
+              return;
+            }
+            sessionStorage.setItem("jwt", res);
+            fire.auth().setPersistence(fire.auth.Auth.Persistence.SESSION);
+          });
         }
       })
       .catch((error) => {
         alert(error.message);
       });
-    if (rememberMe) {
-      console.log("persistence set");
-      fire.auth().setPersistence(fire.auth.Auth.Persistence.SESSION);
-    }
+    // if (rememberMe) {
+    //   console.log("persistence set");
+    // }
   };
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="h-body bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className={"flex justify-center"}>
           <Logo />

@@ -66,7 +66,7 @@ const OverlayCreateLocations: FC<IOverlayChildLocations> = ({
     }
   };
   return (
-    <div className={"absolute top-16 right-0 mx-2 w-1/4 max-w-1/4 min-w-1/4"}>
+    <div className={"absolute top-16 right-0 mx-2 w-1/4 max-w-1/4 min-w-1/4  lg:w-1/6"}>
       <div className={`flex flex-row-reverse items-start`}>
         {open && (
           <div

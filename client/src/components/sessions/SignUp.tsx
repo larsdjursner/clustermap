@@ -36,7 +36,10 @@ const SignUp = () => {
               dispatch(setAuth({ user }));
               _user
                 .getIdToken()
-                .then((res) => localStorage.setItem("jwt", res));
+                .then((res) => {
+                  sessionStorage.setItem("jwt", res);
+                  fire.auth().setPersistence(fire.auth.Auth.Persistence.SESSION);
+                });
             }
           }
         })
@@ -46,7 +49,7 @@ const SignUp = () => {
     }
   };
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="h-body bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className={"flex justify-center"}>
           <Logo />

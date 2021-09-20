@@ -34,16 +34,19 @@ function App() {
       dispatch(clear());
       dispatch(setAuth({ user }));
 
-      currentLoggedInUser
-        .getIdToken()
-        .then((res) => localStorage.setItem("jwt", res));
-
-      return;
+      currentLoggedInUser.getIdToken().then((res) => {
+        if (localStorage.getItem("jwt")) {
+          localStorage.setItem("jwt", res);
+          return;
+        }
+        sessionStorage.setItem("jwt", res);
+        return;
+      });
     }
   });
 
   return (
-    <div className="App">
+    <div className="h-screen w-screen">
       <Router>
         <NavBar />
         <Switch>

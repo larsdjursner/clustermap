@@ -27,10 +27,8 @@ const MenuDropdown = () => {
   };
 
   const SignOutCallback = () => {
-    console.log("passing down sign out");
     dispatch(clear());
     dispatch(signOut());
-    localStorage.removeItem("jwt");
   };
   return (
     <div className={"flex items-center"}>

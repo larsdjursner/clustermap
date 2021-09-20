@@ -20,11 +20,11 @@ const OverlayShowLocations: FC<IOverlayChildLocations> = ({
 
   const [open, setOpen] = useState(true);
 
-  useEffect(() => {
-    setOpen(false);
-  }, [clusterMap.createLocationMode]);
+  // useEffect(() => {
+  //   setOpen(false);
+  // }, [clusterMap.createLocationMode]);
   return (
-    <div className={"absolute top-16 mx-2 w-1/4"}>
+    <div className={"absolute top-16 mx-2 w-1/4 lg:w-1/6"}>
       <div className={`flex items-start`}>
         {open && (
           <div
