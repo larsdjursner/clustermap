@@ -7,9 +7,14 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
   // constructor() {}
 
-  @Get("/hello")
-  getHello(@Req() request: Request): string {
-    return this.appService.getHello(request['user']);
+  @Get("/helloreq")
+  getHelloReq(@Req() request: Request): string {
+    return this.appService.getHelloReq(request['user']);
     // return `Hello ${request['user']?.email}!`
+  }
+
+  @Get("/hello")
+  getHello(): string {
+    return this.appService.getHello();
   }
 }

@@ -1,7 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
+import { Route, RouteSchema } from './route.schema';
 
 export type FeatureDocument = Feature & Document;
+
 @Schema()
 export class Geometry {
   @Prop({ type: String, default: 'Point' })
@@ -22,13 +24,13 @@ export class Properties {
 
   @Prop({ type: Date, default: Date.now })
   createdAt: Date;
+
+  @Prop({type : RouteSchema})
+  routes: Route[]
 }
 
 @Schema()
 export class Feature {
-  // @Prop({ type: String })
-  // id: string;
-
   @Prop({ type: String, default: 'Feature' })
   type: string;
 
