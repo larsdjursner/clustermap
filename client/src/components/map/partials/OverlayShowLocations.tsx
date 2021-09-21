@@ -20,7 +20,7 @@ const OverlayShowLocations: FC<IOverlayChildLocations> = ({
   const [open, setOpen] = useState(true);
 
   return (
-    <div className={"absolute top-16 mx-2 w-1/4 min-1/4 lg:w-1/6 lg:min-w-1/6"}>
+    <div className={"absolute top-16 mx-2 w-1/4 min-1/4 2xl:w-1/6"}>
       <div className={`flex items-start`}>
         {open && (
           <div
@@ -49,9 +49,15 @@ const OverlayShowLocations: FC<IOverlayChildLocations> = ({
                 })}
               </ul>
             )}
-            <p
-              className={"m-4 text-sm"}
-            >{`Locations: ${clusterMap.renderedLocationsIds.length}`}</p>
+            <div>
+              <p
+                className={"m-4 text-sm"}
+              >{`Locations rendered: ${clusterMap.renderedLocationsIds.length}`}</p>
+
+              <p
+                className={"m-4 text-sm"}
+              >{`Locations in total: ${clusterMap.locations.features.length}`}</p>
+            </div>
           </div>
         )}
         <button
