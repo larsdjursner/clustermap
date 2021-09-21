@@ -22,6 +22,9 @@ export class Properties {
   @Prop({ type: String, required: true })
   name: string;
 
+  @Prop({ type: String, required: true })
+  creatorId: string;
+
   @Prop({ type: Date, default: Date.now })
   createdAt: Date;
 

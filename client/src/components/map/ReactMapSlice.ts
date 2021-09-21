@@ -3,21 +3,21 @@ import { GeoJsonProperties, Geometry } from "geojson";
 import { RootState } from "../../app/store";
 import { createLocation } from "./mapService";
 
-enum GradeEnum {
-  ez,
-  toomuch,
-}
+//take from backend when needed
+enum GradeEnum {}
+enum CharacteristicsEnum {}
 enum GenreEnum {
   Bouldering,
   SportsClimbing,
   TraditionalClimbing,
 }
-enum CharacteristicsEnum {}
 
-interface IRoute {
+export interface IRoute {
   name: string;
   grade?: GradeEnum;
   characteristics?: CharacteristicsEnum;
+  genre?: GenreEnum;
+  feature: IFeature;
 }
 
 interface ILocation {
@@ -29,24 +29,25 @@ export interface IFeature extends GeoJSON.Feature<Geometry, GeoJsonProperties> {
   properties: {
     featureId: string;
     name: string;
+    createdAt: Date;
+    creatorId: string;
     details?: string;
-    genre?: GenreEnum[];
-    characteristics?: CharacteristicsEnum[];
-    rating?: number;
     routes?: IRoute[];
     location?: ILocation;
-    createdAt: Date;
   };
 }
 
 export interface CreateFeatureDTO {
   properties: {
     name: string;
+    creatorId: string;
   };
   geometry: {
     coordinates: [number, number];
   };
 }
+
+export interface CreateRouteDTO extends IRoute {}
 
 export interface IFeatureCollection extends GeoJSON.FeatureCollection {
   features: IFeature[];

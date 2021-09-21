@@ -5,5 +5,6 @@ export class CreateFeatureDto extends BaseFeatureDto {
     featureId: string;
     name: string;
     createdAt: Date;
+    creatorId: string;
   };
 }

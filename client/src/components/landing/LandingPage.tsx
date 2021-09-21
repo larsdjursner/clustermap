@@ -2,7 +2,7 @@ import landingtemp from "../../assets/landingtemp.jpg";
 
 const LandingPage = () => {
   return (
-    <div className={"bg-gray-600 w-screen h-body"}>
+    <div className={"bg-gray-600 w-screen h-screen"}>
       <div className={"h-full w-full"}>
         <img
           src={landingtemp}
