@@ -25,7 +25,6 @@ import {
 import { LocationPopup } from "./partials/LocationPopup";
 import { GeoJSONSource, MapboxGeoJSONFeature } from "mapbox-gl";
 import { easeCubic } from "d3-ease";
-import { LocationItemStatic } from "./partials/LocationItemStatic";
 import { fetchLocationFeatures } from "./mapService";
 import { LocationMarkerIcon } from "@heroicons/react/solid";
 import OverlayShowLocations from "./partials/OverlayShowLocations";
@@ -46,7 +45,7 @@ const DEFAULT_VIEWPORT = {
   transitionInterpolator: new FlyToInterpolator(),
   transitionEasing: easeCubic,
   width: "100vw",
-  height: "93.8vh",
+  height: "calc(100vh - 3rem)"
 };
 
 const ReactMap = () => {
@@ -175,7 +174,7 @@ const ReactMap = () => {
   return (
     <>
       <ReactMapGl
-        className={"overflow-hidden "}
+        className={"overflow-hidden w-full h-body "}
         ref={mapRef}
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!}
         mapStyle="mapbox://styles/mapbox/dark-v9"

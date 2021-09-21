@@ -34,6 +34,8 @@ export const authSlice = createSlice({
       fire.auth().signOut();
       state.isAuth = false;
       state.user = null;
+      localStorage.removeItem("jwt");
+      sessionStorage.removeItem("jwt");
     },
   },
 });

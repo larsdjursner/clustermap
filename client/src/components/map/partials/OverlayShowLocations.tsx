@@ -17,19 +17,15 @@ const OverlayShowLocations: FC<IOverlayChildLocations> = ({
   mutateViewport,
 }) => {
   const clusterMap = useAppSelector(selectClusterMap);
-
   const [open, setOpen] = useState(true);
 
-  useEffect(() => {
-    setOpen(false);
-  }, [clusterMap.createLocationMode]);
   return (
-    <div className={"absolute top-16 mx-2 w-1/4"}>
+    <div className={"absolute top-16 mx-2 w-1/4 min-1/4 2xl:w-1/6"}>
       <div className={`flex items-start`}>
         {open && (
           <div
-            className={`rounded shadow-lg bg-white bg-opacity-80`}
-            style={{ height: "80vh" }}
+            className={`rounded shadow-lg bg-white bg-opacity-80 h-screen4/5`}
+            // style={{ height: "80vh" }}
           >
             {clusterMap.renderedLocationsIds.length === 0 ? (
               <p className={"m-4 text-sm"}>
@@ -53,9 +49,15 @@ const OverlayShowLocations: FC<IOverlayChildLocations> = ({
                 })}
               </ul>
             )}
-            <p
-              className={"m-4 text-sm"}
-            >{`Locations: ${clusterMap.renderedLocationsIds.length}`}</p>
+            <div>
+              <p
+                className={"m-4 text-sm"}
+              >{`Locations rendered: ${clusterMap.renderedLocationsIds.length}`}</p>
+
+              <p
+                className={"m-4 text-sm"}
+              >{`Locations in total: ${clusterMap.locations.features.length}`}</p>
+            </div>
           </div>
         )}
         <button

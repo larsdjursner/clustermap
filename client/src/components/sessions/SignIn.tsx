@@ -2,6 +2,7 @@ import { FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppDispatch } from "../../app/hooks";
 import fire from "../../fire";
+import Logo from "../logo/Logo";
 import { clear } from "../map/ReactMapSlice";
 import { setAuth, User } from "./AuthSlice";
 
@@ -26,27 +27,31 @@ const SignIn = () => {
           };
           dispatch(clear());
           dispatch(setAuth({ user }));
-          userCredential.user
-            .getIdToken()
-            .then((res) => localStorage.setItem("jwt", res));
+          userCredential.user.getIdToken().then((res) => {
+            if (rememberMe) {
+              localStorage.setItem("jwt", res);
+              fire.auth().setPersistence(fire.auth.Auth.Persistence.LOCAL);
+
+              return;
+            }
+            sessionStorage.setItem("jwt", res);
+            fire.auth().setPersistence(fire.auth.Auth.Persistence.SESSION);
+          });
         }
       })
       .catch((error) => {
         alert(error.message);
       });
-    if (rememberMe) {
-      console.log("persistence set")
-      fire.auth().setPersistence(fire.auth.Auth.Persistence.SESSION);
-    }
+    // if (rememberMe) {
+    //   console.log("persistence set");
+    // }
   };
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="h-body bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        {/* <img
-          className="mx-auto h-12 w-auto"
-          src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-          alt="Workflow"
-        /> */}
+        <div className={"flex justify-center"}>
+          <Logo />
+        </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Sign in to your account
         </h2>

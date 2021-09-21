@@ -1,23 +1,19 @@
 import { FC, useState } from "react";
 
 interface Props {
-  icon : any;
+  icon: any;
 }
 
-const NavItem : FC<Props>= ({icon, children}) => {
-  const [open, setOpen] = useState(false);
+const NavItem: FC<Props> = ({ icon, children }) => {
   return (
-    <li className="w-12 flex items-center justify-center">
+    <div className="flex items-center justify-center">
       <div
-        className="w-8 h-8 rounded-full 
-        bg-gray-500 p-2 m-1 flex items-center justify-center hover:bg-gray-400 transition duration-500 ease-out cursor-pointer"
-        onClick={() => setOpen(!open)}
+        className="inline-flex justify-center w-24 px-4 py-2 text-sm font-medium text-white bg-black rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
       >
-        {icon }
+        {icon}
       </div>
-      {open && children}
-      
-    </li>
+      {children}
+    </div>
   );
 };
 

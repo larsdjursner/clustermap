@@ -18,17 +18,14 @@ const Location = () => {
     .find((l) => l.properties.featureId === id)!;
 
   return (
-    <div className={"h-80vh"}>
+    <div className={"h-body"}>
       <div
         style={{ backgroundImage: `url(${temp})` }}
-        className={`object-scale-down w-full h-full`}
+        className={`object-scale-down w-full h-full object-right-bottom`}
       >
         <div className={`flex flex-row justify-center items-center h-full`}>
           <p className={`text-4xl text-white text font-black`}>{loc.properties.name}</p>
         </div>
-      </div>
-      <div className={`w-full h-screen`}>
-        <p className={"text-3xl"}>{loc.properties.name}</p>
       </div>
     </div>
   );
