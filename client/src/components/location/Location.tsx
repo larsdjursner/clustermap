@@ -1,25 +1,40 @@
 import { useParams } from "react-router";
 import temp from "../../assets/temp.jpg";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectClusterMap } from "../map/ReactMapSlice";
+import { IFeature, selectClusterMap } from "../map/ReactMapSlice";
 import { selectAuth } from "../sessions/AuthSlice";
 import RouteDiagram from "./RouteDiagram";
 import { Link } from "react-router-dom";
+import { FC, useEffect, useState } from "react";
 import AddRouteDisclosure from "./AddRouteDisclosure";
 
-interface Props {
-  id: string;
-}
+// interface Props {
+//   id: string;
+// }
 
-const Location = () => {
+interface Props {
+  location: IFeature;
+}
+const Location: FC<Props> = ({ location }) => {
   const clusterMap = useAppSelector(selectClusterMap);
   const auth = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
 
-  const { id } = useParams<Props>();
-  const loc = clusterMap.locations.features
-    .filter((l) => l.geometry.type === "Point")
-    .find((l) => l.properties.featureId === id)!;
+  // const { id } = useParams<Props>();
+  // console.log(id)
+
+  // useEffect(() => {
+  //   const loc = clusterMap.locations.features.find(
+  //     (l) => l.properties.featureId === id
+  //   );
+  //   console.log(loc)
+  //   if (loc) {
+  //     setCurrentLocation(loc);
+  //   }
+  //   return () => {
+  //     setCurrentLocation(null);
+  //   };
+  // }, []);
 
   return (
     <div className={"w-screen"}>
@@ -30,14 +45,14 @@ const Location = () => {
         >
           <div className={`flex flex-row justify-center items-center h-full`}>
             <p className={`text-4xl text-white text font-black`}>
-              {loc.properties.name}
+              {location.properties.name}
             </p>
           </div>
         </div>
       </div>
-      {loc.properties.creatorId === auth.user?.id && (
+      {location.properties.creatorId === auth.user?.id && (
         <div className={"flex py-4 gap-4 bg-gray-600"}>
-          <AddRouteDisclosure location={loc.properties.name}/>
+          <AddRouteDisclosure location={location} />
         </div>
       )}
 
@@ -45,11 +60,11 @@ const Location = () => {
         className={`flex flex-col justify-center items-center h-80 bg-gray-900 w-full`}
       >
         <p className={`text-3xl text-white text font-black`}>
-          {`Routes featured on ${loc.properties.name}`}
+          {`Routes featured on ${location.properties.name}`}
         </p>
 
         <p className={`text-lg text-white text py-4`}>
-          {`${loc.properties.routes?.length || 0}`}
+          {`${location.properties.routes?.length || 0}`}
         </p>
 
         <RouteDiagram />

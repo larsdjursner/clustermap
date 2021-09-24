@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { selectAuth, setAuth, User } from "./components/sessions/AuthSlice";
 import NavBar from "./components/nav/NavBar";
 import fire from "./fire";
-import { clear } from "./components/map/ReactMapSlice";
+import { clear, selectClusterMap } from "./components/map/ReactMapSlice";
 import ForgotPassword from "./components/sessions/ForgotPassword";
 import LandingPage from "./components/landing/LandingPage";
 import Settings from "./components/sessions/Settings";
@@ -22,6 +22,7 @@ import Account from "./components/sessions/Account";
 
 function App() {
   const auth = useAppSelector(selectAuth);
+  const clusterMap = useAppSelector(selectClusterMap);
   const dispatch = useAppDispatch();
 
   fire.auth().onAuthStateChanged((currentLoggedInUser) => {
@@ -54,7 +55,19 @@ function App() {
           <Route exact path="/map" component={ReactMap} />
           <Route exact path="/settings" component={Settings} />
           <Route exact path="/account" component={Account} />
-          <Route exact path="/locations/:id" component={Location} />
+          <Route
+            exact
+            path="/locations/:id"
+            render={({ match }) => (
+              <Location
+                location={
+                  clusterMap.locations.features.find(
+                    (l) => l.properties.featureId === match.params.id
+                  )!
+                }
+              />
+            )}
+          />
           <Route
             exact
             path="/signin"

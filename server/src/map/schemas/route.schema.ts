@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
-import { CharacteristicEnum, GenreEnum, GradeEnum, TopologyEnum } from './route.enum';
+import { Characteristic, Genre, Grade, Topology } from './route.type';
 
 export type RouteDocument = Route & Document;
 
@@ -12,17 +12,17 @@ export class Route {
   @Prop({ type: String })
   name: string;
 
-  @Prop({ type: GenreEnum })
-  genre: GenreEnum;
+  @Prop({ type: Genre })
+  genre: Genre;
 
-  @Prop({ type: GradeEnum })
-  grade: GradeEnum;
+  @Prop({ type: Grade })
+  grade: Grade;
 
-  @Prop({ type: CharacteristicEnum })
-  characteristic: CharacteristicEnum[];
+  @Prop({ type:  Characteristic })
+  characteristic: Characteristic[];
 
-  @Prop({ type: TopologyEnum })
-  topology: TopologyEnum[];
+  @Prop({ type: Topology })
+  topology: Topology[];
 }
 
 export const RouteSchema = SchemaFactory.createForClass(Route);
