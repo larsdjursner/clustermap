@@ -1,108 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GeoJsonProperties, Geometry } from "geojson";
 import { RootState } from "../../app/store";
+import { IRoute } from "../location/RouteSlice";
 import { createLocation } from "./mapService";
 
-//take from backend when needed
-export enum Grade {
-  font3 = "3",
-  font4 = "4",
-  font5 = "5",
-  font5p = "5+",
-  font6a = "6a",
-  font6ap = "6a+",
-  font6b = "6b",
-  font6bp = "6b+",
-  font6c = "6c",
-  font6cp = "6c+",
-  font7a = "7a",
-  font7ap = "7a+",
-  font7bp = "7b+",
-  font7c = "7c",
-  font7cp = "7cp",
-  font8a = "8a",
-  font8ap = "8a+",
-  font8b = "8b",
-  font8bp = "8b+",
-  font9a = "9a",
-  font9ap = "9a+",
-  font9b = "9b",
-}
-export enum Genre {
-  Bouldering = "Bouldering",
-  SportsClimbing = "Sports Climbing",
-  TraditionalClimbing = "Traditional Climbing",
-}
 
-export enum Topology {
-  Slab = "Slab",
-  Overhang = "Overhang",
-  Vertical = "Vertical",
-  Arete = "Arete",
-  Dihedral = "Dihedral",
-}
-
-export enum Characteristic {
-  Crimps = "Crimps",
-  Jugs = "Jugs",
-  Pinches = "Pinches",
-  Slopes = "Slopes",
-  Dynamic = "Dynamic",
-  Static = "Static",
-  Technical = "Technical",
-  Powerful = "Powerful",
-}
-// export type GradeType =
-//   | "3"
-//   | "4"
-//   | "5"
-//   | "5+"
-//   | "6a"
-//   | "6a+"
-//   | "6b"
-//   | "6b+"
-//   | "6c"
-//   | "6c+"
-//   | "7a"
-//   | "7a+"
-//   | "7b+"
-//   | "7c"
-//   | "7cp"
-//   | "8a"
-//   | "8a+"
-//   | "8b"
-//   | "8b+"
-//   | "9a"
-//   | "9a+"
-//   | "9b";
-
-// export type GenreType = "Bouldering" | "SportsClimbing" | "TraditionalClimbing";
-
-// export type TopologyType =
-//   | "Slab"
-//   | "Overhang"
-//   | "Vertical"
-//   | "Arete"
-//   | "Dihedral";
-
-// export type CharacteristicType =
-//   | "Crimpy"
-//   | "Juggy"
-//   | "Pinchy"
-//   | "Slopey"
-//   | "Dynamic"
-//   | "Static"
-//   | "Technical"
-//   | "Powerful";
-
-export interface IRoute {
-  name: string;
-  grade?: Grade;
-  characteristics?: Characteristic[];
-  topology?: Topology[];
-  genre?: Genre;
-  feature: IFeature;
-}
 
 interface ILocation {
   area: string;

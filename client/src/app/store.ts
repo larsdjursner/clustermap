@@ -9,6 +9,7 @@ export const store = configureStore({
     counter: counterReducer,
     clusterMap: clusterMapReducer,
     auth: authReducer,
+    route: routeReducer,
   },
 });
 
