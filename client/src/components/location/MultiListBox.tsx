@@ -27,6 +27,7 @@ const MultiListBox = <T extends typeof Enum>({ type }: Props<T>) => {
       ""
     );
     setSelected(newSelected);
+    console.log("")
   }, [selectedCategory]);
 
   return (
