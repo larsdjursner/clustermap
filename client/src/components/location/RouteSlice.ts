@@ -4,6 +4,8 @@ import { IFeature } from "../map/ReactMapSlice";
 import { createRoute } from "./routeService";
 
 //take from backend when needed
+export enum Enum {}
+
 export enum Grade {
   font3 = "3",
   font4 = "4",

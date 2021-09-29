@@ -1,16 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
 import { Characteristic, Genre, Grade, Topology } from './route.type';
 
 export type RouteDocument = Route & Document;
 
 @Schema()
 export class Route {
-  @Prop({ type: String })
+  @Prop({ type: String, required: true })
   id: string;
 
-  @Prop({ type: String })
+  @Prop({ type: String, required: true })
   name: string;
+
+  @Prop({ type: String, required: true })
+  creatorId: string;
 
   @Prop({ type: Genre })
   genre: Genre;
@@ -18,11 +20,17 @@ export class Route {
   @Prop({ type: Grade })
   grade: Grade;
 
-  @Prop({ type:  Characteristic })
+  @Prop({ type: Characteristic })
   characteristic: Characteristic[];
 
   @Prop({ type: Topology })
   topology: Topology[];
+
+  @Prop({ type: Date, required: true })
+  createdAt: Date;
+
+  @Prop({ type: Date, required: true })
+  updatedAt: Date;
 }
 
 export const RouteSchema = SchemaFactory.createForClass(Route);

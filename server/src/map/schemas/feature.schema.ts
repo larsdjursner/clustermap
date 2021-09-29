@@ -25,11 +25,14 @@ export class Properties {
   @Prop({ type: String, required: true })
   creatorId: string;
 
-  @Prop({ type: Date, default: Date.now })
+  @Prop({ type: RouteSchema })
+  routes: Route[];
+
+  @Prop({ type: Date, required: true, default: Date.now })
   createdAt: Date;
 
-  @Prop({type : RouteSchema})
-  routes: Route[]
+  @Prop({ type: Date, required: true, default: Date.now })
+  updatedAt: Date;
 }
 
 @Schema()

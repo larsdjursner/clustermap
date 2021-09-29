@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { Listbox } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
-enum Enum {}
+import { Enum } from "./RouteSlice";
 interface Props<T> {
   type: T;
 }
@@ -27,7 +27,6 @@ const MultiListBox = <T extends typeof Enum>({ type }: Props<T>) => {
       ""
     );
     setSelected(newSelected);
-    console.log("")
   }, [selectedCategory]);
 
   return (

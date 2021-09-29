@@ -1,10 +1,9 @@
 import {  useState } from "react";
 import { Listbox } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
-import { Grade, Genre, selectRoute, setGrade} from "./RouteSlice";
+import { Grade, Genre, selectRoute, setGrade, Enum} from "./RouteSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
-enum Enum {}
 interface Props<T> {
   type: T;
 }
@@ -18,6 +17,9 @@ const ListBox = <T extends typeof Enum>({ type }:Props<T>) => {
     return selected === v;
   };
 
+  // handleSelect = () => {
+  //   T === Grade ? dispatch(setGrade()) : 
+  // }
 
   return (
     <div className={"w-full"}>

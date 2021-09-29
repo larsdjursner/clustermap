@@ -23,6 +23,7 @@ export class MapService {
   async create(temp: CreateFeatureDto): Promise<Feature> {
     const dto = temp;
     dto.properties.createdAt = new Date();
+    dto.properties.updatedAt = new Date();
     dto.properties.featureId = uuidv4();
 
     console.log(dto);
@@ -30,6 +31,7 @@ export class MapService {
   }
 
   async update(id: string, dto: UpdateFeatureDto): Promise<Feature> {
+    console.log(dto); 
     return await this.model
       .findOneAndUpdate({ 'properties.featureId': id, update: dto })
       .exec();
