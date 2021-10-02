@@ -1,18 +1,31 @@
 import { Disclosure, Transition } from "@headlessui/react";
 import { ChevronRightIcon, ChevronUpIcon } from "@heroicons/react/solid";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { IFeature, selectClusterMap } from "../map/ReactMapSlice";
-import ListBox from "./Listbox";
-import MultiListBox from "./MultiListBox";
-import NameInput from "./Name";
-import { Characteristic, Genre, Grade, IRoute, Topology } from "./RouteSlice";
+import NameInput from "./partials/NameInput";
+import GenreListBox from "./partials/GenreListbox";
+import GradeListBox from "./partials/GradeListbox";
+import {
+  resetFeature,
+  selectRoute,
+  setFeature,
+} from "./RouteSlice";
+import CharacteristicsListBox from "./partials/CharacteristicsListbox";
+import TopologyListBox from "./partials/TopologyListbox";
 
 const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
   const clusterMap = useAppSelector(selectClusterMap);
+  const routeState = useAppSelector(selectRoute);
   const dispatch = useAppDispatch();
-  const [route, setRoute] = useState<IRoute>({ name: "", feature: location });
+  // const [route, setRoute] = useState<IRoute>({ name: "", feature: location });
 
+  useEffect(() => {
+    dispatch(setFeature({featureId: location.properties.featureId}));
+    return () => {
+      dispatch(resetFeature());
+    };
+  }, []);
   return (
     <div className="w-full px-4">
       <div className="w-full max-w-md p-2 mx-auto bg-white rounded-2xl">
@@ -45,24 +58,29 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
                       </div>
                       <div className="flex flex-col my-2">
                         Genre
-                        <ListBox type={Genre} />
+                        <GenreListBox />
                       </div>
                       <div className="flex flex-col my-2">
                         Grade
-                        <ListBox type={Grade} />
+                        <GradeListBox />
                       </div>
                       <div className="flex flex-col my-2">
                         Characteristics
-                        <MultiListBox type={Characteristic} />
+                        <CharacteristicsListBox />
                       </div>
                       <div className="flex flex-col my-2">
                         Topology
-                        <MultiListBox type={Topology} />
+                        <TopologyListBox />
                       </div>
                       <button
                         className={"rounded-lg border-2 bg-gray-200 h-8 mt-4"}
+                        disabled={routeState.routeToCreate?.name === ""}
                         onClick={async () => {
-                          setTimeout(() => console.log("async post"), 200);
+                          setTimeout(
+                            () => console.log(routeState.routeToCreate),
+                            200
+                          );
+                          // dispatch(createRouteCallback());
                           close();
                         }}
                       >

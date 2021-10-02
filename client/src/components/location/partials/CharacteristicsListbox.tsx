@@ -1,13 +1,18 @@
 import { FC, useEffect, useState } from "react";
 import { Listbox } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
-import { Enum } from "./RouteSlice";
-interface Props<T> {
-  type: T;
-}
-const MultiListBox = <T extends typeof Enum>({ type }: Props<T>) => {
+import {
+  Characteristic,
+  selectRoute,
+  setCharacteristics,
+} from "../RouteSlice";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+
+const CharacteristicsListBox = () => {
   const [selected, setSelected] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
+  const routeState = useAppSelector(selectRoute);
+  const dispatch = useAppDispatch();
 
   const isSelected = (v: string) => {
     return selectedCategory.includes(v);
@@ -22,6 +27,7 @@ const MultiListBox = <T extends typeof Enum>({ type }: Props<T>) => {
   };
 
   useEffect(() => {
+    dispatch(setCharacteristics({ characteristics: selectedCategory }));
     const newSelected = selectedCategory.reduce(
       (prev, curr, i) => (i === 0 ? curr : prev + ", " + curr),
       ""
@@ -49,7 +55,7 @@ const MultiListBox = <T extends typeof Enum>({ type }: Props<T>) => {
           "z-50 absolute object-bottom w-96 mx-2 overflow-auto text-base bg-white rounded-md shadow-lg max-h-32 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
         }
       >
-        {Object.values(type).map((option) => (
+        {Object.values(Characteristic).map((option) => (
           <Listbox.Option
             className={({ active }) =>
               `   ${active ? "text-gray-900 bg-gray-200" : "text-gray-900"}
@@ -69,4 +75,4 @@ const MultiListBox = <T extends typeof Enum>({ type }: Props<T>) => {
   );
 };
 
-export default MultiListBox;
+export default CharacteristicsListBox;

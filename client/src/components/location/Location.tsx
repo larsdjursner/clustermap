@@ -3,7 +3,7 @@ import temp from "../../assets/temp.jpg";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { IFeature, selectClusterMap } from "../map/ReactMapSlice";
 import { selectAuth } from "../sessions/AuthSlice";
-import RouteDiagram from "./RouteDiagram";
+import RouteDiagram from "./partials/RouteDiagram";
 import { Link } from "react-router-dom";
 import { FC, useEffect, useState } from "react";
 import AddRouteDisclosure from "./AddRouteDisclosure";

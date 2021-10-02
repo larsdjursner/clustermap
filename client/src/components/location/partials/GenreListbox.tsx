@@ -1,25 +1,26 @@
-import {  useState } from "react";
+import { useEffect, useState } from "react";
 import { Listbox } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
-import { Grade, Genre, selectRoute, setGrade, Enum} from "./RouteSlice";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { Genre, selectRoute, setGenre} from ".././RouteSlice";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 
-interface Props<T> {
-  type: T;
-}
-const ListBox = <T extends typeof Enum>({ type }:Props<T>) => {
+const GenreListBox = () => {
   const routeState = useAppSelector(selectRoute);
   const dispatch = useAppDispatch();
-  
+
   const [selected, setSelected] = useState("");
 
   const isSelected = (v: string) => {
     return selected === v;
   };
 
-  // handleSelect = () => {
-  //   T === Grade ? dispatch(setGrade()) : 
-  // }
+  const handleSelect = () => {
+    dispatch(setGenre({ genre: selected }));
+  };
+
+  useEffect(() => {
+    handleSelect();
+  }, [selected]);
 
   return (
     <div className={"w-full"}>
@@ -37,7 +38,7 @@ const ListBox = <T extends typeof Enum>({ type }:Props<T>) => {
             "z-50 absolute object-bottom w-96 mx-2 overflow-auto text-base bg-white rounded-md shadow-lg max-h-32 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
           }
         >
-          {Object.values(type).map((option) => (
+          {Object.values(Genre).map((option) => (
             <Listbox.Option
               className={({ active }) =>
                 `   ${active ? "text-gray-900 bg-gray-200" : "text-gray-900"}
@@ -58,4 +59,4 @@ const ListBox = <T extends typeof Enum>({ type }:Props<T>) => {
   );
 };
 
-export default ListBox;
+export default GenreListBox;
