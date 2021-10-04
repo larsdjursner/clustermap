@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
-import { Route, RouteSchema } from './route.schema';
+import { Route, RouteSchema } from '../../climbing-route/schemas/climbing-route.schema';
 
 export type FeatureDocument = Feature & Document;
 

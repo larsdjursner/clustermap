@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Characteristic, Genre, Grade, Topology } from './route.type';
+import { Characteristic, Genre, Grade, Topology } from './climbing-route.type';
 
 export type RouteDocument = Route & Document;
 

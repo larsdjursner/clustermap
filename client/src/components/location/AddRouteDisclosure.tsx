@@ -20,6 +20,10 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
   const dispatch = useAppDispatch();
   // const [route, setRoute] = useState<IRoute>({ name: "", feature: location });
 
+  const handleDisabled = () => {
+    alert("A name for your route is required")
+    return routeState.routeToCreate?.name === "";
+  }
   useEffect(() => {
     dispatch(setFeature({featureId: location.properties.featureId}));
     return () => {
@@ -74,7 +78,7 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
                       </div>
                       <button
                         className={"rounded-lg border-2 bg-gray-200 h-8 mt-4"}
-                        disabled={routeState.routeToCreate?.name === ""}
+                        disabled={handleDisabled()}
                         onClick={async () => {
                           setTimeout(
                             () => console.log(routeState.routeToCreate),

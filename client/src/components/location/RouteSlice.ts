@@ -8,7 +8,7 @@ import { createRoute } from "./routeService";
 export interface RouteState {
   status: "idle" | "loading" | "failed";
   featureRoutes: IRoute[];
-  routeToCreate: IRoute | null;
+  routeToCreate: RouteDTO | null;
 }
 
 type ParamType =
@@ -29,6 +29,7 @@ export interface RouteDTO {
 }
 export interface IRoute {
   name: string;
+  id: string;
   featureId: string;
   grade?: string;
   genre?: string;
@@ -44,7 +45,7 @@ const initialState: RouteState = {
 
 export const createRouteAsync = createAsyncThunk(
   "routes/createRoute",
-  async (route: IRoute) => {
+  async (route: RouteDTO) => {
     return await createRoute(route);
   }
 );
