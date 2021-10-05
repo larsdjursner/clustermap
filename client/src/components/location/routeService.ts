@@ -18,8 +18,10 @@ const createRoute = async (route: CreateRouteDTO) => {
   }).then((res) => res.json());
 };
 
-// const fetchRoutesByFeature = async (featureId: string) => {
-//   // return fetch(`${API_URI}/lo`)
-// };
+const fetchRoutesByFeatureId = async (featureId: string) => {
+  return await fetch(`${API_URI}/climbingroutes/queryFeatureId/${featureId}`).then((response) =>
+    response.json()
+  );
+};
 
-export { createRoute };
+export { createRoute, fetchRoutesByFeatureId};

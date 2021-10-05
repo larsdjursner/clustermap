@@ -7,34 +7,24 @@ import RouteDiagram from "./partials/RouteDiagram";
 import { Link } from "react-router-dom";
 import { FC, useEffect, useState } from "react";
 import AddRouteDisclosure from "./AddRouteDisclosure";
-
-// interface Props {
-//   id: string;
-// }
+import {
+  fetchRoutesByFeatureIdAsync,
+  selectRoute,
+  setRoutes,
+} from "./RouteSlice";
 
 interface Props {
   location: IFeature;
 }
 const Location: FC<Props> = ({ location }) => {
   const clusterMap = useAppSelector(selectClusterMap);
+  const routeState = useAppSelector(selectRoute);
   const auth = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
 
-  // const { id } = useParams<Props>();
-  // console.log(id)
-
-  // useEffect(() => {
-  //   const loc = clusterMap.locations.features.find(
-  //     (l) => l.properties.featureId === id
-  //   );
-  //   console.log(loc)
-  //   if (loc) {
-  //     setCurrentLocation(loc);
-  //   }
-  //   return () => {
-  //     setCurrentLocation(null);
-  //   };
-  // }, []);
+  useEffect(() => {
+    dispatch(fetchRoutesByFeatureIdAsync(location.properties.featureId));
+  }, []);
 
   return (
     <div className={"w-screen"}>
@@ -64,10 +54,11 @@ const Location: FC<Props> = ({ location }) => {
         </p>
 
         <p className={`text-lg text-white text py-4`}>
-          {`${location.properties.routes?.length || 0}`}
+          {/* {`${location.properties.routes?.length || 0}`} */}
+          {`${routeState.featureRoutes.length}`}
         </p>
 
-        <RouteDiagram />
+        <RouteDiagram routes={routeState.featureRoutes} />
 
         <div className={"flex py-4 gap-4"}>
           <button

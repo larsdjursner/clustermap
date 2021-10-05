@@ -1,11 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
+import { Feature } from 'src/map/schemas/feature.schema';
 import { Characteristic, Genre, Grade, Topology } from './climbing-route.type';
 
 export type RouteDocument = Route & Document;
 
 @Schema()
 export class Route {
-  @Prop({ type: String, required: true })
+  @Prop({ type: String , required: true })
   id: string;
 
   @Prop({ type: String, required: true })
@@ -13,6 +15,12 @@ export class Route {
 
   @Prop({ type: String, required: true })
   creatorId: string;
+
+  @Prop({ type: String, required: true })
+  featureId: string;
+
+  @Prop({ type: Types.ObjectId, ref: "Feature" })
+  feature: Feature;
 
   @Prop({ type: Genre })
   genre: Genre;

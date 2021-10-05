@@ -3,7 +3,7 @@ import { ClimbingRouteService } from './climbing-route.service';
 import { CreateRouteDto } from './dto/create-route.dto';
 import { UpdateRouteDto } from './dto/update-route.dto';
 
-@Controller('Climbingroutes')
+@Controller('climbingroutes')
 export class ClimbingRouteController 
 {
 
@@ -17,6 +17,11 @@ export class ClimbingRouteController
   @Get(':id')
   async find(@Param('id') id: string) {
     return await this.service.findOne(id);
+  }
+
+  @Get('/queryFeatureId/:featureId')
+  async findByFeatureId(@Param('featureId') id: string) {
+    return await this.service.findByFeatureId(id);
   }
 
   @Post()

@@ -90,7 +90,7 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
                           if (routeState.routeToCreate) {
                             dispatch(
                               createRouteAsync(routeState.routeToCreate)
-                            ).then((res) => console.log(res));
+                            );
                           }
                           close();
                         }}

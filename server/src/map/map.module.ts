@@ -9,12 +9,17 @@ import { MapController } from './map.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Feature, FeatureSchema } from './schemas/feature.schema';
 import { PreauthMiddleware } from 'src/auth/preauth.middleware';
+import { ClimbingRouteModule } from 'src/climbing-route/climbing-route.module';
+import { Route, RouteSchema } from 'src/climbing-route/schemas/climbing-route.schema';
 
 @Module({
   providers: [MapService],
   controllers: [MapController],
   imports: [
-    MongooseModule.forFeature([{ name: Feature.name, schema: FeatureSchema }]),
+    MongooseModule.forFeature([
+      { name: Feature.name, schema: FeatureSchema },
+      { name: Route.name, schema: RouteSchema },
+    ]),
   ],
 })
 export class MapModule {}

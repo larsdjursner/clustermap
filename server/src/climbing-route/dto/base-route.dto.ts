@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export class BaseRouteDto {
   name: string;
   id: string;

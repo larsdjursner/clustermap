@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { Route } from "src/climbing-route/schemas/climbing-route.schema";
 
 export class BaseFeatureDto {
