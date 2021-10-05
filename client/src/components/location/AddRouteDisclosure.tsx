@@ -7,25 +7,32 @@ import NameInput from "./partials/NameInput";
 import GenreListBox from "./partials/GenreListbox";
 import GradeListBox from "./partials/GradeListbox";
 import {
+  createRouteAsync,
   resetFeature,
   selectRoute,
   setFeature,
 } from "./RouteSlice";
 import CharacteristicsListBox from "./partials/CharacteristicsListbox";
 import TopologyListBox from "./partials/TopologyListbox";
+import { selectAuth } from "../sessions/AuthSlice";
 
 const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
   const clusterMap = useAppSelector(selectClusterMap);
   const routeState = useAppSelector(selectRoute);
+  const authState = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
-  // const [route, setRoute] = useState<IRoute>({ name: "", feature: location });
 
-  const handleDisabled = () => {
-    alert("A name for your route is required")
-    return routeState.routeToCreate?.name === "";
-  }
+  const handleDisabled = (): boolean => {
+    // return routeState.routeToCreate?.name === "" && ;
+    return false;
+  };
   useEffect(() => {
-    dispatch(setFeature({featureId: location.properties.featureId}));
+    dispatch(
+      setFeature({
+        featureId: location.properties.featureId,
+        userId: authState.user?.id,
+      })
+    );
     return () => {
       dispatch(resetFeature());
     };
@@ -80,11 +87,11 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
                         className={"rounded-lg border-2 bg-gray-200 h-8 mt-4"}
                         disabled={handleDisabled()}
                         onClick={async () => {
-                          setTimeout(
-                            () => console.log(routeState.routeToCreate),
-                            200
-                          );
-                          // dispatch(createRouteCallback());
+                          if (routeState.routeToCreate) {
+                            dispatch(
+                              createRouteAsync(routeState.routeToCreate)
+                            ).then((res) => console.log(res));
+                          }
                           close();
                         }}
                       >

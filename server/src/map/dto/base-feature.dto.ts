@@ -1,5 +1,6 @@
+import { Route } from "src/climbing-route/schemas/climbing-route.schema";
+
 export class BaseFeatureDto {
-  // id: string;
   type: string;
   geometry: {
     type: string;
@@ -8,5 +9,6 @@ export class BaseFeatureDto {
   properties: {
     featureId: string;
     name: string;
+    routes: Route[];
   };
 }

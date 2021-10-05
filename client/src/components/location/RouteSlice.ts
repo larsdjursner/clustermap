@@ -8,7 +8,7 @@ import { createRoute } from "./routeService";
 export interface RouteState {
   status: "idle" | "loading" | "failed";
   featureRoutes: IRoute[];
-  routeToCreate: RouteDTO | null;
+  routeToCreate: CreateRouteDTO | null;
 }
 
 type ParamType =
@@ -19,9 +19,10 @@ type ParamType =
   | "Characteristics"
   | "Topology";
 
-export interface RouteDTO {
-  name?: string;
-  featureId?: string;
+export interface CreateRouteDTO {
+  name: string;
+  featureId: string;
+  creatorId: string | undefined;
   grade?: string;
   genre?: string;
   characteristics?: string[];
@@ -31,10 +32,13 @@ export interface IRoute {
   name: string;
   id: string;
   featureId: string;
+  creatorId: string;
   grade?: string;
   genre?: string;
   characteristics?: string[];
   topology?: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const initialState: RouteState = {
@@ -45,7 +49,7 @@ const initialState: RouteState = {
 
 export const createRouteAsync = createAsyncThunk(
   "routes/createRoute",
-  async (route: RouteDTO) => {
+  async (route: CreateRouteDTO) => {
     return await createRoute(route);
   }
 );
@@ -57,10 +61,14 @@ export const routeSlice = createSlice({
     resetFeature: (state) => {
       state.routeToCreate = null;
     },
-    setFeature: (state, action: PayloadAction<{ featureId: string }>) => {
+    setFeature: (
+      state,
+      action: PayloadAction<{ featureId: string; userId: string | undefined }>
+    ) => {
       state.routeToCreate = {
         name: "",
         featureId: action.payload.featureId,
+        creatorId: action.payload.userId,
       };
     },
     setName: (state, action: PayloadAction<{ name: string }>) => {

@@ -14,7 +14,7 @@ const fetchLocationFeatures = async () => {
 };
 
 const createLocation = async (feature: CreateFeatureDTO) => {
-  return fetch(`${API_URI}/locations`, {
+  return await fetch(`${API_URI}/locations`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

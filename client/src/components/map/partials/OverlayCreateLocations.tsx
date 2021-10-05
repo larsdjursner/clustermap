@@ -47,7 +47,7 @@ const OverlayCreateLocations: FC<IOverlayChildLocations> = ({
       const dto: CreateFeatureDTO = {
         properties: {
           name: name,
-          creatorId: auth.user?.id!
+          creatorId: auth.user?.id!,
         },
         geometry: {
           coordinates: clusterMap.createLocationCoordinates,
@@ -65,7 +65,11 @@ const OverlayCreateLocations: FC<IOverlayChildLocations> = ({
     }
   };
   return (
-    <div className={"absolute top-16 right-0 mx-2 w-1/4 max-w-1/4 min-w-1/4  2xl:w-1/6"}>
+    <div
+      className={
+        "absolute top-16 right-0 mx-2 w-1/4 max-w-1/4 min-w-1/4  2xl:w-1/6"
+      }
+    >
       <div className={`flex flex-row-reverse items-start`}>
         {open && (
           <div

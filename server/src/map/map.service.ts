@@ -25,6 +25,7 @@ export class MapService {
     dto.properties.createdAt = new Date();
     dto.properties.updatedAt = new Date();
     dto.properties.featureId = uuidv4();
+    dto.properties.routes = [];
 
     console.log(dto);
     return await new this.model({ ...dto }).save();
