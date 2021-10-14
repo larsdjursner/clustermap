@@ -4,12 +4,14 @@ import RouteList from "./RouteList";
 import AddRouteDisclosure from "./AddRouteDisclosure";
 import { IFeature } from "../../map/ReactMapSlice";
 import TabOverview from "./TabOverview";
+import { useAppSelector } from "../../../app/hooks";
+import { selectAuth } from "../../sessions/AuthSlice";
 
 interface Props {
   location: IFeature;
 }
 
-function classNames(...classes: any[]) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
@@ -30,7 +32,7 @@ const TabGroup: FC<Props> = ({ location }) => {
                     "focus:outline-none focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white ring-opacity-60",
                     selected
                       ? "bg-white shadow"
-                      : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                      : "text-blue-100 hover:text-white"
                   )
                 }
               >
@@ -38,12 +40,12 @@ const TabGroup: FC<Props> = ({ location }) => {
               </Tab>
             ))}
           </Tab.List>
-          <Tab.Panels className="mt-2">
+          <Tab.Panels className="mt-2 flex flex-col items-center">
             <Tab.Panel>
               <TabOverview location={location} />
             </Tab.Panel>
             <Tab.Panel>
-              <AddRouteDisclosure location={location} />
+              
               <RouteList location={location} />
             </Tab.Panel>
             <Tab.Panel></Tab.Panel>

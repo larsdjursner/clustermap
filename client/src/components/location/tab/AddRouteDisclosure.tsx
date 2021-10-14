@@ -45,8 +45,8 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
     };
   }, []);
   return (
-    <div className="w-full px-4">
-      <div className="w-full max-w-md p-2 mx-auto bg-white rounded-2xl">
+    <div className="w-full mt-2">
+      <div className=" w-auto p-2 mx-auto bg-white rounded-2xl">
         <Disclosure>
           {({ open }) => (
             <>
@@ -72,7 +72,11 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
                     <div className="flex flex-col">
                       <div className="flex flex-col my-2">
                         Name
-                        <TextInput attrType="name" setter={handleNameEvent} />
+                        <TextInput
+                          attrType="name"
+                          setter={handleNameEvent}
+                          required={true}
+                        />
                       </div>
                       <div className="flex flex-col my-2">
                         Genre
@@ -94,12 +98,15 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
                         Description
                         <TextInput
                           attrType="description"
+                          required={false}
                           setter={handleDescriptionEvent}
                         />
                       </div>
                       <button
                         className={`rounded-lg border-2 h-8 mt-4 ${
-                          handleDisabled() ? "bg-gray-200" : "bg-blue-200 text-gray-900"
+                          handleDisabled()
+                            ? "bg-gray-200"
+                            : "bg-blue-200 text-gray-900"
                         }`}
                         disabled={handleDisabled()}
                         onClick={async () => {

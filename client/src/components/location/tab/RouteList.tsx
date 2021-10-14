@@ -1,22 +1,33 @@
 import { FC } from "react";
 import { useAppSelector } from "../../../app/hooks";
 import { IFeature } from "../../map/ReactMapSlice";
+import { selectAuth } from "../../sessions/AuthSlice";
 import { IRoute, selectRoute } from "../RouteSlice";
+import AddRouteDisclosure from "./AddRouteDisclosure";
+import RouteCard from "./RouteCard";
 interface Props {
   location: IFeature;
 }
 
 const RouteList: FC<Props> = ({ location }) => {
   const routeState = useAppSelector(selectRoute);
+  const auth = useAppSelector(selectAuth);
 
   return (
-    <ul>
-      {routeState.featureRoutes.map((route) => (
-        <li className={"bg-gray-200 my-2 rounded-sm w-1/6"} key={route.id}>
-          {route.name}
-        </li>
-      ))}
-    </ul>
+    <div className={"w-full"}>
+      {auth.user?.id === location.properties.creatorId && (
+        <AddRouteDisclosure location={location} />
+      )}
+      <ul
+        className={
+          " w-screen h-60 mt-4 overflow-scroll bg-gray-400 rounded-lg"
+        }
+      >
+        {routeState.featureRoutes.map((route) => (
+          <RouteCard route={route} />
+        ))}
+      </ul>
+    </div>
   );
 };
 
