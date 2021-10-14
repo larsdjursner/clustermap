@@ -13,6 +13,12 @@ const fetchLocationFeatures = async () => {
   );
 };
 
+const fetchLocationFeatureById = async (id: string) => {
+  return await fetch(`${API_URI}/locations/${id}`).then((response) =>
+    response.json()
+  );
+};
+
 const createLocation = async (feature: CreateFeatureDTO) => {
   return await fetch(`${API_URI}/locations`, {
     method: "POST",
@@ -24,4 +30,4 @@ const createLocation = async (feature: CreateFeatureDTO) => {
   }).then((res) => res.json());
 };
 
-export { fetchLocationFeatures, createLocation };
+export { fetchLocationFeatures, createLocation, fetchLocationFeatureById };

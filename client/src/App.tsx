@@ -2,6 +2,7 @@ import "./App.css";
 import ReactMap from "./components/map/ReactMap";
 import {
   BrowserRouter as Router,
+  HashRouter as HRouter,
   Link,
   Redirect,
   Route,
@@ -55,7 +56,8 @@ function App() {
           <Route exact path="/map" component={ReactMap} />
           <Route exact path="/settings" component={Settings} />
           <Route exact path="/account" component={Account} />
-          <Route
+          <Route path="/locations/:id" component={Location} />
+          {/* <Route
             exact
             path="/locations/:id"
             render={({ match }) => (
@@ -67,7 +69,8 @@ function App() {
                 }
               />
             )}
-          />
+          /> */}
+          <Route path="locations/:id" component={Location} />
           <Route
             exact
             path="/signin"

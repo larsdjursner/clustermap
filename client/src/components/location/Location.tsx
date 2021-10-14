@@ -6,19 +6,22 @@ import { FC, useEffect, useState } from "react";
 import { fetchRoutesByFeatureIdAsync } from "./RouteSlice";
 import TabGroup from "./tab/TabGroup";
 import fire from "../../fire";
+import { useParams } from "react-router-dom";
+import { fetchLocationFeatureById } from "../map/mapService";
 
-interface Props {
-  location: IFeature;
-}
-const Location: FC<Props> = ({ location }) => {
-  // const clusterMap = useAppSelector(selectClusterMap);
+const Location: FC = () => {
+  const { id } = useParams<{ id: string }>();
   const auth = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(fetchRoutesByFeatureIdAsync(location.properties.featureId));
-  }, []);
+  const [location, setLocation] = useState<IFeature | null>(null);
 
+  useEffect(() => {
+    fetchLocationFeatureById(id)
+      .then((res) => setLocation(res))
+      .catch((err) => console.log(err));
+    dispatch(fetchRoutesByFeatureIdAsync(id));
+  }, []);
   return (
     <div className={"w-screen"}>
       <div className={"h-screen3/4 w-full"}>
@@ -28,18 +31,16 @@ const Location: FC<Props> = ({ location }) => {
         >
           <div className={`flex flex-col justify-center items-center h-full`}>
             <p className={`text-4xl text-white text font-black`}>
-              {location.properties.name}
+              {location?.properties.name}
             </p>
             <p className={`text-xl text-white`}>
-              ______________________________________________ 
+              ______________________________________________
             </p>
-            <p className={`text-xl text-white`}>
-              {`Created by ....`}
-            </p>
+            <p className={`text-xl text-white`}>{`Created by ....`}</p>
           </div>
         </div>
       </div>
-      <TabGroup location={location} />
+      {location && <TabGroup location={location} />}
     </div>
   );
 };
