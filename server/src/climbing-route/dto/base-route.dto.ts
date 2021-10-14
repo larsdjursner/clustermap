@@ -8,4 +8,5 @@ export class BaseRouteDto {
   genre?: string;
   characteristics?: string[];
   topology?: string[];
+  description?: string;
 }

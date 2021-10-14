@@ -25,7 +25,6 @@ const OverlayShowLocations: FC<IOverlayChildLocations> = ({
         {open && (
           <div
             className={`rounded shadow-lg bg-white bg-opacity-80 h-screen4/5`}
-            // style={{ height: "80vh" }}
           >
             {clusterMap.renderedLocationsIds.length === 0 ? (
               <p className={"m-4 text-sm"}>

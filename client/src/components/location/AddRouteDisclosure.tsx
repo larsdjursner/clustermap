@@ -3,14 +3,16 @@ import { ChevronRightIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import { FC, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { IFeature, selectClusterMap } from "../map/ReactMapSlice";
-import NameInput from "./partials/NameInput";
+import TextInput from "./partials/TextInput";
 import GenreListBox from "./partials/GenreListbox";
 import GradeListBox from "./partials/GradeListbox";
 import {
   createRouteAsync,
   resetFeature,
   selectRoute,
+  setDescription,
   setFeature,
+  setName,
 } from "./RouteSlice";
 import CharacteristicsListBox from "./partials/CharacteristicsListbox";
 import TopologyListBox from "./partials/TopologyListbox";
@@ -26,6 +28,14 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
     // return routeState.routeToCreate?.name === "" && ;
     return false;
   };
+
+  const handleDescriptionEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setDescription({ description: e.target.value }))
+  }
+  const handleNameEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setName({ name: e.target.value }))
+  }
+
   useEffect(() => {
     dispatch(
       setFeature({
@@ -65,7 +75,7 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
                     <div className="flex flex-col">
                       <div className="flex flex-col my-2">
                         Name
-                        <NameInput />
+                        <TextInput attrType="name" setter={handleNameEvent}/>
                       </div>
                       <div className="flex flex-col my-2">
                         Genre
@@ -82,6 +92,10 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
                       <div className="flex flex-col my-2">
                         Topology
                         <TopologyListBox />
+                      </div>
+                      <div className="flex flex-col my-2">
+                        Description
+                        <TextInput attrType="description" setter={handleDescriptionEvent} />
                       </div>
                       <button
                         className={"rounded-lg border-2 bg-gray-200 h-8 mt-4"}

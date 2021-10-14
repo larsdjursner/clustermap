@@ -27,6 +27,7 @@ export interface CreateRouteDTO {
   genre?: string;
   characteristics?: string[];
   topology?: string[];
+  description?: string;
 }
 export interface IRoute {
   name: string;
@@ -37,6 +38,7 @@ export interface IRoute {
   genre?: string;
   characteristics?: string[];
   topology?: string[];
+  description?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -109,6 +111,11 @@ export const routeSlice = createSlice({
         state.routeToCreate.topology = action.payload.topology;
       }
     },
+    setDescription: (state, action: PayloadAction<{ description: string }>) => {
+      if (state.routeToCreate) {
+        state.routeToCreate.description = action.payload.description;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -138,6 +145,7 @@ export const {
   setName,
   setTopology,
   setRoutes,
+  setDescription
 } = routeSlice.actions;
 export const selectRoute = (state: RootState) => state.route;
 

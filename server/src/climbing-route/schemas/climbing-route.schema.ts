@@ -22,6 +22,9 @@ export class Route {
   @Prop({ type: Types.ObjectId, ref: "Feature" })
   feature: Feature;
 
+  @Prop({type: String})
+  description: string;
+
   @Prop({ type: Genre })
   genre: Genre;
 

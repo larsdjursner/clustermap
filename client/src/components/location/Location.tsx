@@ -28,7 +28,7 @@ const Location: FC<Props> = ({ location }) => {
 
   return (
     <div className={"w-screen"}>
-      <div className={"h-body w-full"}>
+      <div className={"h-screen3/4 w-full"}>
         <div
           style={{ backgroundImage: `url(${temp})` }}
           className={`object-cover w-full h-full object-right-bottom`}
@@ -54,8 +54,7 @@ const Location: FC<Props> = ({ location }) => {
         </p>
 
         <p className={`text-lg text-white text py-4`}>
-          {/* {`${location.properties.routes?.length || 0}`} */}
-          {`${routeState.featureRoutes.length}`}
+          {`${routeState.featureRoutes.length} route(s)`}
         </p>
 
         <RouteDiagram routes={routeState.featureRoutes} />
@@ -67,12 +66,12 @@ const Location: FC<Props> = ({ location }) => {
           >
             <Link to="/map">Go back to map</Link>
           </button>
-          <button
+          {/* <button
             type="button"
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 "
           >
             Add to favourites
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

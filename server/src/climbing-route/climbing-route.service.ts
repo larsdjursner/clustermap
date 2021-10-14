@@ -5,9 +5,6 @@ import { CreateRouteDto } from './dto/create-route.dto';
 import { UpdateRouteDto } from './dto/update-route.dto';
 import { Route, RouteDocument } from './schemas/climbing-route.schema';
 import { v4 as uuidv4 } from 'uuid';
-import { Feature, FeatureDocument } from 'src/map/schemas/feature.schema';
-import { MapService } from 'src/map/map.service';
-import { UpdateFeatureDto } from 'src/map/dto/update-feature.dto';
 
 @Injectable()
 export class ClimbingRouteService {
@@ -24,9 +21,7 @@ export class ClimbingRouteService {
   }
 
   async findByFeatureId(id: string): Promise<Route[]> {
-    const res = await this.routeModel.find({ featureId: id }).exec();
-    console.log(res);
-    return res;
+    return await this.routeModel.find({ featureId: id }).exec();
   }
 
   async create(temp: CreateRouteDto): Promise<Route> {
