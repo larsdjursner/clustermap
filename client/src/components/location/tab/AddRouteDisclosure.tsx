@@ -1,6 +1,6 @@
 import { Disclosure, Transition } from "@headlessui/react";
-import { ChevronRightIcon, ChevronUpIcon } from "@heroicons/react/solid";
-import { FC, useEffect, useState } from "react";
+import { ChevronUpIcon } from "@heroicons/react/solid";
+import { FC, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { IFeature, selectClusterMap } from "../../map/ReactMapSlice";
 import TextInput from "../partials/TextInput";
@@ -19,7 +19,6 @@ import TopologyListBox from "../partials/TopologyListbox";
 import { selectAuth } from "../../sessions/AuthSlice";
 
 const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
-  const clusterMap = useAppSelector(selectClusterMap);
   const routeState = useAppSelector(selectRoute);
   const authState = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();

@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { selectRoute, setName } from "../RouteSlice";
+import { selectRoute } from "../RouteSlice";
 
 interface Props {
   attrType: "name" | "description";
@@ -9,9 +9,6 @@ interface Props {
 }
 
 const TextInput : FC<Props>= ({attrType, required, setter}) => {
-  const routeState = useAppSelector(selectRoute);
-  const dispatch = useAppDispatch();
-
   return (
     <input
       type="text"

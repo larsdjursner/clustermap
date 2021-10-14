@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 const TopologyListBox = () => {
   const [selected, setSelected] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
-  const routeState = useAppSelector(selectRoute);
+  // const routeState = useAppSelector(selectRoute);
   const dispatch = useAppDispatch();
 
   const isSelected = (v: string) => {

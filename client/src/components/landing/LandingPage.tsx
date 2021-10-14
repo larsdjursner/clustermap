@@ -7,6 +7,7 @@ const LandingPage = () => {
         <img
           src={landingtemp}
           className={" h-full w-full object-cover object-top"}
+          alt="landing"
         />
       </div>
     </div>

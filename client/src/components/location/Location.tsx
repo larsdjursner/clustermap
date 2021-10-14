@@ -1,17 +1,15 @@
 import temp from "../../assets/temp.jpg";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { IFeature, selectClusterMap } from "../map/ReactMapSlice";
+import { IFeature } from "../map/ReactMapSlice";
 import { selectAuth } from "../sessions/AuthSlice";
 import { FC, useEffect, useState } from "react";
 import { fetchRoutesByFeatureIdAsync } from "./RouteSlice";
 import TabGroup from "./tab/TabGroup";
-import fire from "../../fire";
 import { useParams } from "react-router-dom";
 import { fetchLocationFeatureById } from "../map/mapService";
 
 const Location: FC = () => {
   const { id } = useParams<{ id: string }>();
-  const auth = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
 
   const [location, setLocation] = useState<IFeature | null>(null);

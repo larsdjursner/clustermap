@@ -9,7 +9,6 @@ import ReactMapGl, {
 } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
-  createLocationAsync,
   IFeature,
   selectClusterMap,
   setCreateLocationCoordinates,

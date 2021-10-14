@@ -7,7 +7,10 @@ interface Props {
 
 const RouteCard: FC<Props> = ({ route }) => {
   return (
-    <li className={"bg-gray-200 m-2 rounded-lg h-20"} key={route.id}>
+    <li
+      key={`route${route.id}`}
+      className={"bg-gray-200 m-2 rounded-lg h-20"}
+    >
       {route.name}
     </li>
   );

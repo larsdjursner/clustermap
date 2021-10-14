@@ -1,5 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { useAppSelector } from "../../../app/hooks";
 import { selectClusterMap } from "../ReactMapSlice";
 import { LocationItem } from "./LocationItem";

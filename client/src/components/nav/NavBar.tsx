@@ -1,13 +1,11 @@
 import { GlobeIcon } from "@heroicons/react/solid";
 import { FC } from "react";
 import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectAuth } from "../sessions/AuthSlice";
 import NavItem from "./NavItem";
 import NavLogo from "./partials/NavLogo";
 import MenuDropdown from "./MenuDropdown";
-import SearchBarPlaceholder from "./SearchBarPlaceholder";
-import DarkModeToggle from "./partials/DarkModeToggle";
+// import SearchBarPlaceholder from "./SearchBarPlaceholder";
+// import DarkModeToggle from "./partials/DarkModeToggle";
 
 const NavBar: FC = () => {
 

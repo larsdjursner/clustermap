@@ -2,7 +2,7 @@ import { FC } from "react";
 import { useAppSelector } from "../../../app/hooks";
 import { IFeature } from "../../map/ReactMapSlice";
 import { selectAuth } from "../../sessions/AuthSlice";
-import { IRoute, selectRoute } from "../RouteSlice";
+import { selectRoute } from "../RouteSlice";
 import AddRouteDisclosure from "./AddRouteDisclosure";
 import RouteCard from "./RouteCard";
 interface Props {

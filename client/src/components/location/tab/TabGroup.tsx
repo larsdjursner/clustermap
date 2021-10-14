@@ -1,11 +1,8 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Tab } from "@headlessui/react";
 import RouteList from "./RouteList";
-import AddRouteDisclosure from "./AddRouteDisclosure";
 import { IFeature } from "../../map/ReactMapSlice";
 import TabOverview from "./TabOverview";
-import { useAppSelector } from "../../../app/hooks";
-import { selectAuth } from "../../sessions/AuthSlice";
 
 interface Props {
   location: IFeature;

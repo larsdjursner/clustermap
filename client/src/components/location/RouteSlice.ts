@@ -1,8 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { features } from "process";
-import { GeneratedIdentifierFlags } from "typescript";
 import { RootState } from "../../app/store";
-import { IFeature } from "../map/ReactMapSlice";
 import { createRoute, fetchRoutesByFeatureId } from "./routeService";
 
 export interface RouteState {

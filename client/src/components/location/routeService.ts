@@ -1,4 +1,4 @@
-import { IRoute, CreateRouteDTO } from "./RouteSlice";
+import {  CreateRouteDTO } from "./RouteSlice";
 
 const API_URI = process.env.REACT_APP_API_URI!;
 

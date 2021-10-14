@@ -1,4 +1,3 @@
-import { features } from "process";
 import { Dispatch, FC, SetStateAction } from "react";
 import { Popup } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
@@ -13,7 +12,7 @@ export const LocationPopup: FC<IPopup> = ({
   setPopupId,
 }) => {
   const clusterMap = useAppSelector(selectClusterMap);
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   const loc = clusterMap.locations.features.find(
     (l) => l.properties.featureId === featureId
