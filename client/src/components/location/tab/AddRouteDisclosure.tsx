@@ -1,11 +1,11 @@
 import { Disclosure, Transition } from "@headlessui/react";
 import { ChevronRightIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import { FC, useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { IFeature, selectClusterMap } from "../map/ReactMapSlice";
-import TextInput from "./partials/TextInput";
-import GenreListBox from "./partials/GenreListbox";
-import GradeListBox from "./partials/GradeListbox";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { IFeature, selectClusterMap } from "../../map/ReactMapSlice";
+import TextInput from "../partials/TextInput";
+import GenreListBox from "../partials/GenreListbox";
+import GradeListBox from "../partials/GradeListbox";
 import {
   createRouteAsync,
   resetFeature,
@@ -13,10 +13,10 @@ import {
   setDescription,
   setFeature,
   setName,
-} from "./RouteSlice";
-import CharacteristicsListBox from "./partials/CharacteristicsListbox";
-import TopologyListBox from "./partials/TopologyListbox";
-import { selectAuth } from "../sessions/AuthSlice";
+} from "../RouteSlice";
+import CharacteristicsListBox from "../partials/CharacteristicsListbox";
+import TopologyListBox from "../partials/TopologyListbox";
+import { selectAuth } from "../../sessions/AuthSlice";
 
 const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
   const clusterMap = useAppSelector(selectClusterMap);
@@ -24,18 +24,15 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
   const authState = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
 
-  const handleDisabled = (): boolean => {
-    // return routeState.routeToCreate?.name === "" && ;
-    return false;
+  const handleDisabled = () => {
+    return routeState.routeToCreate?.name.length === 0;
   };
-
   const handleDescriptionEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setDescription({ description: e.target.value }))
-  }
+    dispatch(setDescription({ description: e.target.value }));
+  };
   const handleNameEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setName({ name: e.target.value }))
-  }
-
+    dispatch(setName({ name: e.target.value }));
+  };
   useEffect(() => {
     dispatch(
       setFeature({
@@ -75,7 +72,7 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
                     <div className="flex flex-col">
                       <div className="flex flex-col my-2">
                         Name
-                        <TextInput attrType="name" setter={handleNameEvent}/>
+                        <TextInput attrType="name" setter={handleNameEvent} />
                       </div>
                       <div className="flex flex-col my-2">
                         Genre
@@ -95,10 +92,15 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
                       </div>
                       <div className="flex flex-col my-2">
                         Description
-                        <TextInput attrType="description" setter={handleDescriptionEvent} />
+                        <TextInput
+                          attrType="description"
+                          setter={handleDescriptionEvent}
+                        />
                       </div>
                       <button
-                        className={"rounded-lg border-2 bg-gray-200 h-8 mt-4"}
+                        className={`rounded-lg border-2 h-8 mt-4 ${
+                          handleDisabled() ? "bg-gray-200" : "bg-blue-200 text-gray-900"
+                        }`}
                         disabled={handleDisabled()}
                         onClick={async () => {
                           if (routeState.routeToCreate) {
