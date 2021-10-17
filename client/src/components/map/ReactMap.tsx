@@ -9,7 +9,6 @@ import ReactMapGl, {
 } from "react-map-gl";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
-  createLocationAsync,
   IFeature,
   selectClusterMap,
   setCreateLocationCoordinates,
@@ -45,7 +44,7 @@ const DEFAULT_VIEWPORT = {
   transitionInterpolator: new FlyToInterpolator(),
   transitionEasing: easeCubic,
   width: "100vw",
-  height: "calc(100vh - 3rem)"
+  height: "100vh"
 };
 
 const ReactMap = () => {
@@ -174,7 +173,7 @@ const ReactMap = () => {
   return (
     <>
       <ReactMapGl
-        className={"overflow-hidden w-full h-body "}
+        className={"overflow-hidden"}
         ref={mapRef}
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN!}
         mapStyle="mapbox://styles/mapbox/dark-v9"

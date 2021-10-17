@@ -10,6 +10,7 @@ import { PreauthMiddleware } from './auth/preauth.middleware';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MapModule } from './map/map.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ClimbingRouteModule } from './climbing-route/climbing-route.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       inject: [ConfigService],
     }),
     MapModule,
+    ClimbingRouteModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -33,6 +35,8 @@ export class AppModule implements NestModule {
       .exclude(
         { path: '/locations', method: RequestMethod.GET },
         { path: '/locations/(.*)', method: RequestMethod.GET },
+        { path: '/climbingroutes', method: RequestMethod.GET },
+        { path: '/climbingroutes/(.*)', method: RequestMethod.GET },
       )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }

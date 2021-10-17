@@ -6,6 +6,8 @@ const LogoSmall = () => {
   <img
     className="bg-gray-400 w-10 h-10 rounded-full object-contain"
     src={logomountain}
+    alt="logosmall"
+
   />);
 };
 

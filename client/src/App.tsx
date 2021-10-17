@@ -2,7 +2,6 @@ import "./App.css";
 import ReactMap from "./components/map/ReactMap";
 import {
   BrowserRouter as Router,
-  Link,
   Redirect,
   Route,
   Switch,
@@ -46,7 +45,7 @@ function App() {
   });
 
   return (
-    <div className="h-screen w-screen">
+    <div className="w-full h-full">
       <Router>
         <NavBar />
         <Switch>
@@ -54,7 +53,7 @@ function App() {
           <Route exact path="/map" component={ReactMap} />
           <Route exact path="/settings" component={Settings} />
           <Route exact path="/account" component={Account} />
-          <Route exact path="/locations/:id" component={Location} />
+          <Route path="/locations/:id" component={Location} />
           <Route
             exact
             path="/signin"

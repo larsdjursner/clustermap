@@ -1,24 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GeoJsonProperties, Geometry } from "geojson";
 import { RootState } from "../../app/store";
+import { IRoute } from "../location/RouteSlice";
 import { createLocation } from "./mapService";
 
-enum GradeEnum {
-  ez,
-  toomuch,
-}
-enum GenreEnum {
-  Bouldering,
-  SportsClimbing,
-  TraditionalClimbing,
-}
-enum CharacteristicsEnum {}
 
-interface IRoute {
-  name: string;
-  grade?: GradeEnum;
-  characteristics?: CharacteristicsEnum;
-}
 
 interface ILocation {
   area: string;
@@ -29,24 +15,25 @@ export interface IFeature extends GeoJSON.Feature<Geometry, GeoJsonProperties> {
   properties: {
     featureId: string;
     name: string;
+    createdAt: Date;
+    creatorId: string;
     details?: string;
-    genre?: GenreEnum[];
-    characteristics?: CharacteristicsEnum[];
-    rating?: number;
     routes?: IRoute[];
     location?: ILocation;
-    createdAt: Date;
   };
 }
 
 export interface CreateFeatureDTO {
   properties: {
     name: string;
+    creatorId: string;
   };
   geometry: {
     coordinates: [number, number];
   };
 }
+
+export interface CreateRouteDTO extends IRoute {}
 
 export interface IFeatureCollection extends GeoJSON.FeatureCollection {
   features: IFeature[];

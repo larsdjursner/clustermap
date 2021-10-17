@@ -13,8 +13,14 @@ const fetchLocationFeatures = async () => {
   );
 };
 
+const fetchLocationFeatureById = async (id: string) => {
+  return await fetch(`${API_URI}/locations/${id}`).then((response) =>
+    response.json()
+  );
+};
+
 const createLocation = async (feature: CreateFeatureDTO) => {
-  return fetch(`${API_URI}/locations`, {
+  return await fetch(`${API_URI}/locations`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -24,4 +30,4 @@ const createLocation = async (feature: CreateFeatureDTO) => {
   }).then((res) => res.json());
 };
 
-export { fetchLocationFeatures, createLocation };
+export { fetchLocationFeatures, createLocation, fetchLocationFeatureById };

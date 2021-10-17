@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
-import { Route, RouteSchema } from './route.schema';
+import { Types } from 'mongoose';
+import {
+  Route,
+  RouteSchema,
+} from '../../climbing-route/schemas/climbing-route.schema';
 
 export type FeatureDocument = Feature & Document;
 
@@ -22,11 +25,17 @@ export class Properties {
   @Prop({ type: String, required: true })
   name: string;
 
-  @Prop({ type: Date, default: Date.now })
+  @Prop({ type: String, required: true })
+  creatorId: string;
+
+  @Prop({ type: [Types.ObjectId], ref: Route.name })
+  routes: Route[];
+
+  @Prop({ type: Date, required: true, default: Date.now })
   createdAt: Date;
 
-  @Prop({type : RouteSchema})
-  routes: Route[]
+  @Prop({ type: Date, required: true, default: Date.now })
+  updatedAt: Date;
 }
 
 @Schema()
