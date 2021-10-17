@@ -45,7 +45,7 @@ function App() {
   });
 
   return (
-    <div className="h-screen w-screen">
+    <div className="w-full h-full">
       <Router>
         <NavBar />
         <Switch>

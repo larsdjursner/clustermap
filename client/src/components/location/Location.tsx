@@ -21,7 +21,7 @@ const Location: FC = () => {
     dispatch(fetchRoutesByFeatureIdAsync(id));
   }, []);
   return (
-    <div className={"w-screen"}>
+    <div className={"w-full"}>
       <div className={"h-screen3/4 w-full"}>
         <div
           style={{ backgroundImage: `url(${temp})` }}

@@ -14,6 +14,7 @@ const NavBar: FC = () => {
       className={
         "w-screen h-nav bg-gray-700 py-0 px-10 border-solid border-gray-800 border-b-2 fixed z-50"
       }
+      style={{maxWidth: "100vw"}}
     >
       <div className={"m-0 p-0 max-w-full h-full flex justify-between"}>
         <div

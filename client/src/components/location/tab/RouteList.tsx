@@ -20,7 +20,7 @@ const RouteList: FC<Props> = ({ location }) => {
       )}
       <ul
         className={
-          " w-screen h-60 mt-4 overflow-scroll bg-gray-400 rounded-lg"
+          "h-60 mt-4 overflow-scroll bg-gray-400 rounded-lg"
         }
       >
         {routeState.featureRoutes.map((route) => (
