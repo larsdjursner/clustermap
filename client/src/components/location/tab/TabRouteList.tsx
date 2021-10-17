@@ -9,26 +9,24 @@ interface Props {
   location: IFeature;
 }
 
-const RouteList: FC<Props> = ({ location }) => {
+const TabRouteList: FC<Props> = ({ location }) => {
   const routeState = useAppSelector(selectRoute);
   const auth = useAppSelector(selectAuth);
 
   return (
-    <div className={"w-full"}>
+    <div className={"w-full flex flex-col justify-center"}>
       {auth.user?.id === location.properties.creatorId && (
         <AddRouteDisclosure location={location} />
       )}
-      <ul
-        className={
-          "h-60 mt-4 overflow-scroll bg-gray-400 rounded-lg"
-        }
-      >
-        {routeState.featureRoutes.map((route) => (
-          <RouteCard route={route} />
-        ))}
-      </ul>
+      {routeState.featureRoutes.length > 0 && (
+        <ul className={" max-h-96 mt-4 overflow-scroll bg-gray-400 rounded-lg"}>
+          {routeState.featureRoutes.map((route) => (
+            <RouteCard route={route} />
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
 
-export default RouteList;
+export default TabRouteList;

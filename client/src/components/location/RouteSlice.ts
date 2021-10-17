@@ -142,7 +142,7 @@ export const {
   setName,
   setTopology,
   setRoutes,
-  setDescription
+  setDescription,
 } = routeSlice.actions;
 export const selectRoute = (state: RootState) => state.route;
 
@@ -163,7 +163,7 @@ export const Grade = {
   font7ap: "7a+",
   font7bp: "7b+",
   font7c: "7c",
-  font7cp: "7cp",
+  font7cp: "7c+",
   font8a: "8a",
   font8ap: "8a+",
   font8b: "8b",

@@ -45,7 +45,7 @@ const AddRouteDisclosure: FC<{ location: IFeature }> = ({ location }) => {
   }, []);
   return (
     <div className="w-full mt-2">
-      <div className=" w-auto p-2 mx-auto bg-white rounded-2xl">
+      <div className="w-auto p-2 mx-auto bg-white rounded-2xl">
         <Disclosure>
           {({ open }) => (
             <>

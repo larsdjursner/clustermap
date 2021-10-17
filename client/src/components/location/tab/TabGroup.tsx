@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { Tab } from "@headlessui/react";
-import RouteList from "./RouteList";
+import TabRouteList from "./TabRouteList";
 import { IFeature } from "../../map/ReactMapSlice";
 import TabOverview from "./TabOverview";
 
@@ -37,15 +37,13 @@ const TabGroup: FC<Props> = ({ location }) => {
               </Tab>
             ))}
           </Tab.List>
-          <Tab.Panels className="mt-2 flex flex-col items-center">
-            <Tab.Panel>
+          <Tab.Panels className="mt-2 flex flex-col items-center w-full">
+            <Tab.Panel className="w-3/4">
               <TabOverview location={location} />
             </Tab.Panel>
-            <Tab.Panel>
-              
-              <RouteList location={location} />
+            <Tab.Panel className="w-3/4">
+              <TabRouteList location={location} />
             </Tab.Panel>
-            <Tab.Panel></Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
       </div>
